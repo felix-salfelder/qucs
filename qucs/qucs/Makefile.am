@@ -55,6 +55,7 @@ MOCHEADERS = \
   octave_window.h \
   projectView.h \
   schematic.h \
+  schematicscene.h \
   textdoc.h \
   qucs.h
 
@@ -71,7 +72,8 @@ libqucsschematic_la_SOURCES= \
   messagedock.cpp misc.cpp imagewriter.cpp printerwriter.cpp \
 	projectView.cpp \
 	frame.cpp \
-	mousecursor.cpp
+	mousecursor.cpp \
+    schematicscene.cpp
 
 nodist_libqucsschematic_la_SOURCES = $(MOCFILES)
 
