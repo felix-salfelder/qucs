@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include <QValidator>
 #include <QPushButton>
+#include <QDebug>
 
 // SpinBoxes are used to show the calculated bias points at the given set of sweep points
 mySpinBox::mySpinBox(int Min, int Max, int Step, double *Val, QWidget *Parent)
@@ -46,7 +47,9 @@ mySpinBox::mySpinBox(int Min, int Max, int Step, double *Val, QWidget *Parent)
 using namespace std;
 QString mySpinBox::textFromValue(int Val) const
 {
-  cout<<"Values + Val"<<*(Values+Val)<<endl;
+  if (Values == NULL) return "";
+
+  qDebug() << "Values + Val" << *(Values+Val) << endl;
   return QString::number(*(Values+Val));
 }
 
@@ -135,7 +138,7 @@ void SweepDialog::slotNewValue(int)
   Index *= 2;  // because of complex values
 
   QList<Node *>::iterator node_it;
-  QList<double *>::const_iterator value_it;
+  QList<double *>::const_iterator value_it = ValueList.begin();
   for(node_it = NodeList.begin(); node_it != NodeList.end(); node_it++) {
     (*node_it)->Name = misc::num2str(*((*value_it)+Index));
     (*node_it)->Name += ((*node_it)->x1 & 0x10)? "A" : "V";
@@ -190,7 +193,7 @@ Graph* SweepDialog::setBiasPoints()
     }
 
     pg->Var = pn->Name + ".V";
-    if(pg->loadDatFile(DataSet)) {
+    if(pg->loadDatFile(DataSet) == 2) {
       pn->Name = misc::num2str(*(pg->cPointsY)) + "V";
       NodeList.append(pn);             // remember node ...
       ValueList.append(pg->cPointsY);  // ... and all of its values
@@ -219,7 +222,7 @@ Graph* SweepDialog::setBiasPoints()
 
       pn->x1 = 0x10;   // mark current
       pg->Var = pc->Name + ".I";
-      if(pg->loadDatFile(DataSet)) {
+      if(pg->loadDatFile(DataSet) == 2) {
         pn->Name = misc::num2str(*(pg->cPointsY)) + "A";
         NodeList.append(pn);             // remember node ...
         ValueList.append(pg->cPointsY);  // ... and all of its values
