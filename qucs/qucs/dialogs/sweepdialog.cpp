@@ -155,7 +155,7 @@ Graph* SweepDialog::setBiasPoints()
   // Thus, the node names are still in "node->Name".
 
   bool hasNoComp;
-  Graph *pg = new Graph("");
+  Graph *pg = NULL;
   Diagram *Diag = new Diagram();
   QFileInfo Info(Doc->DocName);
   QString DataSet = Info.dirPath() + QDir::separator() + Doc->DataSet;
@@ -192,15 +192,16 @@ Graph* SweepDialog::setBiasPoints()
       }
     }
 
-    pg->Var = pn->Name + ".V";
+    pg = new Graph(pn->Name + ".V");
     if(pg->loadDatFile(DataSet) == 2) {
       pn->Name = misc::num2str(*(pg->cPointsY)) + "V";
       NodeList.append(pn);             // remember node ...
       ValueList.append(pg->cPointsY);  // ... and all of its values
       pg->cPointsY = 0;   // do not delete it next time !
-    }
-    else
+    }else{
       pn->Name = "0V";
+    }
+    delete pg;
 
 
     for(pe = pn->Connections.first(); pe!=0; pe = pn->Connections.next())
@@ -221,15 +222,16 @@ Graph* SweepDialog::setBiasPoints()
         pn = pc->Ports.at(1)->Connection;
 
       pn->x1 = 0x10;   // mark current
-      pg->Var = pc->Name + ".I";
+      pg = new Graph(pc->Name + ".I");
       if(pg->loadDatFile(DataSet) == 2) {
         pn->Name = misc::num2str(*(pg->cPointsY)) + "A";
         NodeList.append(pn);             // remember node ...
         ValueList.append(pg->cPointsY);  // ... and all of its values
         pg->cPointsY = 0;   // do not delete it next time !
-      }
-      else
+      }else{
         pn->Name = "0A";
+      }
+      delete pg;
 
       for(pe = pn->Connections.first(); pe!=0; pe = pn->Connections.next())
         if(pe->Type == isWire) {
@@ -243,5 +245,8 @@ Graph* SweepDialog::setBiasPoints()
 
   Doc->showBias = 1;
   delete Diag;
+  pg = new Graph("");
   return pg;
 }
+
+// vim:ts=8:sw=2:noet
