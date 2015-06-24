@@ -70,11 +70,13 @@ SweepDialog::SweepDialog(Schematic *Doc_)
   pGraph = setBiasPoints();
   // if simulation has no sweeps, terminate dialog before showing it
   if(!pGraph->numAxes()) {
+    qDebug() << "no axes";
     reject();
     return;
   }
   if(pGraph->numAxes() <= 1)
     if(pGraph->axis(0)->count <= 1) {
+      qDebug() << "empty axis";
       reject();
       return;
     }
@@ -156,6 +158,7 @@ Graph* SweepDialog::setBiasPoints()
 
   bool hasNoComp;
   Graph *pg = NULL;
+  Graph *one_of_them = NULL;
   Diagram *Diag = new Diagram();
   QFileInfo Info(Doc->DocName);
   QString DataSet = Info.dirPath() + QDir::separator() + Doc->DataSet;
@@ -201,7 +204,11 @@ Graph* SweepDialog::setBiasPoints()
     }else{
       pn->Name = "0V";
     }
-    delete pg;
+    if(!one_of_them && pg->numAxes()){
+      one_of_them = pg;
+    }else{
+      delete pg;
+    }
 
 
     for(pe = pn->Connections.first(); pe!=0; pe = pn->Connections.next())
@@ -245,8 +252,7 @@ Graph* SweepDialog::setBiasPoints()
 
   Doc->showBias = 1;
   delete Diag;
-  pg = new Graph("");
-  return pg;
+  return one_of_them;
 }
 
 // vim:ts=8:sw=2:noet
