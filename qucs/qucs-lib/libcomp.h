@@ -25,7 +25,9 @@
 #include <assert.h>
 
 #include "symbolwidget.h" // Line etc.
-/*!
+#include "./../qucs/element.h"
+
+/*
  * \brief this library provides symbols. these.
  */
 
