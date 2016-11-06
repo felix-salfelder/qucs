@@ -36,7 +36,7 @@ class QucsApp;
 class Component;
 
 static const double pi = 3.1415926535897932384626433832795029;  /* pi   */
-
+/*
 struct tQucsSettings {
   int x, y, dx, dy;    // position and size of main window
   QFont font;
@@ -80,7 +80,7 @@ struct tQucsSettings {
   bool IgnoreFutureVersion;
   bool GraphAntiAliasing;
   bool TextAntiAliasing;
-};
+};*/
 
 extern tQucsSettings QucsSettings;  // extern because nearly everywhere used
 extern QucsApp *QucsMain;  // the Qucs application itself
