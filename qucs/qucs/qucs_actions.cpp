@@ -1422,7 +1422,9 @@ void QucsApp::slotLoadModule()
 
       if (! Module::vaComponents.isEmpty()) {
         // Register whatever is in Module::vaComponents
-        Module::registerDynamicComponents();
+	incomplete();
+	// components register themselves upon loading.
+        // Module::registerDynamicComponents();
 
         // update the combobox, set new category in view
         // pick up new category 'verilog-a user components' from `Module::category`
@@ -1434,6 +1436,10 @@ void QucsApp::slotLoadModule()
         // icons of dynamically registered components ready to be dragged
       }
       else {
+
+	// don't know what this is about.
+	incomplete();
+
         // remove any previously registerd icons from the listview
         int foundCat = CompChoose->findText(QObject::tr("verilog-a user devices"));
         if (foundCat != -1) {

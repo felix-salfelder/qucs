@@ -95,6 +95,8 @@ Component * Module::getComponent (QString Model) {
   return 0;
 }
 
+#if 0
+// no. components must register to the select-dialogs
 void Module::registerDynamicComponents()
 {
     qDebug() << "Module::registerDynamicComponents()";
@@ -143,6 +145,7 @@ incomplete();
 
    } // while
 }
+#endif
 
 // The function appends the given module to the appropriate category.
 // If there is no such category yet, then the category gets created.
