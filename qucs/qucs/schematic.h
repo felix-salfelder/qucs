@@ -35,7 +35,7 @@
 #include "paintings/painting.h"
 #include "components/component.h"
 
-#include <Q3ScrollView>
+#include <QGraphicsView>
 #include <Q3PtrList>
 #include <QVector>
 #include <QStringList>
@@ -75,7 +75,7 @@ struct SubFile {
 };
 typedef QMap<QString, SubFile> SubMap;
 
-class Schematic : public Q3ScrollView, public QucsDoc {
+class Schematic : public QGraphicsView, public QucsDoc {
   Q_OBJECT
 public:
   Schematic(QucsApp*, const QString&);
@@ -172,7 +172,6 @@ protected:
   void paintFrame(ViewPainter*);
 
   // overloaded function to get actions of user
-  void drawContents(QPainter*, int, int, int, int);
   void contentsMouseMoveEvent(QMouseEvent*);
   void contentsMousePressEvent(QMouseEvent*);
   void contentsMouseDoubleClickEvent(QMouseEvent*);
