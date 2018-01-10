@@ -330,7 +330,7 @@ void createIcons() {
 
         image.save("./bitmaps_generated/" + QString(File) + ".png");
 
-        fprintf(stdout, "[%s] %s\n", category.toAscii().data(), File);
+        fprintf(stdout, "[%s] %s\n", category.toLatin1().data(), File);
       }
       nComps++;
     } // module
@@ -422,7 +422,7 @@ void createDocData() {
         QTextStream out(&file);
         out << compData.join("\n");
         file.close();
-        fprintf(stdout, "[%s] %s %s \n", category.toAscii().data(), c->Model.toAscii().data(), file.fileName().toAscii().data());
+        fprintf(stdout, "[%s] %s %s \n", category.toLatin1().data(), c->Model.toLatin1().data(), file.fileName().toLatin1().data());
 
         QStringList compProps;
         compProps << "# Note: auto-generated file (changes will be lost on update)";
@@ -444,7 +444,7 @@ void createDocData() {
         outProps << compProps.join("\n");
         compProps.clear();
         file.close();
-        fprintf(stdout, "[%s] %s %s \n", category.toAscii().data(), c->Model.toAscii().data(), fileProps.fileName().toAscii().data());
+        fprintf(stdout, "[%s] %s %s \n", category.toLatin1().data(), c->Model.toLatin1().data(), fileProps.fileName().toLatin1().data());
     } // module
   } // category
   fprintf(stdout, "Created data for %i components from %i categories\n", nComps, nCats);
@@ -482,7 +482,7 @@ void createListComponentEntry(){
 		QTextStream s;
 		c->getSchematic()->saveComponent(s, c);
       QString qucsEntry = *(s.string());
-      fprintf(stdout, "%s; qucs    ; %s\n", c->Model.toAscii().data(), qucsEntry.toAscii().data());
+      fprintf(stdout, "%s; qucs    ; %s\n", c->Model.toLatin1().data(), qucsEntry.toLatin1().data());
 
       // add dummy ports/wires, avoid segfault
       int port = 0;
@@ -495,12 +495,12 @@ void createListComponentEntry(){
 
       // skip Subcircuit, segfault, there is nothing to netlist
       if (c->Model == "Sub" or c->Model == ".Opt") {
-        fprintf(stdout, "WARNING, qucsator netlist not generated for %s\n\n", c->Model.toAscii().data());
+        fprintf(stdout, "WARNING, qucsator netlist not generated for %s\n\n", c->Model.toLatin1().data());
         continue;
       }
 
       QString qucsatorEntry = c->getNetlist();
-      fprintf(stdout, "%s; qucsator; %s\n", c->Model.toAscii().data(), qucsatorEntry.toAscii().data());
+      fprintf(stdout, "%s; qucsator; %s\n", c->Model.toLatin1().data(), qucsatorEntry.toLatin1().data());
       } // module
     } // category
 }
@@ -672,7 +672,7 @@ int main(int argc, char *argv[])
 
   // set codecs
   QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-  QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+//   QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
   QTranslator tor( 0 );
   QString lang = QucsSettings.Language;
