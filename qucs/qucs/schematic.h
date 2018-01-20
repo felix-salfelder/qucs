@@ -97,7 +97,7 @@ public:
 
   float zoom(float);
   float zoomBy(float);
-  void  showAll();
+  void  zoomFit();
   void  zoomReset();
   void  zoomOut();
   void  zoomIn();
