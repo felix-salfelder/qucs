@@ -1826,7 +1826,7 @@ void Schematic::contentsWheelEvent(QWheelEvent *Event)
 // area accordingly.
 bool Schematic::scrollUp(int step)
 {
-  TODO("Fix scroll");
+  TODO("Fix scrollUp");
   /**
   int diff;
 
@@ -1853,7 +1853,7 @@ bool Schematic::scrollUp(int step)
 // area accordingly. ("step" must be negative!)
 bool Schematic::scrollDown(int step)
 {
-  TODO("Fix scroll");
+  TODO("Fix scrollDown");
   /**
   int diff;
 
