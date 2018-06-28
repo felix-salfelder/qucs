@@ -241,7 +241,6 @@ public:
   void       setCompPorts(Component*);
   Component* selectCompText(int, int, int&, int&);
   Component* searchSelSubcircuit();
-  Component* selectedComponent(int, int);
   void       deleteComp(Component*);
 
   void     oneLabel(Node*);
