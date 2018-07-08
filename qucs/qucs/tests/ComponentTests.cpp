@@ -29,8 +29,8 @@ class ComponentTests : public QObject {
 private slots:
   void testConstructor() {
     Component *c = new Component();
-    QCOMPARE(c->Type, isAnalogComponent);
-    QCOMPARE(c->isSelected, false);
+    QCOMPARE(static_cast<int>( c->Type ),  isAnalogComponent );
+    QCOMPARE(c->ElemSelected, false);
     QCOMPARE(c->cx, 0);
     QCOMPARE(c->cy, 0);
    }
