@@ -30,8 +30,8 @@ private slots:
   void testConstructor() {
     Element *e = new Element();
     // check defaults
-    QCOMPARE(e->Type, isDummyElement);
-    QCOMPARE(e->isSelected, false);
+    QCOMPARE(int( e->Type ), isDummyElement);
+    QCOMPARE(e->ElemSelected, false);
     QCOMPARE(e->cx, 0);
     QCOMPARE(e->cy, 0);
     QCOMPARE(e->x1, 0);
