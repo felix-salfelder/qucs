@@ -232,8 +232,8 @@ case $host_os in
     dnl Enable C++11 support
     CXXFLAGS="$CXXFLAGS -std=c++0x"
 
-    PKG_CHECK_MODULES([QT], [${qt_name}Core ${qt_name}Gui ${qt_name}Script ${qt_name}Svg ${qt_name}Xml, Qt3Support ], [
-      QT_CFLAGS="$QT_CFLAGS $QT_DEF -DQT3_SUPPORT_WARNINGS -DQT_DEPRECATED_WARNINGS -DQT_THREAD_SUPPORT -D_REENTRANT"
+    PKG_CHECK_MODULES([QT], [${qt_name}Core ${qt_name}Gui ${qt_name}Script ${qt_name}Svg ${qt_name}Xml], [
+      QT_CFLAGS="$QT_CFLAGS $QT_DEF -DQT_DEPRECATED_WARNINGS -DQT_THREAD_SUPPORT -D_REENTRANT"
       case $host_os in
         *freebsd*) QT_LIBS="$QT_LIBS -pthread" ;;
         *mingw* | *msys*) QT_CFLAGS="$QT_CFLAGS -mthreads -DQT_DLL -DUNICODE" ;;
@@ -268,7 +268,6 @@ case $host_os in
       for path in $paths; do
         if test -f "$path/Qt/qapplication.h"; then
           QT_INCLUDES="$path -I$path/Qt -I$path/QtGui -I$path/QtCore -I$path/QtSvg -I$path/QtXml -I$path/QtScript"
-          QT_INCLUDES="$QT_INCLUDES -I$path/Qt3Support"
           QT_VER=4
           break
         fi
@@ -294,8 +293,8 @@ case $host_os in
          fi])
       if test "$enable_mt" = yes; then
         QT_LDF=""
-        QT_LIB="-lQtCore -lQtGui -lQtXml -lQt3Support -lQtSvg -lQtScript"
-        QT_INC="$QT_DEF -DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS -DQT_DEPRECATED_WARNINGS -DQT_THREAD_SUPPORT -D_REENTRANT"
+        QT_LIB="-lQtCore -lQtGui -lQtXml -lQtSvg -lQtScript"
+        QT_INC="$QT_DEF -DQT_DEPRECATED_WARNINGS -DQT_THREAD_SUPPORT -D_REENTRANT"
         [case $host_os in
           *freebsd*) QT_LIB="$QT_LIB -pthread" ;;
           *mingw* | *msys*) QT_INC="$QT_INC -mthreads"; QT_LDF="$QT_LDF -mthreads" ;;
@@ -303,13 +302,13 @@ case $host_os in
         QT_MTS="multi-threaded"
       else
         QT_LDF=""
-        QT_LIB="-lQtCore -lQtGui -lQtXml -lQt3Support -lQtSvg -lQtScript"
+        QT_LIB="-lQtCore -lQtGui -lQtXml -lQtSvg -lQtScript"
         QT_INC="$QT_DEF"
         QT_MTS="non-threaded"
       fi
       case $host_os in
         *mingw* | *msys*)
-        QT_LIB="-lQtCore4 -lQtGui4 -lQtXml4 -lQt3Support4 -lQtSvg4 -lQtScript4"
+        QT_LIB="-lQtCore4 -lQtGui4 -lQtXml4 -lQtSvg4 -lQtScript4"
         QT_INC="$QT_INC -DQT_DLL -DUNICODE"
         QT_LDF="$QT_LDF -mwindows"
         ;;
@@ -399,20 +398,17 @@ case $host_os in
     if test "x${with_qt}" = xyes ; then
       AC_MSG_RESULT([found in $path])
       QT_LIBS="-framework QtGui -framework QtCore -framework QtXml -framework QtSvg -framework QtScript"
-      QT_LIBS="$QT_LIBS -framework Qt3Support"
       CPPFLAGS="$CPPFLAGS -I$path/QtCore.framework/Headers"
       CPPFLAGS="$CPPFLAGS -I$path/QtGui.framework/Headers"
       CPPFLAGS="$CPPFLAGS -I$path/QtXml.framework/Headers"
       CPPFLAGS="$CPPFLAGS -I$path/QtSvg.framework/Headers"
       CPPFLAGS="$CPPFLAGS -I$path/QtScript.framework/Headers"
-      CPPFLAGS="$CPPFLAGS -I$path/Qt3Support.framework/Headers"
       QT_LDFLAGS="$QT_LDFLAGS -F$path"
     else
       AC_MSG_ERROR([not found])
     fi
 
-    dnl Define Qt3Support
-    QT_DEF="-DQT_SHARED -DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS -DQT_DEPRECATED_WARNINGS"
+    QT_DEF="-DQT_SHARED -DQT_DEPRECATED_WARNINGS"
     CPPFLAGS="$CPPFLAGS $QT_DEF"
     QT_LDFLAGS="$QT_LDFLAGS -headerpad_max_install_names"
 
