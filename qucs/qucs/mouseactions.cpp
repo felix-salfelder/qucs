@@ -855,7 +855,7 @@ void MouseActions::rightPressMenu(Schematic *Doc, QMouseEvent *Event)
     // right-click menu to go into hierarchy
     if(focusElement) {
       if(focusElement->ElemType & isComponent)
-	if(((Component*)focusElement)->Model == "Sub")
+	if(((Component*)focusElement)->obsolete_model_hack() == "Sub")
       if(!QucsMain->intoH->isChecked())
         ComponentMenu->addAction(QucsMain->intoH);
     }
@@ -1328,7 +1328,8 @@ void MouseActions::MPressElement(Schematic *Doc, QMouseEvent *Event)
   int gx, gy;
   if(selElem->ElemType & isComponent) {
     Component *Comp = (Component*)selElem;
-    QString entryName = Comp->Name;
+//    qDebug() << "+-+ got to switch:" << Comp->Name;
+    QString entryName = Comp->name();
 
     switch(Event->button()) {
       case Qt::LeftButton :
@@ -1366,7 +1367,7 @@ void MouseActions::MPressElement(Schematic *Doc, QMouseEvent *Event)
 	if (Module::vaComponents.contains(entryName)){
 	  QString filename = Module::vaComponents[entryName];
 	  Comp = dynamic_cast<vacomponent*>(Comp)->newOne(filename); //va component
-	  qDebug() << "   => recast = Comp;" << Comp->Name << "filename: " << filename;
+	  qDebug() << "   => recast = Comp;" << Comp->name() << "filename: " << filename;
 	}
 	else {
 	  Comp = Comp->newOne(); // static component is used, so create a new one
@@ -2109,13 +2110,13 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
     case isDigitalComponent:
          c = (Component*)focusElement;
 //         qDebug() << "cast focusElement into" << c->Name;
-         if(c->Model == "GND") return;
-
-         if(c->Model == "SPICE") {
+         if(c->obsolete_model_hack() == "GND") { // BUG
+	   return;
+	 }else if(c->obsolete_model_hack() == "SPICE") { // BUG. use cast
            SpiceDialog *sd = new SpiceDialog(App, (SpiceFile*)c, Doc);
            if(sd->exec() != 1) break;   // dialog is WA_DeleteOnClose
          }
-         else if(c->Model == ".Opt") {
+         else if(c->obsolete_model_hack() == ".Opt") {
            OptimizeDialog *od = new OptimizeDialog((Optimize_Sim*)c, Doc);
            if(od->exec() != 1) break;   // dialog is WA_DeleteOnClose
          }

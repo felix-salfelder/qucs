@@ -56,10 +56,10 @@
 #include "misc.h"
 
 // just dummies for empty lists
-Q3PtrList<Wire>      SymbolWires;
-Q3PtrList<Node>      SymbolNodes;
-Q3PtrList<Diagram>   SymbolDiags;
-Q3PtrList<Component> SymbolComps;
+WireList      SymbolWires;
+NodeList      SymbolNodes;
+DiagramList   SymbolDiags;
+ComponentList SymbolComps;
 
 
 Schematic::Schematic(QucsApp *App_, const QString& Name_)
@@ -1479,8 +1479,7 @@ int Schematic::adjustPortNumbers()
       // go through all components in a schematic
       for(Component *pc = DocComps.first(); pc!=0; pc = DocComps.next())
       {
-         if(pc->Model == "Port")
-         {
+         if(pc->obsolete_model_hack() == "Port") { // BUG. move to device.
              countPort++;
 
              Str = pc->Props.getFirst()->Value;
@@ -1495,11 +1494,11 @@ int Schematic::adjustPortNumbers()
 
              if(pp)
              {
-                 ((PortSymbol*)pp)->nameStr = pc->Name;
+                 ((PortSymbol*)pp)->nameStr = pc->name();
              }
              else
              {
-                 SymbolPaints.append(new PortSymbol(x1, y2, Str, pc->Name));
+                 SymbolPaints.append(new PortSymbol(x1, y2, Str, pc->name()));
                  y2 += 40;
              }
           }

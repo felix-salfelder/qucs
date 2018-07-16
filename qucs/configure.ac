@@ -9,6 +9,7 @@ m4_define([QUCS_VERSION], m4_esyscmd([tr -d '\n' < VERSION]))
 AC_INIT([qucs], [QUCS_VERSION], [qucs-bugs@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([qucs/qucs.cpp])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([qt_version])
 AC_CONFIG_AUX_DIR([.])
 
 AC_CANONICAL_BUILD
@@ -186,22 +187,26 @@ AC_ARG_WITH(macosx-version-max-allowed,
 ,)
 
 
-if ! `$PKG_CONFIG --atleast-version=4.6.0 QtCore`; then
+if ! `$PKG_CONFIG --atleast-version=4.6.0 ${qt_name}Core`; then
    AC_MSG_ERROR([Qt >= 4.6.0 is required.])
 fi
 
-UIC=`$PKG_CONFIG --variable uic_location ${qt_name}Core`
-MOC=`$PKG_CONFIG --variable moc_location ${qt_name}Core`
-RCC=`$PKG_CONFIG --variable rcc_location ${qt_name}Core`
+QT_MAJOR_VERSION=
+AC_MSG_CHECKING([Qt major version])
+AS_IF( [$PKG_CONFIG --atleast-version=5.0.0 ${qt_name}Core ],
+       [ QT_MAJOR_VERSION=5 ],
+       [ QT_MAJOR_VERSION=4 ] )
+AC_MSG_RESULT( $QT_MAJOR_VERSION )
 
+# this seems to work for both Qt4 and 5
+RCC_=`$PKG_CONFIG --variable rcc_location ${qt_name}Core`
+UIC_=`$PKG_CONFIG --variable uic_location ${qt_name}Core`
+MOC_=`$PKG_CONFIG --variable moc_location ${qt_name}Core`
+QT_VERSION=`$PKG_CONFIG --modversion ${qt_name}Core`
+AC_SUBST([QT_VERSION])
 
-dnl this might not work, because moc-qt5 does not work for qt4
-#AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
-#AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
-#AC_CHECK_PROGS(RCC, [rcc])
-#if test -z "$MOC" || test -z "$UIC" || test -z "$RCC"; then
-#  AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required.])
-#fi
+# empty for Qt4
+QT_BINPATH=`$PKG_CONFIG --variable host_bins ${qt_name}Core`
 
 dnl Platform specific, find libraries, setup compiler flags
 case $host_os in
@@ -363,6 +368,16 @@ case $host_os in
   #     fi
 
     ]) # End of fallback Qt4 logic
+
+    AS_IF([test $QT_MAJOR_VERSION -ge 5],
+          [ QT_CFLAGS="$QT_CFLAGS -fPIC"
+      PKG_CHECK_MODULES([QtPrintSupport], [${qt_name}PrintSupport])
+      PKG_CHECK_MODULES([QtScript], [${qt_name}Script])
+	   ])
+
+    QT_CFLAGS="$QT_CFLAGS $QtPrintSupport_CFLAGS $QtScript_CFLAGS"
+    QT_LIBS="$QtScript_LIBS $QtPrintSupport_LIBS $QT_LIBS"
+
     ;;
 
   *darwin* )
@@ -394,6 +409,7 @@ case $host_os in
 
     dnl Capture dir found for Qt
     QT_DIR="$path"
+    QT_BINPATH="$QT_DIR/bin"
 
     if test "x${with_qt}" = xyes ; then
       AC_MSG_RESULT([found in $path])
@@ -702,20 +718,20 @@ AC_PATH_PROGS(LRELEASE, lrelease-qt4 lrelease, :, [$QT_DIR/bin:$PATH])
 AC_PATH_PROGS(LUPDATE, lupdate-qt4 lupdate, :, [$QT_DIR/bin:$PATH])
 
 dnl Check for MOC/UIC/RCC support.
-AC_PATH_PROGS(MOC, $MOC, :)
-AC_PATH_PROGS(UIC, $UIC, :)
-AC_PATH_PROGS(RCC, $RCC, :)
+AC_PATH_PROGS(MOC, $MOC_ moc, :, [$QT_BINPATH:$PATH:/])
+AC_PATH_PROGS(UIC, $UIC_ uic, :, [$QT_BINPATH:$PATH:/])
+AC_PATH_PROGS(RCC, $RCC_ rcc, :, [$QT_BINPATH:$PATH:/])
 
 if test "$MOC" = ":"; then
-  AC_MSG_ERROR([Need 'moc' to compile, 'moc' is part of Qt])
+  AC_MSG_ERROR([Need 'moc' to build, (part of Qt)])
 fi
 
 if test "$UIC" = ":"; then
-  AC_MSG_ERROR([Need 'uic' to compile, 'uic' is part of Qt])
+  AC_MSG_ERROR([Need 'uic' to build, (part of Qt)])
 fi
 
 if test "$RCC" = ":"; then
-  AC_MSG_ERROR([Need 'rcc' to compile, 'rcc' is part of Qt])
+  AC_MSG_ERROR([Need 'rcc' to build, (part of Qt)])
 fi
 
 dnl check for Qt moveable tabwidgets (introduced in Qt 4.5)
