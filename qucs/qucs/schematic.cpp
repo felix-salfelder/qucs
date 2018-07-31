@@ -106,7 +106,10 @@ Schematic::Schematic(QucsApp *App_, const QString& Name_)
   Frame_Text2 = tr("Date:");
   Frame_Text3 = tr("Revision:");
 
-#ifndef USE_SCROLLVIEW
+#ifdef USE_SCROLLVIEW
+  setVScrollBarMode(Q3ScrollView::AlwaysOn);
+  setHScrollBarMode(Q3ScrollView::AlwaysOn);
+#else
   this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 #endif
@@ -2071,8 +2074,7 @@ bool Schematic::scrollDown(int step)
 // area accordingly.
 bool Schematic::scrollLeft(int step)
 {
-  TODO("Fix scroll");
-  /**
+#ifdef USE_SCROLLVIEW
   int diff;
 
   diff = contentsX() - step;
@@ -2089,7 +2091,9 @@ bool Schematic::scrollLeft(int step)
     resizeContents(contentsWidth()-diff, contentsHeight());
     ViewX2 -= diff;
   }
-  */
+#else
+  incomplete();
+#endif
   return true;
 }
 
@@ -2098,9 +2102,7 @@ bool Schematic::scrollLeft(int step)
 // view area accordingly. ("step" must be negative!)
 bool Schematic::scrollRight(int step)
 {
-
-  TODO("Fix scroll");
-  /**
+#ifdef USE_SCROLLVIEW
   int diff;
 
   diff = contentsWidth() - contentsX()-visibleWidth() + step;
@@ -2118,7 +2120,9 @@ bool Schematic::scrollRight(int step)
     ViewX1 -= diff;
     return false;
   }
-  */
+#else
+  incomplete();
+#endif
   return true;
 }
 
