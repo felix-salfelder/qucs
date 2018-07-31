@@ -40,8 +40,9 @@
 
 SpiceDialog::SpiceDialog() : SchematicDialog()
 {
-    //: QDialog(d, Qt::WDestructiveClose) fixed in qt5 branch
   //App = App_; // pointer to main application BUG
+
+  setAttribute(Qt::WA_DeleteOnClose);
 
   resize(400, 250);
   setWindowTitle(tr("Edit SPICE Component Properties"));
