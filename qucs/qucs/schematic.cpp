@@ -422,10 +422,11 @@ void Schematic::paintFrame(ViewPainter *p)
 }
 
 // -----------------------------------------------------------
+#if QT_VERSION < 0x050000
 // Is called when the content (schematic or data display) has to be drawn.
-#ifdef USE_SCROLLVIEW
 void Schematic::drawContents(QPainter *p, int, int, int, int)
 {
+  // no longer used.
   ViewPainter Painter;
 
   Painter.init(p, Scale, -ViewX1, -ViewY1, contentsX(), contentsY());
@@ -542,7 +543,6 @@ void Schematic::drawContents(QPainter *p, int, int, int, int)
 
   }
   PostedPaintEvents.clear();
-
 }
 #endif
 
