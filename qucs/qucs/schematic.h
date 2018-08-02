@@ -320,6 +320,7 @@ protected slots:
   void slotScrollDown();
   void slotScrollLeft();
   void slotScrollRight();
+  void printCursorPosition(int x_, int y_);
 
 private:
   bool dragIsOkay;
