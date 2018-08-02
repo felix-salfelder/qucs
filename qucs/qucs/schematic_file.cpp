@@ -22,6 +22,7 @@
 #include <QtCore>
 #include <QMessageBox>
 #include <QDir>
+#include <QDebug>
 #include <QStringList>
 #include <QPlainTextEdit>
 #include "qt_compat.h"
@@ -666,7 +667,14 @@ void Schematic::simpleInsertComponent(Component *c)
 
 #ifndef USE_SCROLLVIEW
   // add Component to scene // BUG, not here, and keep track
-  scene()->addItem(new ElementGraphics(c));
+      auto n=new ElementGraphics(c);
+    // set component location
+    // HACK: actually propagates from component to QGraphicsItem.
+//    QPointF center(c->cx_(), c->cy_());
+    qDebug() << "addcomp at" << c->cx_() <<  c->cy_();
+    n->setPos(c->cx_(), c->cy_());
+
+  scene()->addItem(n);
 #endif
 }
 
