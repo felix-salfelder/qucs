@@ -121,6 +121,8 @@ class ElementGraphics;
 
 class Schematic : public SchematicBase, public QucsDoc {
   Q_OBJECT
+private:
+  Schematic(Schematic const&x): SchematicBase(), QucsDoc(x), DocModel(this){ unreachable(); }
 public:
   typedef Q3PtrList<ElementGraphics> EGPList;
 public:
