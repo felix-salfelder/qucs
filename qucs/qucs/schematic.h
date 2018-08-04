@@ -441,7 +441,7 @@ public: // TODO: move out of the way, perhaps to SchematicNetlist,
   void highlightWireLabels (void);
 
 private: // legacy, don't use
-  void simpleInsertComponent(Component*);
+  void simpleInsertComponent(Component* c) { return DocModel.simpleInsertComponent(c); }
   void simpleInsertCommand(Command*);
 private:
   void simpleInsertElement(Element*);
