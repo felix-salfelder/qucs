@@ -121,7 +121,8 @@ libqucs_la_SOURCES += \
   viewpainter.cpp \
   node.cpp element.cpp qucsdoc.cpp wire.cpp mouseactions.cpp   \
   qucs.cpp wirelabel.cpp qucs_init.cpp qucs_actions.cpp            \
-  mnemo.cpp schematic.cpp schematic_element.cpp textdoc.cpp \
+  viewpainter.cpp mnemo.cpp schematic.cpp schematic_element.cpp textdoc.cpp \
+  schematic_model.cpp \
   schematic_scene.cpp \
   schematic_file.cpp syntax.cpp module.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
