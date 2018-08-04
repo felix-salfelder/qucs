@@ -434,8 +434,9 @@ int Schematic::saveDocument()
     stream << "  " << pw->save() << "\n";
 
   // save all labeled nodes as wires
-  for(Node *pn = DocNodes.first(); pn != 0; pn = DocNodes.next())
+  for(auto pn : nodes()) {
     if(pn->Label) stream << "  " << pn->Label->save() << "\n";
+  }
   stream << "</Wires>\n";
 
   stream << "<Diagrams>\n";    // save all diagrams
@@ -1065,8 +1066,9 @@ QString Schematic::createUndoString(char Op)
   for(pw = DocWires.first(); pw != 0; pw = DocWires.next())
     s += pw->save()+"\n";
   // save all labeled nodes as wires
-  for(Node *pn = DocNodes.first(); pn != 0; pn = DocNodes.next())
+  for(auto pn : nodes()) {
     if(pn->Label) s += pn->Label->save()+"\n";
+  }
   s += "</>\n";
 
   for(pd = DocDiags.first(); pd != 0; pd = DocDiags.next())
@@ -1262,7 +1264,7 @@ int Schematic::testFile(const QString& DocName)
 void Schematic::collectDigitalSignals(void)
 {
   incomplete();
-//  Node *pn;
+// Node *pn=nullptr;
 //
 //  for(pn = DocNodes.first(); pn != 0; pn = DocNodes.next()) {
 //    DigMap::Iterator it = Signals.find(pn->name());
@@ -1544,7 +1546,7 @@ bool Schematic::giveNodeNames(QTextStream *stream, int& countInit,
 		   NetLang const& nl)
 {
   // delete the node names
-  for(Node *pn = DocNodes.first(); pn != 0; pn = DocNodes.next()) {
+  for(auto pn : nodes()) {
     pn->State = 0;
     if(pn->Label) {
       if(isAnalog)
