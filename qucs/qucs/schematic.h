@@ -262,14 +262,7 @@ public:
   }
 
   // BUG: use Frame::setParameter
-  void setFrameText(int idx, QString s){
-	  if(s != FrameText[idx]){
-		  setChanged(true);
-		  FrameText[idx] = s;
-	  }else{
-	  }
-  }
-
+  void setFrameText(int idx, QString s);
 private:
   QString FrameText[4];
 public:
