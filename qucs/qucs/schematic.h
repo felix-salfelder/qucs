@@ -441,8 +441,6 @@ private:
 
   int  saveDocument();
 
-  bool loadProperties(QTextStream*);
-  bool loadComponents(QTextStream*, ComponentList *List=0);
   void simpleInsertWire(Wire*);
   bool loadWires(QTextStream*, WireList*List=0);
   bool loadDiagrams(QTextStream*, DiagramList*);
