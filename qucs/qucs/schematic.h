@@ -442,8 +442,7 @@ private:
   int  saveDocument();
 
   void simpleInsertWire(Wire*);
-  bool loadWires(QTextStream*, WireList*List=0);
-  bool loadDiagrams(QTextStream*, DiagramList*);
+  bool loadWires(QTextStream*, EGPList *List=0);
   bool loadIntoNothing(QTextStream*);
 
   bool    pasteFromClipboard(QTextStream *, EGPList*);

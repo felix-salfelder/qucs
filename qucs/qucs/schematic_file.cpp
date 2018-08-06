@@ -870,11 +870,12 @@ bool Schematic::loadWires(QTextStream *stream, WireList *List)
 // -------------------------------------------------------------
 // // SchematicModel::?
 //  wtf is List?
-bool Schematic::loadDiagrams(QTextStream *stream, DiagramList *List)
-{
+bool SchematicModel::loadDiagrams(QTextStream *stream /*, DiagramList *List */)
+{ untested();
+  DiagramList* List=&diagrams();
   Diagram *d;
   QString Line, cstr;
-  while(!stream->atEnd()) {
+  while(!stream->atEnd()) { untested();
     Line = stream->readLine();
     if(Line.at(0) == '<') if(Line.at(1) == '/') return true;
     Line = Line.trimmed();
@@ -887,34 +888,18 @@ bool Schematic::loadDiagrams(QTextStream *stream, DiagramList *List)
 	d=prechecked_cast<Diagram*>(x->clone());
 	assert(d);
       qDebug() << "gotit" << what.c_str();
-    }else
-#if 0 // incomplete. see qt5 rework
-         if(cstr == "<Rect") d = new RectDiagram();
-    else if(cstr == "<Polar") d = new PolarDiagram();
-    else if(cstr == "<Tab") d = new TabDiagram();
-    else if(cstr == "<Smith") d = new SmithDiagram();
-    else if(cstr == "<ySmith") d = new SmithDiagram(0,0,false);
-    else if(cstr == "<PS") d = new PSDiagram();
-    else if(cstr == "<SP") d = new PSDiagram(0,0,false);
-    else if(cstr == "<Rect3D") d = new Rect3DDiagram();
-    else if(cstr == "<Curve") d = new CurveDiagram();
-    else if(cstr == "<Time") d = new TimingDiagram();
-    else if(cstr == "<Truth") d = new TruthDiagram();
-    /*else if(cstr == "<Phasor") d = new PhasorDiagram();
-    else if(cstr == "<Waveac") d = new Waveac();*/
-    else
-#endif
-    {
+    }else {
       QMessageBox::critical(0, QObject::tr("Error"),
 		   QObject::tr("Format Error:\nUnknown diagram!"));
       return false;
     }
 
-    if(!d->load(Line, stream)) {
+    if(!d->load(Line, stream)) { untested();
       QMessageBox::critical(0, QObject::tr("Error"),
 		QObject::tr("Format Error:\nWrong 'diagram' line format!"));
       delete d;
       return false;
+    }else{ untested();
     }
     List->append(d);
   }
@@ -1049,7 +1034,7 @@ bool Schematic::loadDocument()
       if(!loadWires(&stream)) { file.close(); return false; } }
     else
     if(Line == "<Diagrams>") {
-      if(!loadDiagrams(&stream, &DocDiags)) { file.close(); return false; } }
+      if(!DocModel.loadDiagrams(&stream /* wtf?, &DocDiags*/ )) { file.close(); return false; } }
     else
     if(Line == "<Paintings>") {
       if(!paintings().load(&stream)) { file.close(); return false; } }
@@ -1149,7 +1134,7 @@ bool Schematic::rebuild(QString *s)
   // read content *************************
   if(!DocModel.loadComponents(&stream))  return false;
   if(!loadWires(&stream))  return false;
-  if(!loadDiagrams(&stream, &DocDiags))  return false;
+  if(!DocModel.loadDiagrams(&stream /* wtf?, &DocDiags */))  return false;
   if(!paintings().load(&stream)) return false;
 
   return true;
