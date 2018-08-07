@@ -2350,7 +2350,7 @@ bool Diagram::pressElement(Schematic* Doc, Element*& selElem, QMouseEvent* Event
 	}
 
 	Diagram *Diag = this;
-	QFileInfo Info(Doc->DocName);
+	QFileInfo Info(Doc->docName());
 	// dialog is Qt::WDestructiveClose !!!
 	incomplete();
 	DiagramDialog *dia = nullptr; // new DiagramDialog(Diag, Doc);
