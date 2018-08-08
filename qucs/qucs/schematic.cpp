@@ -78,6 +78,15 @@ Schematic::Schematic(QucsApp *App_, const QString& Name_)
   SymbolMode(false)
 {
 
+  // TODO: get rid of this.
+  // sometimes these point to other stuff, sometimes when
+  // SymbolMode is active, but not only.
+    Components = &DocComps;
+    Wires      = &DocWires;
+    Nodes      = &DocNodes;
+    Diagrams   = &DocDiags;
+    Paintings  = &DocPaints;
+
   // ...........................................................
   GridX  = GridY  = 10;
   ViewX1=ViewY1=0;
@@ -249,6 +258,7 @@ void Schematic::becomeCurrent(bool update)
   }
 
   if(isSymbolMode()) {
+    incomplete(); // yikes.
     Nodes = &SymbolNodes;
     Wires = &SymbolWires;
     Diagrams = &SymbolDiags;
@@ -1509,6 +1519,7 @@ int Schematic::adjustPortNumbers()
     Nodes      = &SymbolNodes;
     Diagrams   = &SymbolDiags;
     Paintings  = &SymbolPaints;
+    incomplete();
     sizeOfAll(x1, y1, x2, y2);
     Components = &DocComps;
     Wires      = &DocWires;
