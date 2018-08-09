@@ -941,6 +941,7 @@ bool Schematic::loadPaintings(QTextStream *stream, PaintingList* List)
       delete p;
       return false;
     }
+    // BUG. this is necessary for subcircuit parameters
     List->append(p);
   }
 
