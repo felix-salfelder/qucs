@@ -2982,7 +2982,7 @@ Component* Schematic::selectedComponent(int x, int y)
 // ---------------------------------------------------
 // Deletes the component 'c'.
 void Schematic::deleteComp(Component *c)
-{
+{ untested();
     // delete all port connections
     foreach(Port *pn, c->Ports)
         switch(pn->Connection->connectionsCount()) {
