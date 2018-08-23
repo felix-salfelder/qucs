@@ -72,6 +72,7 @@ MOCHEADERS = \
   projectView.h \
   schematic.h \
   schematic_scene.h \
+  schematic_model.h \
   textdoc.h \
   schematic_dialog.h \
   qucs.h

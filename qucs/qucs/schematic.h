@@ -37,6 +37,7 @@
 #include "components/component.h"
 #include "sim/sim.h"
 #include "schematic_scene.h"
+#include "schematic_model.h"
 
 #ifdef USE_SCROLLVIEW
 #include <Q3ScrollView>
@@ -89,26 +90,6 @@ struct SubFile {
 };
 typedef QMap<QString, SubFile> SubMap;
 
-// TODO: refactor here
-class WireList : public Q3PtrList<Wire> {
-};
-// TODO: refactor here
-class NodeList : public Q3PtrList<Node> {
-};
-// TODO: refactor here
-class DiagramList : public Q3PtrList<Diagram> {
-};
-// TODO: refactor here
-class ComponentList : public Q3PtrList<Component> {
-	// void first(){} // GOAL: hide, still compile.
-};
-// TODO: refactor here
-class PaintingList : public Q3PtrList<Painting> {
-public:
-	bool load(QTextStream *stream);
-public:
-	void sizeOfAll(int& xmin, int& ymin, int& xmax, int& ymax) const;
-};
 
 #if QT_MAJOR_VERSION < 5
 typedef Element ElementGraphics;
