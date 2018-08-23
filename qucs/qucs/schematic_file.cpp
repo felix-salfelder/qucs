@@ -1171,7 +1171,7 @@ void Schematic::throughAllNodes(bool User, QStringList& Collect,
   Node *pn=nullptr;
   int z=0;
 
-  for(pn = DocNodes.first(); pn != 0; pn = DocNodes.next()) {
+  for(pn = nodes().first(); pn != 0; pn = nodes().next()) {
     if(pn->Name.isEmpty() == User) {
       continue;  // already named ?
     }
@@ -1266,7 +1266,7 @@ void Schematic::collectDigitalSignals(void)
 {
   Node *pn=nullptr;
 
-  for(pn = DocNodes.first(); pn != 0; pn = DocNodes.next()) {
+  for(pn = nodes().first(); pn != 0; pn = nodes().next()) {
     DigMap::Iterator it = Signals.find(pn->Name);
     if(it == Signals.end()) { // avoid redeclaration of signal
       Signals.insert(pn->Name, DigSignal(pn->Name, pn->DType));
