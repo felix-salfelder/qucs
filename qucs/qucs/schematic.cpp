@@ -89,7 +89,7 @@ Schematic::Schematic(QucsApp *App_, const QString& Name_)
   // SymbolMode is active, but not only.
   //  Components = &DocComps;
     Wires      = &DocWires;
-    Nodes      = &DocNodes;
+    // Nodes      = &DocNodes;
     Diagrams   = &DocDiags;
     Paintings  = &DocPaints;
 #endif
@@ -107,7 +107,6 @@ Schematic::Schematic(QucsApp *App_, const QString& Name_)
   tmpScale = 1.0;
 
   DocWires.setAutoDelete(true);
-  DocNodes.setAutoDelete(true);
   DocDiags.setAutoDelete(true);
   DocPaints.setAutoDelete(true);
   SymbolPaints.setAutoDelete(true);
@@ -265,7 +264,7 @@ void Schematic::becomeCurrent(bool update)
 
   if(isSymbolMode()) {
     incomplete(); // yikes.
-    Nodes = &SymbolNodes;
+    // Nodes = &SymbolNodes;
     Wires = &SymbolWires;
     Diagrams = &SymbolDiags;
     Paintings = &SymbolPaints;
@@ -1520,7 +1519,7 @@ int Schematic::adjustPortNumbers()
   } else {
     // Components = &SymbolComps;
     Wires      = &SymbolWires;
-    Nodes      = &SymbolNodes;
+    // Nodes      = &SymbolNodes;
     Diagrams   = &SymbolDiags;
     Paintings  = &SymbolPaints;
     incomplete();
