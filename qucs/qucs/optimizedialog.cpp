@@ -350,7 +350,7 @@ void OptimizeDialog::attach(Object* sim)
   // ...........................................................
 
   Component *pc;
-  for(pc=Doc->Components->first(); pc!=0; pc=Doc->Components->next()){
+  for(auto pc:Doc->components()){
     incomplete();
     // BUG: this is not a component.
 
@@ -732,12 +732,10 @@ void OptimizeDialog::slotApply()
     NameEdit->setText(Comp->name());
   else
   if(NameEdit->text() != Comp->name()) {
-    for(pc = Doc->Components->first(); pc!=0; pc = Doc->Components->next())
-      if(pc->name() == NameEdit->text())
-        break;  // found component with the same name ?
-    if(pc)
+    auto pc = Doc->find_component(NameEdit->text());
+    if(pc){
       NameEdit->setText(Comp->name());
-    else {
+	 } else {
       Comp->obsolete_name_override_hack(NameEdit->text());
       changed = true;
     }
