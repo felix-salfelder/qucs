@@ -1418,12 +1418,6 @@ void Schematic::cut()
   viewport()->update();
 }
 
-// ---------------------------------------------------
-// Performs paste function from clipboard
-bool Schematic::paste(QTextStream *stream, Schematic::EGPList *pe)
-{ untested();
-  return pasteFromClipboard(stream, pe);
-}
 
 // ---------------------------------------------------
 // Loads this Qucs document.

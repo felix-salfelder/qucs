@@ -6,9 +6,6 @@
 #include <QFileInfo>
 
 
-#include <QFileInfo>
-
-
 // ---------------------------------------------------
 //
 #ifndef USE_SCROLLVIEW
