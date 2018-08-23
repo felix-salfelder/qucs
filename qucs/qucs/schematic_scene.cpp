@@ -189,4 +189,14 @@ void SchematicModel::toScene(QGraphicsScene& s, QList<ElementGraphics*>* l) cons
   qDebug() << "wires" << s.items().size();
   s.update();
 }
+
+void SchematicScene::removeItem(Element const* xx)
+{
+	Element* x=(Element*)(xx);
+	if(auto w=wire(x)){ untested();
+	}else if(auto n=node(x)){ untested();
+	}else{
+	  	unreachable();
+	}
+}
 #endif
