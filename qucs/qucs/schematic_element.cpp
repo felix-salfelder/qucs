@@ -300,10 +300,12 @@ bool Schematic::connectVWires1(Wire *w)
             }
             w->y1__() = pw->y1_();
             w->Port1 = pw->Port1;         // new wire lengthens an existing one
-            nodes().removeRef(n);
+            removeNode(n);
             w->Port1->connectionsRemove(pw);
             w->Port1->connectionsAppend(w);
-            Wires->removeRef(pw);
+            w->Port1->Connections.removeRef(pw);
+            w->Port1->Connections.append(w);
+            removeWire(pw);
             return true;
         }
         if(pw->y2_() >= w->y2_())    // new wire lies complete within an existing one ?
@@ -321,8 +323,8 @@ bool Schematic::connectVWires1(Wire *w)
                 w->Label->pOwner = w;
             }
             pw->Port1->connectionsRemove(pw);
-            nodes().removeRef(pw->Port2);
-            Wires->removeRef(pw);
+            removeNode(pw->Port2);
+            removeWire(pw);
             return true;
         }
         w->y1__() = pw->y2_();    // shorten new wire according to an existing one
@@ -379,8 +381,8 @@ int Schematic::insertWireNode2(Wire *w)
                     w->Port2 = ptr2->Port2;
                     ptr2->Port2->connectionsRemove(ptr2);  // two -> one wire
                     ptr2->Port2->connectionsAppend(w);
-                    nodes().removeRef(ptr2->Port1);
-                    Wires->removeRef(ptr2);
+                    removeNode(ptr2->Port1);
+		    removeWire(ptr2);
                     return 2;
                 }
                 else
@@ -413,12 +415,10 @@ int Schematic::insertWireNode2(Wire *w)
                     w->Port2 = ptr2->Port2;
                     ptr2->Port2->connectionsRemove(ptr2);  // two -> one wire
                     ptr2->Port2->connectionsAppend(w);
-                    nodes().removeRef(ptr2->Port1);
-                    Wires->removeRef(ptr2);
+                    removeNode(ptr2->Port1);
+		    removeWire(ptr2);
                     return 2;
-                }
-                else
-                {
+                }else{
                     w->x2__() = ptr2->x1_();
                     w->Port2 = ptr2->Port1;
                     ptr2->Port1->connectionsAppend(w);   // shorten new wire
@@ -467,10 +467,10 @@ bool Schematic::connectHWires2(Wire *w)
             }
             w->x2__() = pw->x2_();
             w->Port2 = pw->Port2;      // new wire lengthens an existing one
-            nodes().removeRef(n);
+            removeNode(n);
             w->Port2->connectionsRemove(pw);
             w->Port2->connectionsAppend(w);
-            Wires->removeRef(pw);
+            removeWire(pw);
             return true;
         }
         // (if new wire lies complete within an existing one, was already
@@ -485,8 +485,8 @@ bool Schematic::connectHWires2(Wire *w)
                 w->Label->pOwner = w;
             }
             pw->Port2->connectionsRemove(pw);
-            nodes().removeRef(pw->Port1);
-            Wires->removeRef(pw);
+            removeNode(pw->Port1);
+            removeWire(pw);
             return true;
         }
         w->x2__() = pw->x1_();    // shorten new wire according to an existing one
@@ -521,10 +521,10 @@ bool Schematic::connectVWires2(Wire *w)
             }
             w->y2__() = pw->y2_();
             w->Port2 = pw->Port2;     // new wire lengthens an existing one
-            nodes().removeRef(n);
+            removeNode(n);
             w->Port2->connectionsRemove(pw);
             w->Port2->connectionsAppend(w);
-            Wires->removeRef(pw);
+            removeWire(pw);
             return true;
         }
         // (if new wire lies complete within an existing one, was already
@@ -539,8 +539,8 @@ bool Schematic::connectVWires2(Wire *w)
                 w->Label->pOwner = w;
             }
             pw->Port2->connectionsRemove(pw);
-            nodes().removeRef(pw->Port1);
-            Wires->removeRef(pw);
+            removeNode(pw->Port1);
+            removeWire(pw);
             return true;
         }
         w->y2__() = pw->y1_();    // shorten new wire according to an existing one
@@ -604,7 +604,8 @@ int Schematic::insertWire(Wire *w)
     // change node 1 and 2
     if(con > 255) con = ((con >> 1) & 1) | ((con << 1) & 2);
 
-    Wires->append(w);    // add wire to the schematic
+    wires().append(w);    // add wire to the schematicModel
+    addToScene(w);
 
     int  n1, n2;
     Wire *pw, *nw;
@@ -613,7 +614,6 @@ int Schematic::insertWire(Wire *w)
     // ................................................................
     // Check if the new line covers existing nodes.
     // In order to also check new appearing wires -> use "for"-loop
-    assert(Wires);
     // this looks like it is not a loop at all.
     // check: what are the findRef calls really doing, and why?
     for(pw=wires().current(); pw!=nullptr; pw=wires().next()){
@@ -658,19 +658,20 @@ int Schematic::insertWire(Wire *w)
                 pn2 = nw->Port2;
                 n1  = pn->connectionsCount();
                 n2  = pn2->connectionsCount();
-                if(n1 == 1)
-                {
-                    nodes().removeRef(pn);     // delete node 1 if open
+                if(n1 == 1) {
+                    removeNode(pn);
                     pn2->connectionsRemove(nw);   // remove connection
                     pn = pn2;
-                }
+                }else{
+		}
 
-                if(n2 == 1)
-                {
+                if(n2 == 1) {
                     pn->connectionsRemove(nw);   // remove connection
-                    nodes().removeRef(pn2);     // delete node 2 if open
+		    // node 2 is open
+                    removeNode(pn2);
                     pn2 = pn;
-                }
+                }else{
+		}
 
                 if(pn == pn2)
                 {
