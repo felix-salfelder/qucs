@@ -485,9 +485,8 @@ void Schematic::drawContents(QPainter *p, int, int, int, int)
   if(!isSymbolMode())
     paintFrame(&Painter);
 
-  for(Component *pc = Components->first(); pc != 0; pc = Components->next()){
-	  Element* e=pc;
-    e->paint(&Painter);
+  for(auto pc : components()){
+    pc->paint(&Painter);
   }
 
   for(auto pw : wires()){
@@ -497,9 +496,9 @@ void Schematic::drawContents(QPainter *p, int, int, int, int)
   }
 
   Node *pn;
-  for(auto i : *Nodes){
-	  pn=i;
-	  Element* e=pn;
+  for(auto pn : nodes()){
+    pn=i;
+    Element* e=pn;
     e->paint(&Painter);
     if(pn->Label)
       pn->Label->paint(&Painter);  // separate because of paintSelected
@@ -2479,6 +2478,11 @@ QPointF Schematic::mapToScene(QPoint const& p) const
   float fY=float(p.y())/Scale + float(ViewY1);
 
   return QPointF(fX, fY);
+}
+
+void Schematic::addToScene(Element* x)
+{
+  // not needed.
 }
 #else
 void Schematic::addToScene(Element* x)
