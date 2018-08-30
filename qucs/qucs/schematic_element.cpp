@@ -2783,7 +2783,11 @@ void Schematic::insertComponent(Component *c)
     }
 
     setComponentNumber(c); // important for power sources and subcircuit ports
-    components().append(c);
+
+    { // somehow different...
+	components().append(c);
+	addToScene(c);
+    }
 }
 
 // ---------------------------------------------------
