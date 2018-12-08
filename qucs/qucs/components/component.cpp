@@ -778,6 +778,19 @@ void Schematic::saveComponent(QTextStream& s, Component /*const*/ * c) const
   s << ">";
 }
 // -------------------------------------------------------
+// TODO: move to parser (it's not there yet.)
+Element* Schematic::loadElement(const QString& _s, Element* e) const
+{
+  if(Component* c=dynamic_cast<Component*>(e)){
+    // legacy components
+    // will not work non-qucs-.sch languages
+    return loadComponent(_s, c);
+  }else{
+    incomplete();
+    return e;
+  }
+}
+// -------------------------------------------------------
 // FIXME: must be Component* SchematicParser::loadComponent(Stream&, Component*);
 Component* Schematic::loadComponent(const QString& _s, Component* c) const
 {
@@ -1681,5 +1694,21 @@ void Component::dialgButtStuff(ComponentDialog& d)const
   incomplete();
   // d.disableButtons();
 }
+
+# if 0
+// is this needed in subcircuit?
+// (what is subcircuit?)
+void Component::setSchematic(Schematic* p)
+{
+  cstr = c->Name;   // is randomly changed in "recreate" (e.g. subcircuit)
+  int x = c->tx;
+  int y = c->ty;
+  Symbol::setSchematic(p);
+  recreate(0);
+  Name = cstr;
+  tx = x;
+  ty = y;
+}
+# endif
 
 // vim:ts=8:sw=2:noet
