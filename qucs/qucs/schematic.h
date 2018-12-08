@@ -260,7 +260,10 @@ public:
   void       setComponentNumber(Component*);
   void       insertRawComponent(Component*, bool noOptimize=true);
   void       recreateComponent(Component*);
+  void       insertElement(Element*);
+private: // old legacy stuff.
   void       insertComponent(Component*);
+public:
   void       activateCompsWithinRect(int, int, int, int);
   bool       activateSpecifiedComponent(int, int);
   bool       activateSelectedComponents();

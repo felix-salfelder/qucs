@@ -21,11 +21,11 @@
 #include "component.h"
 
 
-class DC_Sim : public Component  {
+class DC_Sim : public Command  {
 public:
   DC_Sim();
   ~DC_Sim();
-  Component* newOne();
+  Element* newOne() const;
   static Element* info(QString&, char* &, bool getNewOne=false);
 };
 

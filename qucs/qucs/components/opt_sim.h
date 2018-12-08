@@ -21,7 +21,7 @@
 #include "component.h"
 
 
-class Optimize_Sim : public Element  {
+class Optimize_Sim : public Command {
 public:
   Optimize_Sim();
  ~Optimize_Sim();
