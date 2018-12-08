@@ -20,7 +20,7 @@
 
 #include <Q3PtrList>
 
-#include "element.h"
+#include "symbol.h"
 
 class Schematic;
 class ViewPainter;
@@ -28,12 +28,12 @@ class QString;
 class QPen;
 class ComponentDialog;
 
-class Component : public Element {
+class Component : public Symbol {
 public:
   Component();
   virtual ~Component() {};
 
-  virtual Component* newOne();
+//  virtual Object* newOne(); from Symbol.
   virtual void recreate(Schematic*) {};
   QString getNetlist();
   QString get_VHDL_Code(int);

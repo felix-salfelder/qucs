@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /***************************************************************************
                               globals.h
                              --------------------
@@ -13,6 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QUCS_GLOBALS_H
+#define QUCS_GLOBALS_H
+
 #include "platform.h"
 #include "l_dispatcher.h"
 
@@ -23,3 +27,5 @@ class NetLang;
 extern INTERFACE Dispatcher<Symbol> symbol_dispatcher;
 extern INTERFACE Dispatcher<Simulator> simulator_dispatcher;
 extern INTERFACE Dispatcher<NetLang> netlang_dispatcher;
+
+#endif
