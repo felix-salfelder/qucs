@@ -43,11 +43,13 @@ class plugins{
       int check = RTLD_NOW;
       void* handle;
 
-      handle = dlopen((what + SOEXT).c_str(), check | dl_scope);
+      std::string whatext = what+SOEXT;
+      handle = dlopen(whatext.c_str(), check | dl_scope);
       if (handle) {
 	attach_list[what] = handle;
       }else{
-	std::cerr << "failed to attach\n";
+	std::cerr << "failed to attach " << whatext << " (" << errno << ")\n";
+	std::cerr << dlerror() << "\n";
 	exit(1); // temporary, should actually throw.
 //	throw Exception_something(dlerror());
       }
