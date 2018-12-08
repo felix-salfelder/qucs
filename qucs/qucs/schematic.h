@@ -308,11 +308,14 @@ public:
   bool loadDocument();
   void highlightWireLabels (void);
 
+private: // legacy, don't use
+  void simpleInsertComponent(Component*);
 private:
+  void simpleInsertElement(Element*);
+
   int  saveDocument();
 
   bool loadProperties(QTextStream*);
-  void simpleInsertComponent(Component*);
   bool loadComponents(QTextStream*, Q3PtrList<Component> *List=0);
   void simpleInsertWire(Wire*);
   bool loadWires(QTextStream*, Q3PtrList<Element> *List=0);
