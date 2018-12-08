@@ -25,6 +25,7 @@
 #include "viewpainter.h"
 #include "module.h"
 #include "misc.h"
+#include "globals.h"
 
 #include <QPen>
 #include <QString>
@@ -606,7 +607,7 @@ void Component::mirrorY()
 }
 
 // -------------------------------------------------------
-QString Component::netlist()
+QString Component::netlist() const
 {
   QString s = Model+":"+Name;
   int i=-1;
@@ -620,22 +621,20 @@ QString Component::netlist()
   }
 
   // output all properties
-  for (Property *p2 = Props.first(); p2 != 0; p2 = Props.next()){
-    if (p2->Name != "Symbol"){
-      s += " " + p2->Name + "=\"" + p2->Value + "\"";
-    }else{
-      // BUG: what is this?
-      // doing name dependent stuff
-    }
-  }
+  // BUG: use netlister.
+  // BUG. cannot access props without const cast.
+  // Qt3 Bug. needs refactoring anyway.
+  Q3PtrList<Property>* P=const_cast<Q3PtrList<Property>*>(&Props);
 
-  s += '\n';
+  for(Property *p2 = P->first(); p2 != 0; p2 = P->next())
+    if(p2->Name != "Symbol")
+      s += " "+p2->Name+"=\""+p2->Value+"\"";
 
   return s;
 }
 
 // -------------------------------------------------------
-QString Component::getNetlist()
+QString Component::getNetlist() const
 {
   switch(isActive) {
     case COMP_IS_ACTIVE:
@@ -711,7 +710,7 @@ QString Component::get_VHDL_Code(int NumPorts)
 // save a component
 // FIXME: part of corresponding SchematicSerializer implementation
 // BUG: c must be const (cannot because of QT3)
-void Schematic::saveComponent(QTextStream& s, Component /*const*/ * c) const
+void Schematic::saveComponent(QTextStream& s, Component const* c) const
 {
 #if XML
   QDomDocument doc;
@@ -761,7 +760,9 @@ void Schematic::saveComponent(QTextStream& s, Component /*const*/ * c) const
 
   // write all properties
   // FIXME: ask component for properties, not for dictionary
-  for(Property *p1 = c->Props.first(); p1 != 0; p1 = c->Props.next()) {
+  Component* cc=const_cast<Component*>(c); // BUGBUGBUGBUG
+                                           // cannot access Props without this hack
+  for(Property *p1 = cc->Props.first(); p1 != 0; p1 = cc->Props.next()) {
     if(p1->Description.isEmpty()){
       s << " \""+p1->Name+"="+p1->Value+"\"";   // e.g. for equations
     }else{
@@ -1636,9 +1637,16 @@ Component* getComponentFromName(QString& Line, Schematic* p)
     //c = new SParamFile ();
     //c->Props.getLast()->Value = cstr.mid (6);
   }
-  {
-    // FIXME: fetch proto from dictionary.
-    c = Module::getComponent (cstr);
+
+  // fetch proto from dictionary.
+  Symbol const* s=symbol_dispatcher[cstr.toStdString()];
+
+  if(Component const* sc=dynamic_cast<Component const*>(s)){
+      // legacy component
+    c = sc->newOne(); // memory leak
+  }else{ untested();
+  // don't know what this is (yet);
+  incomplete();
   }
 
   if(!c) {
