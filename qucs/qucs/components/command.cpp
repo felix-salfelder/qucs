@@ -20,6 +20,7 @@
 #include "componentdialog.h"
 #include "component.h"
 #include "node.h"
+#include "main.h"
 #include "qucs.h"
 #include "schematic.h"
 #include "viewpainter.h"
@@ -32,17 +33,14 @@
 #include <QPainter>
 #include <QDebug>
 
-/*!
- * \file component.cpp
- * \brief Implementation of the Component class.
- */
-
 
 /*!
  * \class Component
- * \brief The Component class implements a generic analog component
+ * \brief The Command class constitutes a baseclass for commands.
+ *        this one is a copy of the legacy Component class, the former
+ *        baseclass for Commands. As such, it contains unneeded stuff.
  */
-Component::Component()
+Command::Command()
 {
   Type = isAnalogComponent;
 
@@ -63,7 +61,7 @@ Component::Component()
 }
 
 // -------------------------------------------------------
-void Component::Bounding(int& _x1, int& _y1, int& _x2, int& _y2)
+void Command::Bounding(int& _x1, int& _y1, int& _x2, int& _y2)
 {
   _x1 = x1+cx;
   _y1 = y1+cy;
@@ -73,7 +71,7 @@ void Component::Bounding(int& _x1, int& _y1, int& _x2, int& _y2)
 
 // -------------------------------------------------------
 // Size of component text.
-int Component::textSize(int& _dx, int& _dy)
+int Command::textSize(int& _dx, int& _dy)
 {
   // get size of text using the screen-compatible metric
   QFontMetrics metrics(QucsSettings.font, 0);
@@ -98,7 +96,7 @@ int Component::textSize(int& _dx, int& _dy)
 
 // -------------------------------------------------------
 // Boundings including the component text.
-void Component::entireBounds(int& _x1, int& _y1, int& _x2, int& _y2, float Corr)
+void Command::entireBounds(int& _x1, int& _y1, int& _x2, int& _y2, float Corr)
 {
   _x1 = x1+cx;
   _y1 = y1+cy;
@@ -118,21 +116,21 @@ void Component::entireBounds(int& _x1, int& _y1, int& _x2, int& _y2, float Corr)
 }
 
 // -------------------------------------------------------
-void Component::setCenter(int x, int y, bool relative)
+void Command::setCenter(int x, int y, bool relative)
 {
   if(relative) { cx += x;  cy += y; }
   else { cx = x;  cy = y; }
 }
 
 // -------------------------------------------------------
-void Component::getCenter(int& x, int& y)
+void Command::getCenter(int& x, int& y)
 {
   x = cx;
   y = cy;
 }
 
 // -------------------------------------------------------
-int Component::getTextSelected(int x_, int y_, float Corr)
+int Command::getTextSelected(int x_, int y_, float Corr)
 {
   x_ -= cx;
   y_ -= cy;
@@ -166,7 +164,7 @@ int Component::getTextSelected(int x_, int y_, float Corr)
 }
 
 // -------------------------------------------------------
-bool Component::getSelected(int x_, int y_)
+bool Command::getSelected(int x_, int y_)
 {
   x_ -= cx;
   y_ -= cy;
@@ -177,7 +175,7 @@ bool Component::getSelected(int x_, int y_)
 }
 
 // -------------------------------------------------------
-void Component::paint(ViewPainter *p)
+void Command::paint(ViewPainter *p)
 {
   int x, y, a, b, xb, yb;
   QFont f = p->Painter->font();   // save current font
@@ -308,7 +306,7 @@ void Component::paint(ViewPainter *p)
 
 // -------------------------------------------------------
 // Paints the component when moved with the mouse.
-void Component::paintScheme(Schematic *p)
+void Command::paintScheme(Schematic *p)
 {
   // qDebug() << "paintScheme" << Model;
   if(Model.at(0) == '.') {   // is simulation component (dc, ac, ...)
@@ -366,7 +364,7 @@ void Component::paintScheme(Schematic *p)
 
 // -------------------------------------------------------
 // For output on a printer device.
-void Component::print(ViewPainter *p, float FontScale)
+void Command::print(ViewPainter *p, float FontScale)
 {
   foreach(Text *pt, Texts)
     pt->Size *= FontScale;
@@ -379,7 +377,7 @@ void Component::print(ViewPainter *p, float FontScale)
 
 // -------------------------------------------------------
 // Rotates the component 90 counter-clockwise around its center
-void Component::rotate()
+void Command::rotate()
 {
   // Port count only available after recreate, createSymbol
   if ((Model != "Sub") && (Model !="VHDL") && (Model != "Verilog")) // skip port count
@@ -479,7 +477,7 @@ void Component::rotate()
 
 // -------------------------------------------------------
 // Mirrors the component about the x-axis.
-void Component::mirrorX()
+void Command::mirrorX()
 {
   // Port count only available after recreate, createSymbol
   if ((Model != "Sub") && (Model !="VHDL") && (Model != "Verilog")) // skip port count
@@ -541,7 +539,7 @@ void Component::mirrorX()
 
 // -------------------------------------------------------
 // Mirrors the component about the y-axis.
-void Component::mirrorY()
+void Command::mirrorY()
 {
   // Port count only available after recreate, createSymbol
   if ((Model != "Sub") && (Model !="VHDL") && (Model != "Verilog")) // skip port count
@@ -606,36 +604,24 @@ void Component::mirrorY()
 }
 
 // -------------------------------------------------------
-QString Component::netlist()
+QString Command::netlist()
 {
   QString s = Model+":"+Name;
-  int i=-1;
+
   // output all node names
-  // This only works in cases where the resistor would be a series
-  // with the component, as for the other components, they're accounted
-  // as a resistor as well, and the changes were made to their .cpp
-  foreach(Port *p1, Ports){
-    i++;
-    s += " " + p1->Connection->Name;   // node names
-  }
+  foreach(Port *p1, Ports)
+    s += " "+p1->Connection->Name;   // node names
 
   // output all properties
-  for (Property *p2 = Props.first(); p2 != 0; p2 = Props.next()){
-    if (p2->Name != "Symbol"){
-      s += " " + p2->Name + "=\"" + p2->Value + "\"";
-    }else{
-      // BUG: what is this?
-      // doing name dependent stuff
-    }
-  }
+  for(Property *p2 = Props.first(); p2 != 0; p2 = Props.next())
+    if(p2->Name != "Symbol")
+      s += " "+p2->Name+"=\""+p2->Value+"\"";
 
-  s += '\n';
-
-  return s;
+  return s + '\n';
 }
 
 // -------------------------------------------------------
-QString Component::getNetlist()
+QString Command::getNetlist()
 {
   switch(isActive) {
     case COMP_IS_ACTIVE:
@@ -657,13 +643,13 @@ QString Component::getNetlist()
 }
 
 // -------------------------------------------------------
-QString Component::verilogCode(int)
+QString Command::verilogCode(int)
 {
   return QString("");   // no digital model
 }
 
 // -------------------------------------------------------
-QString Component::get_Verilog_Code(int NumPorts)
+QString Command::get_Verilog_Code(int NumPorts)
 {
   switch(isActive) {
     case COMP_IS_OPEN:
@@ -683,13 +669,13 @@ QString Component::get_Verilog_Code(int NumPorts)
 }
 
 // -------------------------------------------------------
-QString Component::vhdlCode(int)
+QString Command::vhdlCode(int)
 {
   return QString("");   // no digital model
 }
 
 // -------------------------------------------------------
-QString Component::get_VHDL_Code(int NumPorts)
+QString Command::get_VHDL_Code(int NumPorts)
 {
   switch(isActive) {
     case COMP_IS_OPEN:
@@ -733,13 +719,13 @@ void Schematic::saveComponent(QTextStream& s, Component /*const*/ * c) const
   qDebug (doc.toString());
 #endif
   // s << "  "; ??
-  s << "<" << c->obsolete_model_hack();
+  s << "<" << c->Model;
 
   s << " ";
-  if(c->name().isEmpty()){
+  if(c->Name.isEmpty()){
     s << "*";
   }else{
-    s << c->name();
+    s << c->Name;
   }
   s << " ";
 
@@ -792,10 +778,12 @@ Component* Schematic::loadComponent(const QString& _s, Component* c) const
   }
   s = s.mid(1, s.length()-2);   // cut off start and end character
 
-  QString label=s.section(' ',1,1);
-  c->setName(label);
-
   QString n;
+  c->Name = s.section(' ',1,1);    // Name
+  if(c->Name == "*"){
+	  c->Name = "";
+  }
+
   n  = s.section(' ',2,2);      // isActive
   tmp = n.toInt(&ok);
   if(!ok){
@@ -803,11 +791,10 @@ Component* Schematic::loadComponent(const QString& _s, Component* c) const
   }
   c->isActive = tmp & 3;
 
-  if(tmp & 4){
+  if(tmp & 4)
     c->showName = false;
-  }else{
-    // use default, e.g. never show name for GND (bug?)
-  }
+  else
+    c->showName = true;
 
   n  = s.section(' ',3,3);    // cx
   c->cx = n.toInt(&ok);
@@ -825,7 +812,7 @@ Component* Schematic::loadComponent(const QString& _s, Component* c) const
   tty = n.toInt(&ok);
   if(!ok) return NULL;
 
-  if(c->obsolete_model_hack().at(0) != '.') {  // is simulation component (dc, ac, ...) ?
+  if(c->Model.at(0) != '.') {  // is simulation component (dc, ac, ...) ?
 
     n  = s.section(' ',7,7);    // mirroredX
     if(n.toInt(&ok) == 1){
@@ -846,7 +833,7 @@ Component* Schematic::loadComponent(const QString& _s, Component* c) const
   c->tx = ttx;
   c->ty = tty; // restore text position (was changed by rotate/mirror)
 
-  QString Model = c->obsolete_model_hack(); // BUG: don't use names
+  QString Model = c->Model; // BUG: don't use names
 
   unsigned int z=0, counts = s.count('"');
   // FIXME. use c->paramCount()
@@ -962,7 +949,7 @@ Component* Schematic::loadComponent(const QString& _s, Component* c) const
 // ***  The following functions are used to load the schematic symbol
 // ***  from file. (e.g. subcircuit, library component)
 
-int Component::analyseLine(const QString& Row, int numProps)
+int Command::analyseLine(const QString& Row, int numProps)
 {
   QPen Pen;
   QBrush Brush;
@@ -1163,7 +1150,7 @@ int Component::analyseLine(const QString& Row, int numProps)
 }
 
 // ---------------------------------------------------------------------
-bool Component::getIntegers(const QString& s, int *i1, int *i2, int *i3,
+bool Command::getIntegers(const QString& s, int *i1, int *i2, int *i3,
 			     int *i4, int *i5, int *i6)
 {
   bool ok;
@@ -1204,7 +1191,7 @@ bool Component::getIntegers(const QString& s, int *i1, int *i2, int *i3,
 }
 
 // ---------------------------------------------------------------------
-bool Component::getPen(const QString& s, QPen& Pen, int i)
+bool Command::getPen(const QString& s, QPen& Pen, int i)
 {
   bool ok;
   QString n;
@@ -1229,7 +1216,7 @@ bool Component::getPen(const QString& s, QPen& Pen, int i)
 }
 
 // ---------------------------------------------------------------------
-bool Component::getBrush(const QString& s, QBrush& Brush, int i)
+bool Command::getBrush(const QString& s, QBrush& Brush, int i)
 {
   bool ok;
   QString n;
@@ -1254,7 +1241,7 @@ bool Component::getBrush(const QString& s, QBrush& Brush, int i)
 }
 
 // ---------------------------------------------------------------------
-Property * Component::getProperty(const QString& name)
+Property * Command::getProperty(const QString& name)
 {
   for(Property *pp = Props.first(); pp != 0; pp = Props.next())
     if(pp->Name == name) {
@@ -1264,7 +1251,7 @@ Property * Component::getProperty(const QString& name)
 }
 
 // ---------------------------------------------------------------------
-void Component::copyComponent(Component *pc)
+void Command::copyComponent(Component *pc)
 {
   Type = pc->Type;
   x1 = pc->x1;
@@ -1292,391 +1279,8 @@ void Component::copyComponent(Component *pc)
   Texts  = pc->Texts;
 }
 
-
-// ***********************************************************************
-// ********                                                       ********
-// ********          Functions of class MultiViewComponent        ********
-// ********                                                       ********
-// ***********************************************************************
-void MultiViewComponent::recreate(Schematic *Doc)
-{
-  if(Doc) {
-    Doc->Components->setAutoDelete(false);
-    Doc->deleteComp(this);
-  }
-
-  Ellips.clear();
-  Texts.clear();
-  Ports.clear();
-  Lines.clear();
-  Rects.clear();
-  Arcs.clear();
-  createSymbol();
-
-  bool mmir = mirroredX;
-  int  rrot = rotated;
-  if (mmir && rrot==2) // mirrorX and rotate 180 = mirrorY
-    mirrorY();
-  else  {
-    if(mmir)
-      mirrorX();   // mirror
-    if (rrot)
-      for(int z=0; z<rrot; z++)  rotate(); // rotate
-  }
-
-  rotated = rrot;   // restore properties (were changed by rotate/mirror)
-  mirroredX = mmir;
-
-  if(Doc) {
-    Doc->insertRawComponent(this);
-    Doc->Components->setAutoDelete(true);
-  }
-}
-
-
-// ***********************************************************************
-// ********                                                       ********
-// ********            Functions of class GateComponent           ********
-// ********                                                       ********
-// ***********************************************************************
-GateComponent::GateComponent()
-{
-  Type = isComponent;   // both analog and digital
-  Name  = "Y";
-
-  // the list order must be preserved !!!
-  Props.append(new Property("in", "2", false,
-		QObject::tr("number of input ports")));
-  Props.append(new Property("V", "1 V", false,
-		QObject::tr("voltage of high level")));
-  Props.append(new Property("t", "0", false,
-		QObject::tr("delay time")));
-  Props.append(new Property("TR", "10", false,
-		QObject::tr("transfer function scaling factor")));
-
-  // this must be the last property in the list !!!
-  Props.append(new Property("Symbol", "old", false,
-		QObject::tr("schematic symbol")+" [old, DIN40900]"));
-}
-
-// -------------------------------------------------------
-QString GateComponent::netlist()
-{
-  QString s = Model+":"+Name;
-
-  // output all node names
-  foreach(Port *pp, Ports)
-    s += " "+pp->Connection->Name;   // node names
-
-  // output all properties
-  Property *p = Props.at(1);
-  s += " " + p->Name + "=\"" + p->Value + "\"";
-  p = Props.next();
-  s += " " + p->Name + "=\"" + p->Value + "\"";
-  p = Props.next();
-  s += " " + p->Name + "=\"" + p->Value + "\"\n";
-  return s;
-}
-
-// -------------------------------------------------------
-QString GateComponent::vhdlCode(int NumPorts)
-{
-  QListIterator<Port *> iport(Ports);
-  Port *pp = iport.next();
-  QString s = "  " + pp->Connection->Name + " <= ";  // output port
-
-  // xnor NOT defined for std_logic, so here use not and xor
-  if (Model == "XNOR") {
-    QString Op = " xor ";
-
-    // first input port
-    pp = iport.next();
-    QString rhs = pp->Connection->Name;
-
-    // output all input ports with node names
-    while(iport.hasNext()) {
-      pp = iport.next();
-      rhs = "not ((" + rhs + ")" + Op + pp->Connection->Name + ")";
-    }
-    s += rhs;
-  }
-  else {
-    QString Op = ' ' + Model.toLower() + ' ';
-    if(Model.at(0) == 'N') {
-      s += "not (";    // nor, nand is NOT assoziative !!! but xnor is !!!
-      Op = Op.remove(1, 1);
-    }
-
-    pp = iport.next();
-    s += pp->Connection->Name;   // first input port
-
-    // output all input ports with node names
-    while(iport.hasNext()) {
-      pp = iport.next();
-      s += Op + pp->Connection->Name;
-    }
-    if(Model.at(0) == 'N')
-      s += ')';
-  }
-
-  if(NumPorts <= 0) { // no truth table simulation ?
-    QString td = Props.at(2)->Value;        // delay time
-    if(!misc::VHDL_Delay(td, Name)) return td;
-    s += td;
-  }
-
-  s += ";\n";
-  return s;
-}
-
-// -------------------------------------------------------
-QString GateComponent::verilogCode(int NumPorts)
-{
-  bool synthesize = true;
-  QListIterator<Port *> iport(Ports);
-  Port *pp = iport.next();
-  QString s("");
-
-  if(synthesize) {
-    QString op = Model.toLower();
-    if(op == "and" || op == "nand")
-      op = "&";
-    else if (op == "or" || op == "nor")
-      op = "|";
-    else if (op == "xor")
-      op = "^";
-    else if (op == "xnor")
-      op = "^~";
-
-    s = "  assign";
-
-    if(NumPorts <= 0) { // no truth table simulation ?
-      QString td = Props.at(2)->Value;        // delay time
-      if(!misc::Verilog_Delay(td, Name)) return td;
-      s += td;
-    }
-    s += " " + pp->Connection->Name + " = ";  // output port
-    if(Model.at(0) == 'N') s += "~(";
-
-    pp = iport.next();
-    s += pp->Connection->Name;   // first input port
-
-    // output all input ports with node names
-    while (iport.hasNext()) {
-      pp = iport.next();
-      s += " " + op + " " + pp->Connection->Name;
-    }
-
-    if(Model.at(0) == 'N') s += ")";
-    s += ";\n";
-  }
-  else {
-    s = "  " + Model.toLower();
-
-    if(NumPorts <= 0) { // no truth table simulation ?
-      QString td = Props.at(2)->Value;        // delay time
-      if(!misc::Verilog_Delay(td, Name)) return td;
-      s += td;
-    }
-    s += " " + Name + " (" + pp->Connection->Name;  // output port
-
-    pp = iport.next();
-    s += ", " + pp->Connection->Name;   // first input port
-
-    // output all input ports with node names
-    while (iport.hasNext()) {
-      pp = iport.next();
-      s += ", " + pp->Connection->Name;
-    }
-
-    s += ");\n";
-  }
-  return s;
-}
-
-// -------------------------------------------------------
-void GateComponent::createSymbol()
-{
-  int Num = Props.getFirst()->Value.toInt();
-  if(Num < 2) Num = 2;
-  else if(Num > 8) Num = 8;
-  Props.getFirst()->Value = QString::number(Num);
-
-  int xl, xr, y = 10*Num, z;
-  x1 = -30; y1 = -y-3;
-  x2 =  30; y2 =  y+3;
-
-  tx = x1+4;
-  ty = y2+4;
-
-  z = 0;
-  if(Model.at(0) == 'N')  z = 1;
-
-  if(Props.getLast()->Value.at(0) == 'D') {  // DIN symbol
-    xl = -15;
-    xr =  15;
-    Lines.append(new Line( 15,-y, 15, y,QPen(Qt::darkBlue,2)));
-    Lines.append(new Line(-15,-y, 15,-y,QPen(Qt::darkBlue,2)));
-    Lines.append(new Line(-15, y, 15, y,QPen(Qt::darkBlue,2)));
-    Lines.append(new Line(-15,-y,-15, y,QPen(Qt::darkBlue,2)));
-    Lines.append(new Line( 15, 0, 30, 0,QPen(Qt::darkBlue,2)));
-
-    if(Model.at(z) == 'O') {
-      Lines.append(new Line(-11, 6-y,-6, 9-y,QPen(Qt::darkBlue,0)));
-      Lines.append(new Line(-11,12-y,-6, 9-y,QPen(Qt::darkBlue,0)));
-      Lines.append(new Line(-11,14-y,-6,14-y,QPen(Qt::darkBlue,0)));
-      Lines.append(new Line(-11,16-y,-6,16-y,QPen(Qt::darkBlue,0)));
-      Texts.append(new Text( -4, 3-y, "1", Qt::darkBlue, 15.0));
-    }
-    else if(Model.at(z) == 'A')
-      Texts.append(new Text( -10, 3-y, "&", Qt::darkBlue, 15.0));
-    else if(Model.at(0) == 'X') {
-      if(Model.at(1) == 'N') {
-	Ellips.append(new Area(xr,-4, 8, 8,
-                  QPen(Qt::darkBlue,0), QBrush(Qt::darkBlue)));
-        Texts.append(new Text( -11, 3-y, "=1", Qt::darkBlue, 15.0));
-      }
-      else
-        Texts.append(new Text( -11, 3-y, "=1", Qt::darkBlue, 15.0));
-    }
-  }
-  else {   // old symbol
-
-    if(Model.at(z) == 'O')  xl = 10;
-    else  xl = -10;
-    xr = 10;
-    Lines.append(new Line(-10,-y,-10, y,QPen(Qt::darkBlue,2)));
-    Lines.append(new Line( 10, 0, 30, 0,QPen(Qt::darkBlue,2)));
-    Arcs.append(new Arc(-30,-y, 40, 30, 0, 16*90,QPen(Qt::darkBlue,2)));
-    Arcs.append(new Arc(-30,y-30, 40, 30, 0,-16*90,QPen(Qt::darkBlue,2)));
-    Lines.append(new Line( 10,15-y, 10, y-15,QPen(Qt::darkBlue,2)));
-
-    if(Model.at(0) == 'X') {
-      Lines.append(new Line(-5, 0, 5, 0,QPen(Qt::darkBlue,1)));
-      if(Model.at(1) == 'N') {
-        Lines.append(new Line(-5,-3, 5,-3,QPen(Qt::darkBlue,1)));
-        Lines.append(new Line(-5, 3, 5, 3,QPen(Qt::darkBlue,1)));
-      }
-      else {
-        Arcs.append(new Arc(-5,-5, 10, 10, 0, 16*360,QPen(Qt::darkBlue,1)));
-        Lines.append(new Line( 0,-5, 0, 5,QPen(Qt::darkBlue,1)));
-      }
-    }
-  }
-
-  if(Model.at(0) == 'N')
-    Ellips.append(new Area(xr,-4, 8, 8,
-                  QPen(Qt::darkBlue,0), QBrush(Qt::darkBlue)));
-
-  Ports.append(new Port( 30,  0));
-  y += 10;
-  for(z=0; z<Num; z++) {
-    y -= 20;
-    Ports.append(new Port(-30, y));
-    if(xl == 10) if((z == 0) || (z == Num-1)) {
-      Lines.append(new Line(-30, y, 9, y,QPen(Qt::darkBlue,2)));
-      continue;
-    }
-    Lines.append(new Line(-30, y, xl, y,QPen(Qt::darkBlue,2)));
-  }
-}
-
-
-// ***********************************************************************
-// ********                                                       ********
-// ******** The following function does not belong to any class.  ********
-// ******** It creates a symbol by getting the identification     ********
-// ******** string used in the schematic file and for copy/paste. ********
-// ********                                                       ********
-// ***********************************************************************
-
-// FIXME:
-// must be Component* SomeParserClass::getComponent(QString& Line)
-// better: Component* SomeParserClass::getComponent(SomeDataStream& s)
-Component* getComponentFromName(QString& Line, Schematic* p)
-{
-  Component *c = 0;
-
-  Line = Line.trimmed();
-  if(Line.at(0) != '<') {
-    QMessageBox::critical(0, QObject::tr("Error"),
-			QObject::tr("Format Error:\nWrong line start!"));
-    return 0;
-  }
-
-  QString cstr = Line.section (' ',0,0); // component type
-  cstr.remove (0,1);    // remove leading "<"
-
-// TODO: get rid of the exceptional cases.
-  if (cstr == "Lib"){
-    incomplete();
-   // c = new LibComp ();
-  }else if (cstr == "Eqn"){
-    incomplete();
-   // c = new Equation ();
-  }else if (cstr == "SPICE"){
-    incomplete();
-    // c = new SpiceFile();
-  }else if (cstr.left (6) == "SPfile" && cstr != "SPfile"){
-    incomplete();
-    // backward compatible
-    //c = new SParamFile ();
-    //c->Props.getLast()->Value = cstr.mid (6);
-  }
-  {
-    // FIXME: fetch proto from dictionary.
-    c = Module::getComponent (cstr);
-  }
-
-  if(!c) {
-    incomplete();
-    // BUG: use of messagebox in the parser.
-    // does not work. need to get rid of this
-      if (QucsMain!=0) {
-          QMessageBox* msg = new QMessageBox(QMessageBox::Warning,QObject::tr("Warning"),
-                                             QObject::tr("Format Error:\nUnknown component!\n"
-                                                         "%1\n\n"
-                                                         "Do you want to load schematic anyway?\n"
-                                                         "Unknown components will be replaced \n"
-                                                         "by dummy subcircuit placeholders.").arg(cstr),
-                                             QMessageBox::Yes|QMessageBox::No);
-          int r = msg->exec();
-          delete msg;
-          if (r == QMessageBox::Yes) {
-	     incomplete();
-             // c = new Subcircuit();
-             // // Hack: insert dummy File property before the first property
-             // int pos1 = Line.indexOf('"');
-             // QString filestr = QString("\"%1.sch\" 1 ").arg(cstr);
-             // Line.insert(pos1,filestr);
-          }
-      } else {
-          QString err_msg = QString("Schematic loading error! Unknown device %1").arg(cstr);
-          qCritical()<<err_msg;
-          return 0;
-      }
-
-  }
-
-  // BUG: don't use schematic.
-  if(!p->loadComponent(Line, c)) {
-    QMessageBox::critical(0, QObject::tr("Error"),
-	QObject::tr("Format Error:\nWrong 'component' line format!"));
-    delete c;
-    return 0;
-  }
-
-  cstr = c->name();   // is perhaps changed in "recreate" (e.g. subcircuit)
-  int x = c->tx, y = c->ty;
-  c->setSchematic (p);
-  c->recreate(0);
-  c->obsolete_name_override_hack(cstr);
-  c->tx = x;  c->ty = y;
-  return c;
-}
-
 // do something with Dialog Buttons
-void Component::dialgButtStuff(ComponentDialog& d)const
+void Command::dialgButtStuff(ComponentDialog& d)const
 {
   d.disableButtons();
 }
