@@ -52,7 +52,7 @@ private:
   bool recreateSubNetlist(QString *, QString *);
 
 protected:
-  QString netlist();
+  QString netlist() const;
   void createSymbol();
 
 private slots:

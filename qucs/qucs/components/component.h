@@ -39,7 +39,7 @@ public:
   QString get_VHDL_Code(int);
   QString get_Verilog_Code(int);
   void    paint(ViewPainter*);
-  void    paintScheme(Schematic*);
+  void    paintScheme(Schematic*) const;
   void    print(ViewPainter*, float);
   void    setCenter(int, int, bool relative=false);
   void    getCenter(int&, int&);
@@ -76,9 +76,7 @@ public:
   #define COMP_IS_ACTIVE  1
   #define COMP_IS_SHORTEN 2
   int  isActive; // should it be used in simulation or not ?
-  int  tx, ty;   // upper left corner of text (position)
-
-// private: // TODO
+  mutable /*BUGBUGBUG*/ int  tx, ty;   // upper left corner of text (position)
   bool showName;
 
 public:
@@ -144,7 +142,7 @@ public:
   QString get_VHDL_Code(int);
   QString get_Verilog_Code(int);
   void    paint(ViewPainter*);
-  void    paintScheme(Schematic*);
+  void    paintScheme(Schematic*) const;
   void    print(ViewPainter*, float);
   void    setCenter(int, int, bool relative=false);
   void    getCenter(int&, int&);
@@ -179,7 +177,8 @@ public:
   #define COMP_IS_ACTIVE  1
   #define COMP_IS_SHORTEN 2
   int  isActive; // should it be used in simulation or not ?
-  int  tx, ty;   // upper left corner of text (position)
+  // BUG: abused in some display function
+  mutable int  tx, ty;   // upper left corner of text (position)
   bool showName;
   QString  Model, Name;
   QString  Description;
@@ -216,7 +215,7 @@ protected:
 class GateComponent : public MultiViewComponent {
 public:
   GateComponent();
-  QString netlist();
+  QString netlist() const;
   QString vhdlCode(int);
   QString verilogCode(int);
 

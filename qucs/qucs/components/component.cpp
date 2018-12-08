@@ -309,7 +309,7 @@ void Component::paint(ViewPainter *p)
 
 // -------------------------------------------------------
 // Paints the component when moved with the mouse.
-void Component::paintScheme(Schematic *p)
+void Component::paintScheme(Schematic *p) const
 {
   // qDebug() << "paintScheme" << Model;
   if(Model.at(0) == '.') {   // is simulation component (dc, ac, ...)
@@ -1374,7 +1374,7 @@ GateComponent::GateComponent()
 }
 
 // -------------------------------------------------------
-QString GateComponent::netlist()
+QString GateComponent::netlist() const
 {
   QString s = Model+":"+Name;
 
@@ -1382,12 +1382,15 @@ QString GateComponent::netlist()
   foreach(Port *pp, Ports)
     s += " "+pp->Connection->Name;   // node names
 
+  // Qt3 BUG
+  Q3PtrList<Property>* P=const_cast<Q3PtrList<Property>*>(&Props);
+  //
   // output all properties
-  Property *p = Props.at(1);
+  Property *p = P->at(1);
   s += " " + p->Name + "=\"" + p->Value + "\"";
-  p = Props.next();
+  p = P->next();
   s += " " + p->Name + "=\"" + p->Value + "\"";
-  p = Props.next();
+  p = P->next();
   s += " " + p->Name + "=\"" + p->Value + "\"\n";
   return s;
 }
