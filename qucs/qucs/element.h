@@ -39,7 +39,7 @@
 
 #include <QPen>
 #include <QBrush>
-
+#include "io_trace.h"
 #include "object.h"
 
 class Node;

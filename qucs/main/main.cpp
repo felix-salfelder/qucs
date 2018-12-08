@@ -49,8 +49,10 @@
 #include "module.h"
 #include "misc.h"
 
+// Wtf?
 #include "components/components.h"
 #include "globals.h"
+// #include "components/components.h"
 
 #ifdef _WIN32
 #include <Windows.h>  //for OutputDebugString

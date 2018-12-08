@@ -21,11 +21,11 @@
 #include "component.h"
 
 
-class Optimize_Sim : public Component  {
+class Optimize_Sim : public Element  {
 public:
   Optimize_Sim();
  ~Optimize_Sim();
-  Component* newOne();
+  Element* newOne() const{return new Optimize_Sim(*this);}
   static Element* info(QString&, char* &, bool getNewOne=false);
   bool createASCOFiles();
   bool createASCOnetlist();
