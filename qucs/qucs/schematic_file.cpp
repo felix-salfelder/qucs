@@ -685,6 +685,7 @@ bool Schematic::loadComponents(QTextStream *stream, Q3PtrList<Component> *List)
 //    c = getComponentFromName(Line, this);
     Symbol* c = symbol_dispatcher[type];
     if(c==NULL){
+      qDebug() << "cannot find" << QString::fromStdString(type) << "parsing netlist";
       incomplete();
       // throw Exception?
 	//QMessageBox::critical(0, QObject::tr("Error"),
@@ -700,7 +701,10 @@ bool Schematic::loadComponents(QTextStream *stream, Q3PtrList<Component> *List)
     }
 
     // this is what exceptions are for.
-    if(!c) return false;
+    if(!c){
+      return false;
+    }else{ untested();
+    }
 
     if(List) {  // "paste" ?
       incomplete();

@@ -202,7 +202,8 @@ protected:
 
 class MultiViewComponent : public Component {
 public:
-  MultiViewComponent() {};
+  MultiViewComponent() { untested();
+  };
   virtual ~MultiViewComponent() {};
 
   void recreate(Schematic*);
