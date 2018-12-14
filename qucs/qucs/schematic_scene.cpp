@@ -47,6 +47,8 @@ Painting* painting(ElementGraphics* e){
 	return painting(e->operator->());
 }
 
+#endif
+
 SchematicScene::SchematicScene(QObject *parent) :
   QGraphicsScene(parent)
 {
@@ -58,7 +60,7 @@ SchematicScene::~SchematicScene()
 
 void SchematicScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
-
+#ifndef USE_SCROLLVIEW
 	// Draw origin when visible
 	if(rect.contains(QPointF(0, 0))) {
 		painter->drawLine(QLine(-3.0, 0.0, 3.0, 0.0));
@@ -83,8 +85,5 @@ void SchematicScene::drawBackground(QPainter *painter, const QRectF &rect)
 			GridY *= 16;
 		}
 	}
-}
-
-
-
 #endif
+}
