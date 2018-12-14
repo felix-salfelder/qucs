@@ -2186,4 +2186,10 @@ void MouseActions::MDoubleClickWire2(Schematic *Doc, QMouseEvent *Event)
   }
 }
 
+bool ElementMouseAction::isSelected() const
+{
+  assert(_e);
+  return _e->isSelected();
+}
+
 // vim:ts=8:sw=2:noet
