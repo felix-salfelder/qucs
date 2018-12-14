@@ -68,7 +68,7 @@
  *
  * The message handler is used to get control of the messages.
  * Particulary on Windows, as the messages are sent to the debugger and do not
- * show on the terminal. The handler could aslo be extended to create a log
+ * show on the terminal. The handler could also be extended to create a log
  * mechanism.
  * <http://qt-project.org/doc/qt-4.8/debug.html#warning-and-debugging-messages>
  * <http://qt-project.org/doc/qt-4.8/qtglobal.html#qInstallMsgHandler>
@@ -587,8 +587,8 @@ void attach_default_plugins()
 #else
 void qucsMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & str)
 {
-  const char * msg = str.toUtf8().data();
-  qucsMessageOutput(type, msg);
+  auto msg=str.toStdString();
+  qucsMessageOutput(type, msg.c_str());
 }
 #endif
 
