@@ -630,7 +630,7 @@ void QucsApp::slotSetCompView (int index)
   iconCompInfoStruct iconCompInfo;
   QVariant v;
   QString item = CompChoose->itemText (index);
-  int catIdx = Category::getModulesNr(item);
+  int catIdx = Category::categories.getModulesNr(item);
 
   Comps = Category::getModules(item);
   QString Name;
@@ -2282,7 +2282,7 @@ void QucsApp::slotChangePage(QString& DocName, QString& DataDisplay)
 
   TabView->setCurrentIndex(2);   // switch to "Component"-Tab
   if (Name.right(4) == ".dpl") {
-    int i = Category::getModulesNr (QObject::tr("diagrams"));
+    int i = Category::categories.getModulesNr (QObject::tr("diagrams"));
     CompChoose->setCurrentIndex(i);   // switch to diagrams
     slotSetCompView (i);
   }

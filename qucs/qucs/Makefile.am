@@ -101,6 +101,7 @@ DIALOG_SRC+= \
 
 
 libqucs_la_SOURCES = \
+	module.cpp \
 	misc.cpp \
 	globals.cpp \
 	io_error.cpp \

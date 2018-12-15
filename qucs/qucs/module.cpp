@@ -31,7 +31,11 @@
 
 // Global category and component lists.
 QHash<QString, Module *> Module::Modules;
-QList<Category *> Category::Categories;
+Categories Category::categories;
+
+Categories::~Categories(){ untested();
+	qDebug() << "destroying Categories" << this;
+}
 
 QMap<QString, QString> Module::vaComponents;
 
@@ -42,8 +46,12 @@ INTERFACE void guiRegisterElement (std::string const& cat, Element const* e)
 	Module::registerElement(QString::fromStdString(cat), e);
 }
 
+// Constructor creates instance of module object.
+Module::Module () : info(0), category("#special") {
+}
+
 // Destructor removes instance of module object from memory.
-Module::~Module () {
+Module::~Module () { untested();
 }
 
 // Module registration using a category name and the appropriate
@@ -76,7 +84,8 @@ void Module::registerComponent (QString category, pInfoFunc info)
 
   // put into category and the component hash
   intoCategory (m);
-  if (!Modules.contains (Model))
+  if (!Modules.contains (Model)){
+    qDebug() << "Module::registerComponent, insert" << m << Model;
     Modules.insert (Model, m);
 #endif
 }
@@ -172,7 +181,8 @@ void Module::intoCategory(std::string const& cat, Module * m)
     if ((*it)->name() == category) {
       (*it)->push_back(m);
       break;
-    }
+    }else{
+	 }
   }
 
   // if there is no such category, then create it
@@ -181,6 +191,8 @@ void Module::intoCategory(std::string const& cat, Module * m)
     Category::Categories.append (cat);
     cat->push_back(m);
   }
+
+  c->Content.append (m);
 }
 
 // Helper macros for module registration.
@@ -494,9 +506,7 @@ void Module::registerModules (void) {
 // This function has to be called once at application end.  It removes
 // all categories and registered modules from memory.
 void Module::unregisterModules (void) {
-  while(!Category::Categories.isEmpty()) {
-    delete Category::Categories.takeFirst();
-  }
+  Category::categories.eraseAll();
 
   //remove all modules by iterator, require in qhash
   QHashIterator<QString, Module *> it( Modules );
@@ -524,19 +534,18 @@ Category::Category (const QString name) {
 }
 
 // Destructor removes instance of module object from memory.
-Category::~Category () {
+Category::~Category () { untested();
   while(!Content.isEmpty()) {
     delete Content.takeFirst();
   }
 }
 
 // Returns the available category names in a list of strings.
+// BUG: gets category names.
 QStringList Category::getCategories (void) {
   QStringList res;
-  QList<Category *>::const_iterator it;
-  for (it = Category::Categories.constBegin(); 
-       it != Category::Categories.constEnd(); it++) {
-    res.append ((*it)->Name);
+  for (auto it : Category::categories){
+    res.append (it->Name);
   }
   return res;
 }
@@ -547,11 +556,11 @@ QStringList Category::getCategories (void) {
 QList<Module *> Category::getModules (QString category) {
   QList<Module *> res;
   QList<Category *>::const_iterator it;
-  for (it = Category::Categories.constBegin();
-       it != Category::Categories.constEnd(); it++) {
-    if (category == (*it)->Name) {
-      res = (*it)->Content;
-    }
+  for (auto it : Category::categories){
+    if (category == it->Name) {
+      res = it->Content;
+    }else{
+	 }
   }
   return res;
 }
@@ -559,12 +568,13 @@ QList<Module *> Category::getModules (QString category) {
 // Returns the index number into the category list for the given
 // category name.  The function returns minus 1 if there is no such
 // category.
-int Category::getModulesNr (QString category) {
-  for (int i = 0; i < Category::Categories.size(); i++) {
-    if (category == Category::Categories.at(i)->Name)
+int Categories::getModulesNr (QString category) {
+  for (int i = 0; i < _container.size(); i++) {
+    if (category == _container.at(i)->name()){
       return i;
+	 }
   }
-  return -1;
+  return -1; // BUG: throw
 }
 
 // vim:ts=8:sw=2:noet
