@@ -60,9 +60,6 @@ SubMap FileList;
 QString SchematicModel::createClipboardFile()
 {
   int z=0;  // counts selected elements
-  Wire *pw;
-  Diagram *pd;
-  Painting *pp;
 
   QString s("<Qucs Schematic " PACKAGE_VERSION ">\n");
 
@@ -1067,8 +1064,6 @@ bool Schematic::loadDocument()
 // string. This is used to save state for undo operation.
 QString Schematic::createUndoString(char Op)
 {
-  Wire *pw;
-  Diagram *pd;
   Painting *pp;
 
   // Build element document.
@@ -1123,6 +1118,27 @@ QString Schematic::createSymbolUndoString(char Op)
   return s;
 }
 
+class ModelStream : public QTextStream {
+public:
+  explicit ModelStream(QString /* BUG const */ * filename, QIODevice::OpenModeFlag flag) :
+    QTextStream(filename, flag){}
+
+};
+
+class ParseError : public std::exception{
+};
+
+static void parser_temporary_kludge(SchematicModel& m, ModelStream& stream)
+{
+
+  if(!m.loadComponents(&stream)) throw ParseError();
+  if(!m.loadWires(&stream))  throw ParseError();
+  if(!m.loadDiagrams(&stream /* wtf?, &DocDiags */)) throw ParseError();
+  if(!m.loadPaintings(&stream)) throw ParseError();
+
+}
+
+
 // -------------------------------------------------------------
 // Is quite similiar to "loadDocument()" but with less error checking.
 // Used for "undo" function.
@@ -1132,14 +1148,11 @@ bool Schematic::rebuild(QString *s)
   DocModel.clear();
 
   QString Line;
-  QTextStream stream(s, QIODevice::ReadOnly);
+  ModelStream stream(s, QIODevice::ReadOnly);
   Line = stream.readLine();  // skip identity byte
 
   // read content *************************
-  if(!DocModel.loadComponents(&stream))  return false;
-  if(!DocModel.loadWires(&stream))  return false;
-  if(!DocModel.loadDiagrams(&stream /* wtf?, &DocDiags */))  return false;
-  if(!paintings().load(&stream)) return false;
+  parser_temporary_kludge(DocModel, stream);
 
   return true;
 }

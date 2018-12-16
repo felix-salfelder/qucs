@@ -32,7 +32,7 @@ public: // stuff saved from Schematic
 public:
   void parse(QTextStream& stream);
   bool loadDocument(QFile& /*BUG*/ file);
-  bool loadPaintings(QTextStream*, PaintingList*);
+  bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);
   bool loadComponents(QTextStream*);
   bool loadDiagrams(QTextStream*);
