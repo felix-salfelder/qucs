@@ -115,5 +115,4 @@ protected: // cleaning up debris
 	MouseActions* mouseActions();
 };
 
-
 #endif

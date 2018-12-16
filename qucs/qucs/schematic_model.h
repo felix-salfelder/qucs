@@ -1,3 +1,22 @@
+/***************************************************************************
+                              schematic_model.h
+                             --------------------
+    copyright            : (C) 2018 Felix Salfelder
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QUCS_SCHEMATIC_MODEL_H
+#define QUCS_SCHEMATIC_MODEL_H
+
+#include "object.h"
+
 // TODO: refactor here
 class WireList : public Q3PtrList<Wire> {
 };
@@ -39,6 +58,7 @@ public:
   bool loadWires(QTextStream*);
 
   void clear();
+  void pushBack(Element* what);
 public:
   void merge(SchematicModel&);
 
@@ -61,7 +81,7 @@ public:
   ComponentList const& components() const;
 
   Schematic* doc();
-private: // TODO: remove.
+private: // TODO: remove. store parent in ElementGraphics.
   Schematic* _doc;
 private:
   ComponentList Components;
@@ -71,3 +91,5 @@ private:
 public: // for now.
   friend class Schematic;
 };
+
+#endif

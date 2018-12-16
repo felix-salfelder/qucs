@@ -51,7 +51,18 @@ public:
 
   void    rotate();
   QString save();
+// private: not yet
   bool    load(const QString&);
+public:
+  Wire* obsolete_load(const QString& s){
+	  bool l=load(s);
+	  if(l){
+		  return this;
+	  }else{
+		  //throw "wireload_exception_notyet";
+		  return nullptr;
+	  }
+  }
   bool    isHorizontal() const { return (y1 == y2);}
   QRectF boundingRect() const;
 

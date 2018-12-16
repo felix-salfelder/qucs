@@ -1130,7 +1130,6 @@ class ParseError : public std::exception{
 
 static void parser_temporary_kludge(SchematicModel& m, ModelStream& stream)
 {
-
   if(!m.loadComponents(&stream)) throw ParseError();
   if(!m.loadWires(&stream))  throw ParseError();
   if(!m.loadDiagrams(&stream /* wtf?, &DocDiags */)) throw ParseError();
