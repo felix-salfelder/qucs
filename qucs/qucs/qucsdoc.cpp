@@ -97,3 +97,6 @@ MouseActions* QucsDoc::mouseActions()
 	assert(App);
 	return App->view;
 }
+
+DocumentStream::DocumentStream(QFile* /* BUG const */ file)
+	: QTextStream(file) {}

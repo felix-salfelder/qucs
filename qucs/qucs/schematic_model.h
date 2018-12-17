@@ -38,6 +38,8 @@ public:
 	void sizeOfAll(int& xmin, int& ymin, int& xmax, int& ymax) const;
 };
 
+class DocumentLanguage;
+
 class SchematicModel{
 private:
   SchematicModel(){}
@@ -49,7 +51,7 @@ public: // stuff saved from Schematic
   void simpleInsertComponent(Component* c);
   void simpleInsertWire(Wire*);
 public:
-  void parse(QTextStream& stream);
+  void parse(DocumentStream& stream, DocumentLanguage const*l=nullptr);
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);

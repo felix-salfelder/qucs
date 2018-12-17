@@ -43,12 +43,13 @@ class DocumentLanguage : public Object{
 protected:
 	DocumentLanguage() : Object(){}
 public:
-	virtual ~DocumentLanguage();
- 	virtual void parse(DocumentStream& stream);
+	virtual ~DocumentLanguage() {}
+ 	virtual void parse(DocumentStream& stream, SchematicModel*) const=0;
 };
 
 class LegacySchematicLanguage : public DocumentLanguage {
-	void parse(DocumentStream& stream, SchematicModel* s) {
+	void parse(DocumentStream& stream, SchematicModel* s) const {
+
 		QString Line;
 		char mode='\0';
 		while(!stream.atEnd()) {
@@ -92,11 +93,16 @@ class LegacySchematicLanguage : public DocumentLanguage {
 
 		}
 	}
-};
+}defaultSchematicLanguage;
 
-#if 0 // not yet
-  void SchematicModel::parse(DocumentStream s, language L){
-	  while(!s.atEnd()){
+#if 1 // not yet
+  void SchematicModel::parse(DocumentStream& s, DocumentLanguage const* L){
+	  if(!L){ untested();
+		  L = &defaultSchematicLanguage;
+	  }else{untested();
+	  }
+	  assert(L);
+	  while(!s.atEnd()){ untested();
 		  L->parse(s, this);
 	  }
   }

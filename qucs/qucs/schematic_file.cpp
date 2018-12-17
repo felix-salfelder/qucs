@@ -120,7 +120,7 @@ QString SchematicModel::createClipboardFile()
 
 // -------------------------------------------------------------
 // Only read fields without loading them.
-bool Schematic::loadIntoNothing(QTextStream *stream)
+bool Schematic::loadIntoNothing(DocumentStream *stream)
 {
   QString Line, cstr;
   while(!stream->atEnd()) {
@@ -135,7 +135,7 @@ bool Schematic::loadIntoNothing(QTextStream *stream)
 
 // -------------------------------------------------------------
 // Paste from clipboard. into pe. wtf is pe?
-bool Schematic::pasteFromClipboard(QTextStream *stream, EGPList* pe)
+bool Schematic::pasteFromClipboard(DocumentStream *stream, EGPList* pe)
 { untested();
 #if 1
   QString Line;
@@ -215,7 +215,7 @@ int Schematic::saveSymbolCpp (void)
     return -1;
   }
 
-  QTextStream stream (&file);
+  DocumentStream stream (&file);
 
   // automatically compute boundings of drawing
   int xmin = INT_MAX;

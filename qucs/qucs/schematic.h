@@ -145,7 +145,7 @@ public:
   void    cut();
   void    copy();
   template<class SOME_LIST>
-  bool    paste(QTextStream*, SOME_LIST*);
+  bool    paste(DocumentStream*, SOME_LIST*);
   bool    load();
   int     save();
   int     saveSymbolCpp (void);
@@ -435,11 +435,12 @@ private:
 
   int  saveDocument();
 
-  void simpleInsertWire(Wire*);
   bool loadWires(QTextStream*, EGPList *List=0);
-  bool loadIntoNothing(QTextStream*);
+  void simpleInsertComponent(Component* c) { return DocModel.simpleInsertComponent(c); }
+  void simpleInsertWire(Wire* w) { return DocModel.simpleInsertWire(w); }
+  bool loadIntoNothing(DocumentStream*);
 
-  bool    pasteFromClipboard(QTextStream *, EGPList*);
+  bool    pasteFromClipboard(DocumentStream *, EGPList*);
 
   QString createUndoString(char);
   bool    rebuild(QString *);
@@ -525,7 +526,7 @@ public: // need access to SchematicModel. grr
 // ---------------------------------------------------
 // Performs paste function from clipboard
 template<class SOME_LIST>
-inline bool Schematic::paste(QTextStream *stream, SOME_LIST *pe)
+inline bool Schematic::paste(DocumentStream *stream, SOME_LIST *pe)
 { untested();
   return pasteFromClipboard(stream, pe);
 }
