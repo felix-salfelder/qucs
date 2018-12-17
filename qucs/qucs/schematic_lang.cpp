@@ -2,7 +2,7 @@
 // Part of QUCS
 
 #include "qucsdoc.h"
-//#include "schematic_model.h"
+#include "schematic_model.h"
 #include "schematic_lang.h"
 #include "globals.h"
 #include "wire.h"

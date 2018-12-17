@@ -101,17 +101,20 @@ DIALOG_SRC+= \
 
 
 libqucs_la_SOURCES = \
-	module.cpp \
-	misc.cpp \
 	globals.cpp \
-	io_error.cpp \
-	diagram.cpp \
-	painting.cpp \
-	graph.cpp \
 	command.cpp \
 	component.cpp \
+	diagram.cpp \
+	globals.cpp \
+	graph.cpp \
+	io_error.cpp \
 	language.cpp \
 	marker.cpp \
+	misc.cpp \
+	module.cpp \
+	painting.cpp \
+	schematic_lang.cpp \
+	viewpainter.cpp \
 	${DIALOG_SRC}
 
 # TODO:
@@ -126,7 +129,6 @@ libqucs_la_SOURCES += \
   schematic_action.cpp \
   schematic_model.cpp \
   schematic_scene.cpp \
-  schematic_lang.cpp \
   schematic_file.cpp syntax.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
   schematic_component.cpp \

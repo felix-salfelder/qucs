@@ -41,9 +41,10 @@ void SchematicModel::clear()
 }
 
 
-#if 0
+#if 1
   void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
 	  if(!L){ untested();
+		  assert(defaultSchematicLanguage);
 		  L = prechecked_cast<SchematicLanguage const*>(defaultSchematicLanguage);
 		  assert(L);
 	  }else{untested();
@@ -120,8 +121,10 @@ void SchematicModel::pushBack(Element* what){
   }
 
   if(doc()){
+	  qDebug() << "pushBack2scene";
 	  doc()->addToScene(what);
   }else{
+	  qDebug() << "pushBacknoscene";
   }
 
 }
