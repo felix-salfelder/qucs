@@ -40,7 +40,6 @@ void SchematicModel::clear()
   //SymbolPaints.clear(); ??
 }
 
-
 #if 1
   void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
 	  if(!L){ untested();
@@ -51,6 +50,7 @@ void SchematicModel::clear()
 	  }
 	  assert(L);
 	  while(!s.atEnd()){ untested();
+		  qDebug() << "entering parse";
 		  L->parse(s, this);
 	  }
   }
@@ -114,18 +114,19 @@ ComponentList& SchematicModel::components()
 }
 
 void SchematicModel::pushBack(Element* what){
-  if(auto c=component(what)){
-	  components().append(c);
-  }else{
-	  incomplete();
-  }
+	if(auto c=component(what)){
+      simpleInsertComponent(c);
+	}else if(auto w=wire(what)){ untested();
+		simpleInsertWire(w);
+	}else{
+		incomplete();
+	}
 
-  if(doc()){
-	  qDebug() << "pushBack2scene";
-	  doc()->addToScene(what);
-  }else{
-	  qDebug() << "pushBacknoscene";
-  }
+	if(doc()){
+		// only necessary when gui is running.
+		doc()->addToScene(what);
+	}else{
+	}
 
 }
 

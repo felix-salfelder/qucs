@@ -29,10 +29,11 @@ private:
 		while(!stream.atEnd()) {
 			Line = stream.readLine();
 			Line = Line.trimmed();
-			if(Line.size()<2){
-			}else if(Line.at(0) == '<'
+			qDebug() << "LSL::parse" <<  Line;
+			if(Line.at(0) == '<'
 			  && Line.at(1) == '/'){
 				qDebug() << "endtag?" << Line;
+				incomplete();
 			}else if(Line.isEmpty()){
 			}else if(Line == "<Components>") {
 				mode='C';
@@ -42,6 +43,7 @@ private:
 				mode='W';
 			}else if(Line == "<Diagrams>") { untested();
 				mode='D';
+<<<<<<< HEAD
 			}else if(Line == "<Properties>") { untested();
 				mode='Q';
 			}else if(Line == "<Paintings>") { untested();
@@ -87,12 +89,30 @@ private:
 				}else if(mode=='Q'){
 				}else{
 					qDebug() << "LSL::parse" <<  Line;
+=======
+			}else if(Line == "<Paintings>") { untested();
+				mode='P';
+			}else{
+
+				/// \todo enable user to load partial schematic, skip unknown components
+				Element*c=NULL;
+				if(mode=='C'){
+					c = getComponentFromName(Line, NULL /*???*/);
+				}else if(mode=='W'){
+					// (Node*)4 =  move all ports (later on)
+					Wire* w = new Wire(0,0,0,0, (Node*)4,(Node*)4);
+					c = w->obsolete_load(Line);
+					if(!c){
+						qDebug() << "ERROR" << Line;
+						delete(w);
+					}else{
+					}
+				}else{
 					incomplete();
 				}
 
 				if(c){
-					incomplete(); // qt5 branch
-					// s->pushBack(c);
+					s->pushBack(c);
 				}else{
 				}
 
