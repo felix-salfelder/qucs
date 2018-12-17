@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "schematic.h"
+#include "schematic_lang.h"
+#include "globals.h"
 
 SchematicModel::SchematicModel(Schematic* s)
   :_doc(s)
@@ -38,67 +40,12 @@ void SchematicModel::clear()
   //SymbolPaints.clear(); ??
 }
 
-// baseclass for schematic and net languages.
-class DocumentLanguage : public Object{
-protected:
-	DocumentLanguage() : Object(){}
-public:
-	virtual ~DocumentLanguage() {}
- 	virtual void parse(DocumentStream& stream, SchematicModel*) const=0;
-};
 
-class LegacySchematicLanguage : public DocumentLanguage {
-	void parse(DocumentStream& stream, SchematicModel* s) const {
-
-		QString Line;
-		char mode='\0';
-		while(!stream.atEnd()) {
-			Line = stream.readLine();
-			if(Line.at(0) == '<'
-			  && Line.at(1) == '/'){
-				incomplete();
-				continue;
-			}
-			Line = Line.trimmed();
-			if(Line.isEmpty()){
-				continue;
-			}else if(Line == "<Components>") {
-				mode='C';
-			}else if(Line == "<Wires>") {
-				mode='W';
-			}else if(Line == "<Diagrams>") { untested();
-			}else if(Line == "<Paintings>") { untested();
-			}
-
-			/// \todo enable user to load partial schematic, skip unknown components
-			Element*c=NULL;
-			if(mode=='C'){
-				c = getComponentFromName(Line, NULL /*???*/);
-			}else if(mode=='W'){
-				// (Node*)4 =  move all ports (later on)
-				Wire* w = new Wire(0,0,0,0, (Node*)4,(Node*)4);
-				c = w->obsolete_load(Line);
-				if(!c){
-					delete(w);
-				}else{
-				}
-			}else{
-				incomplete();
-			}
-
-			if(c){
-				s->pushBack(c);
-			}else{
-			}
-
-		}
-	}
-}defaultSchematicLanguage;
-
-#if 1 // not yet
-  void SchematicModel::parse(DocumentStream& s, DocumentLanguage const* L){
+#if 0
+  void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
 	  if(!L){ untested();
-		  L = &defaultSchematicLanguage;
+		  L = prechecked_cast<SchematicLanguage const*>(defaultSchematicLanguage);
+		  assert(L);
 	  }else{untested();
 	  }
 	  assert(L);
@@ -108,7 +55,7 @@ class LegacySchematicLanguage : public DocumentLanguage {
   }
 #else
 // this does not work
-void SchematicModel::parse(QTextStream& stream)
+void SchematicModel::parse(DocumentStream& stream, SchematicLanguage const*)
 {
 	QString Line;
   while(!stream.atEnd()) {
@@ -118,6 +65,15 @@ void SchematicModel::parse(QTextStream& stream)
       if(!loadComponents(&stream)){
 			incomplete();
 //			throw exception...
+		}
+    }else if(Line == "<Symbol>") {
+      if(!symbolPaintings().load(&stream)) {
+			incomplete();
+//			throw exception...
+		}
+	 }else if(Line == "<Properties>") {
+      if(!loadProperties(&stream)) {
+			incomplete();
 		}
     }else if(Line == "<Wires>") {
       if(!loadWires(&stream)){

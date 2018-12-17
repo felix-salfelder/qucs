@@ -15,7 +15,11 @@
 #ifndef QUCS_SCHEMATIC_MODEL_H
 #define QUCS_SCHEMATIC_MODEL_H
 
+#include <QGraphicsScene>
 #include "object.h"
+#include "wire.h"
+#include "node.h"
+#include "schematic_scene.h"
 
 // TODO: refactor here
 class WireList : public Q3PtrList<Wire> {
@@ -38,7 +42,9 @@ public:
 	void sizeOfAll(int& xmin, int& ymin, int& xmax, int& ymax) const;
 };
 
+// hmm, which?
 class DocumentLanguage;
+class SchematicLanguage;
 
 class SchematicModel{
 private:
@@ -51,7 +57,7 @@ public: // stuff saved from Schematic
   void simpleInsertComponent(Component* c);
   void simpleInsertWire(Wire*);
 public:
-  void parse(DocumentStream& stream, DocumentLanguage const*l=nullptr);
+  void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr);
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);

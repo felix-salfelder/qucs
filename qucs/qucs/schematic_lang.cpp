@@ -8,10 +8,6 @@
 #include "wire.h"
 #include "diagram.h" // BUG
 
-// legacy hack, throw everything into "Schematic"
-// will be fixed in qt5 branch
-#define SchematicModel Schematic
-
  //BUG
 Element* getComponentFromName(QString& Line, Schematic* p);
 

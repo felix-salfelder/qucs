@@ -126,6 +126,7 @@ libqucs_la_SOURCES += \
   schematic_action.cpp \
   schematic_model.cpp \
   schematic_scene.cpp \
+  schematic_lang.cpp \
   schematic_file.cpp syntax.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
   schematic_component.cpp \
@@ -158,22 +159,18 @@ endif
 noinst_HEADERS = \
 	$(MOCHEADERS) wire.h qucsdoc.h element.h node.h \
 	symbol.h \
+	schematic_lang.h \
 	trace.h \
 	qt_compat.h \
 	wirelabel.h viewpainter.h mnemo.h mouseactions.h syntax.h module.h misc.h \
-	projectView.h printerwriter.h imagewriter.h command.h actions.h
-
-# must be installed. but later
-noinst_HEADERS += \
+	projectView.h printerwriter.h imagewriter.h command.h actions.h \
 	globals.h \
 	diagram.h \
 	io_trace.h \
 	dispatcher.h \
 	l_dispatcher.h \
 	object.h \
-	platform.h \
-	qt_compat.h \
-	schematic_lang.h
+	platform.h
 
 hicolor16dir = ${prefix}/share/icons/hicolor/16x16/apps
 hicolor16_DATA =  bitmaps/hicolor/16x16/apps/qucs.png

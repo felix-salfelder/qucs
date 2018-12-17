@@ -47,6 +47,7 @@
 #include "io_trace.h"
 #include "command.h"
 #include "globals.h"
+#include "schematic_lang.h"
 
 
 // Here the subcircuits, SPICE components etc are collected. It must be
@@ -960,7 +961,7 @@ bool SchematicModel::loadDocument(QFile& /*BUG*/ file)
 
 
   QString Line;
-  QTextStream stream(&file);
+  DocumentStream stream(&file);
 
   // read header **************************
   do {
@@ -989,7 +990,15 @@ bool SchematicModel::loadDocument(QFile& /*BUG*/ file)
     }
   }
 
-  // read content *************************
+  if(1){
+    parse(stream);
+    return true;
+  }else{
+    // use legacy parser
+    incomplete();
+  }
+
+  // read content, legacy *************************
   while(!stream.atEnd()) {
     Line = stream.readLine();
     Line = Line.trimmed();
@@ -1025,11 +1034,6 @@ bool SchematicModel::loadDocument(QFile& /*BUG*/ file)
     }
   }
 
-  // not here.
-  for(auto i : components()){
-  //  auto n=new ElementGraphics(i);
-//    scene()->addItem(n);
-  }
   file.close();
   return true;
 }

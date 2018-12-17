@@ -24,6 +24,7 @@
 #include <QTextStream> // tmp: used as baseclass, should be member.
 #include <assert.h>
 
+#include "object.h"
 #include "actions.h"
 #include "trace.h"
 

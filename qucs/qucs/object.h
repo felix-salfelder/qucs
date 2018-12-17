@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /***************************************************************************
                                  object.h
                                 -----------
@@ -26,6 +27,7 @@
 
 #include <QString> // yikes
 
+// base object for qucs.
 class Object{
 protected:
 	explicit Object(){}
