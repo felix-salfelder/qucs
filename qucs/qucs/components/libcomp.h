@@ -19,6 +19,7 @@
 #define LIBCOMP_H
 
 #include "component.h"
+#include "qucsdoc.h" // BUG
 
 class QTextStream;
 class QString;
@@ -30,7 +31,7 @@ public:
   ~LibComp() {};
   Component* newOne(); // BUG{return new LibComp(*this);}
 
-  bool createSubNetlist(QTextStream *, QStringList&, int type=1);
+  bool createSubNetlist(DocumentStream&, QStringList&, int type=1); // BUG
   QString getSubcircuitFile() const;
 
 protected:

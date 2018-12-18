@@ -1079,18 +1079,18 @@ void ComponentDialog::slotBrowseFile()
   QString currFileName = prop->item(prop->currentRow(), 1)->text();
   QFileInfo currFileInfo(currFileName);
   // name of the schematic where component is instantiated (may be empty)
-  QFileInfo schematicFileInfo = Comp->getSchematic()->getFileInfo();
-  QString schematicFileName = schematicFileInfo.fileName();
+  QFileInfo schematicFileInfo; // = Comp->getSchematic()->getFileInfo();
+  QString schematicFileName; //  = schematicFileInfo.fileName();
   // directory to use for the file open dialog
-  QString currDir;
+  QString currDir = "unknown_dir";
 
   if (!currFileName.isEmpty()) { // a file name is already defined
     if (currFileInfo.isRelative()) { // but has no absolute path
       if (!schematicFileName.isEmpty()) { // if schematic has a filename
 	// build the an absolute file name using the schematic path
-	currDir = schematicFileInfo.absolutePath() + 
-	          QDir::separator() +
-                  currFileInfo.fileName();
+	// currDir = schematicFileInfo.absolutePath() + 
+	//        QDir::separator() +
+        //        currFileInfo.fileName();
       } else { // no absolute paths around
 	// use the WorkDir path
 	currDir = QucsSettings.QucsWorkDir.path() + 

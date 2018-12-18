@@ -36,6 +36,8 @@
 
 #include <assert.h>
 
+#include "some_font_stuff.h"
+
 /*!
  * \file component.cpp
  * \brief Implementation of the Component class.
@@ -79,7 +81,7 @@ void Component::Bounding(int& _x1, int& _y1, int& _x2, int& _y2)
 int Component::textSize(int& _dx, int& _dy)
 {
   // get size of text using the screen-compatible metric
-  QFontMetrics metrics(QucsSettings.font, 0);
+  FontMetrics metrics;
 
   int tmp, count=0;
   _dx = _dy = 0;
@@ -470,7 +472,8 @@ void Component::rotate()
   tx  = ty;
   ty  = tmp;
   // use the screen-compatible metric
-  QFontMetrics  metrics(QucsSettings.font, 0);   // get size of text
+  FontMetrics metrics;
+
   dx = dy = 0;
   if(showName) {
     dx = metrics.width(Name);
@@ -527,12 +530,13 @@ void Component::mirrorX()
   foreach(Area *pa, Ellips)
     pa->y = -pa->y - pa->h;
 
-  QFont f = QucsSettings.font;
+//  QFont f = QucsSettings.font;
   // mirror all text
   foreach(Text *pt, Texts) {
-    f.setPointSizeF(pt->Size);
+//    f.setPointSizeF(pt->Size);
     // use the screen-compatible metric
-    QFontMetrics  smallMetrics(f, 0);
+    FontMetrics smallMetrics;
+    smallMetrics.setSmall();
     QSize s = smallMetrics.size(0, pt->s);   // use size for more lines
     pt->y = -pt->y - int(pt->mCos)*s.height() + int(pt->mSin)*s.width();
   }
@@ -593,7 +597,9 @@ void Component::mirrorY()
   foreach(Text *pt, Texts) {
     f.setPointSizeF(pt->Size);
     // use the screen-compatible metric
-    QFontMetrics  smallMetrics(f, 0);
+    FontMetrics smallMetrics;
+    smallMetrics.setSmall();
+
     QSize s = smallMetrics.size(0, pt->s);   // use size for more lines
     pt->x = -pt->x - int(pt->mSin)*s.height() - int(pt->mCos)*s.width();
   }
@@ -1679,7 +1685,7 @@ Element* getComponentFromName(QString& Line, SchematicModel* sp)
     }
     cstr = c->name();   // is perhaps changed in "recreate" (e.g. subcircuit)
     int x = c->tx, y = c->ty;
-    c->setSchematic (p);
+    c->setSchematicModel(sp); // setParent?
     c->recreate(0);
     c->obsolete_name_override_hack(cstr);
     c->tx = x;  c->ty = y;

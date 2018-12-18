@@ -22,7 +22,7 @@
 #include "element.h"
 #include "qt_compat.h"
 
-class Schematic;
+class SchematicModel;
 class ViewPainter;
 class QString;
 class QPen;
@@ -66,8 +66,9 @@ public:
 
   virtual QString getSubcircuitFile() const { return ""; }
   // set the pointer scematic associated with the component
-  virtual void setSchematic (Schematic* p) { containingSchematic = p; }
-  virtual Schematic* getSchematic () const {return containingSchematic; }
+  // BUG: virtual.
+  virtual void setSchematicModel (SchematicModel* p) { containingSchematic = p; }
+  virtual SchematicModel* getSchematic () {return containingSchematic; }
   // do somehting with buttons. can sb think of a more descriptive name?
   virtual void dialgButtStuff(ComponentDialog&)const;
 
@@ -144,7 +145,7 @@ protected:
 
   void copyComponent(Component*);
   Property * getProperty(const QString&);
-  Schematic* containingSchematic;
+  SchematicModel* containingSchematic;
 private: // (hopefully) obsolete callbacks
   void recreateCallback();
 

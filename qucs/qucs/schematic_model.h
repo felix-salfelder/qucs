@@ -16,11 +16,16 @@
 #define QUCS_SCHEMATIC_MODEL_H
 
 #include <QGraphicsScene>
+#include <QFileInfo> // BUG
 #include "object.h"
 #include "wire.h"
 #include "node.h"
 #include "schematic_scene.h"
 #include "schematic_symbol.h"
+#include "components/subcircuit.h" // BUG
+#include "qucsdoc.h"
+
+class QPlainTextEdit; //??!
 
 // TODO: refactor here
 class WireList : public Q3PtrList<Wire> {
@@ -57,8 +62,29 @@ public: // stuff saved from Schematic
   void sizeOfAll(int&, int&, int&, int&, float) const;
   void simpleInsertComponent(Component* c);
   void simpleInsertWire(Wire*);
+  //private??
+  bool giveNodeNames(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int);
+  bool throughAllComps(DocumentStream&, int&, QStringList&, QPlainTextEdit *, int,
+		  bool creatingLib=false // ?!
+		  );
+  bool createLibNetlist(DocumentStream&, QPlainTextEdit*, int);
+  bool createSubNetlist(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int);
+  void throughAllNodes(bool, QStringList&, int&);
+  void propagateNode(QStringList&, int&, Node*);
+  void collectDigitalSignals(void);
+  QString createNetlist(DocumentStream&, int);
+  void createSubNetlistPlain(DocumentStream&, QPlainTextEdit*, int,
+		  bool creatingLib=false // ??
+		  );
+  QFileInfo getFileInfo ()const{
+	  incomplete();
+	  return QFileInfo();
+  }
+  void print(QPrinter*, QPainter*, bool, bool);
+
 public:
   void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr);
+  int  prepareNetlist(DocumentStream&, QStringList&, QPlainTextEdit*);
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);
@@ -90,6 +116,9 @@ public:
   ComponentList const& components() const;
 
   Schematic* doc();
+  QString const& portType(int i) const{
+	  return PortTypes[i];
+  }
 private: // TODO: remove. store parent in ElementGraphics.
   Schematic* _doc;
 private:
@@ -98,6 +127,7 @@ private:
   DiagramList Diagrams;
   WireList Wires;
   SchematicSymbol* _symbol;
+  QStringList PortTypes;
 public: // for now.
   friend class Schematic;
 };

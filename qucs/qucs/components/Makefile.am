@@ -138,7 +138,8 @@ noinst_HEADERS = $(MOCHEADERS) components.h    \
   vafile.h hybrid.h ctline.h tunneldiode.h      \
   etr_sim.h ecvs.h vcresistor.h vacomponent.h   \
   mutualx.h circline.h taperedline.h \
-  capq.h indq.h spiralinductor.h circularloop.h spdeembed.h
+  capq.h indq.h spiralinductor.h circularloop.h spdeembed.h \
+  some_font_stuff.h
 
 AM_CPPFLAGS = $(X11_INCLUDES) $(QT_CFLAGS) -I$(top_srcdir)/qucs
 

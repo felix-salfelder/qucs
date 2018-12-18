@@ -181,9 +181,11 @@ bool SimMessage::startProcess()
   assert(n);
   auto& nl=*n;
 
+  DocumentStream* d=&Stream;
+
   if(!QucsApp::isTextDocument(DocWidget)) {
     SimPorts =
-       ((Schematic*)DocWidget)->prepareNetlist(Stream, Collect, ErrText, nl);
+       ((Schematic*)DocWidget)->prepareNetlist(*d, Collect, ErrText, nl);
     if(SimPorts < -5) {
       NetlistFile.close();
       ErrText->appendPlainText(tr("ERROR: Cannot simulate a text file!"));

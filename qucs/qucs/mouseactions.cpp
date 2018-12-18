@@ -1355,7 +1355,8 @@ void MouseActions::MPressElement(Schematic *Doc, QMouseEvent *Event)
 	// left mouse button inserts component into the schematic
 	// give the component a pointer to the schematic it's a
 	// part of
-	Comp->setSchematic (Doc);
+	incomplete();
+//	Comp->setSchematic (Doc); //???
 	Comp->textSize(x1, y1);
 	Doc->insertElement(Comp);
 	Comp->textSize(x2, y2);
