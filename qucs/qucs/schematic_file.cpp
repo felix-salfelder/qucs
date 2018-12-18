@@ -801,6 +801,7 @@ void SchematicModel::simpleInsertWire(Wire *pw)
 }
 
 // -------------------------------------------------------------
+// obsolete.
 bool SchematicModel::loadWires(QTextStream *stream /*, EGPList *List */)
 {
   QList<ElementGraphics*>* List=nullptr; //?

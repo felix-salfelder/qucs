@@ -52,6 +52,7 @@ void SchematicModel::clear()
 	  while(!s.atEnd()){ untested();
 		  qDebug() << "entering parse";
 		  L->parse(s, this);
+		  assert(s.atEnd()); // happens with legacy lang
 	  }
   }
 #else
@@ -61,7 +62,7 @@ void SchematicModel::parse(DocumentStream& stream, SchematicLanguage const*)
 	QString Line;
   while(!stream.atEnd()) {
     Line = stream.readLine();
-	 qDebug() << "parse" << Line;
+	 qDebug() << "old parse" << Line;
     if(Line == "<Components>") {
       if(!loadComponents(&stream)){
 			incomplete();

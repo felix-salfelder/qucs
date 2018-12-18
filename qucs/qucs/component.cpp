@@ -751,6 +751,7 @@ Element* Schematic::loadElement(const QString& _s, Element* e) const
 }
 // -------------------------------------------------------
 // FIXME: must be Component* SchematicParser::loadComponent(Stream&, Component*);
+// BUG: need to move to SchematicModel first.
 Component* Schematic::loadComponent(const QString& _s, Component* c) const
 {
   qDebug() << "load" << _s;
@@ -1585,7 +1586,7 @@ void GateComponent::createSymbol()
 // better: Component* SomeParserClass::getComponent(SomeDataStream& s)
 // BUG: loads component into schematic.
 // fixed in qt5 rework
-Element* getComponentFromName(QString& Line, Schematic* p)
+Element* getComponentFromName(QString& Line, SchematicModel* sp)
 {
   Element *e = 0;
 
@@ -1682,6 +1683,7 @@ Element* getComponentFromName(QString& Line, Schematic* p)
     c->recreate(0);
     c->obsolete_name_override_hack(cstr);
     c->tx = x;  c->ty = y;
+  }else{
   }
 
   return e;

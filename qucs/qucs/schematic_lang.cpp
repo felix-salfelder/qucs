@@ -37,13 +37,12 @@ private:
 			}else if(Line.isEmpty()){
 			}else if(Line == "<Components>") {
 				mode='C';
-			}else if(Line == "<Symbol>") {
+			}else if(Line == "<Symbols>") {
 				mode='S';
 			}else if(Line == "<Wires>") {
 				mode='W';
 			}else if(Line == "<Diagrams>") { untested();
 				mode='D';
-<<<<<<< HEAD
 			}else if(Line == "<Properties>") { untested();
 				mode='Q';
 			}else if(Line == "<Paintings>") { untested();
@@ -66,38 +65,13 @@ private:
 						incomplete();
 					}
 #endif
-				}else if(mode=='W'){
-					// (Node*)4 =  move all ports (later on)
-					Wire* w = new Wire(0,0,0,0, (Node*)4,(Node*)4);
-					incomplete(); // qt5 branch...
-				//	c = w->obsolete_load(Line);
-					if(!c){
-						qDebug() << "ERROR" << Line;
-						delete(w);
-					}else{
-					}
-				}else if(mode=='D'){
-					qDebug() << "diagram parse?" << Line;
-
-					Diagram* d=loadDiagram(Line, stream);
-					if(d){
-						c = d;
-					}else{
-						incomplete();
-					}
-
-				}else if(mode=='Q'){
-				}else{
-					qDebug() << "LSL::parse" <<  Line;
-=======
-			}else if(Line == "<Paintings>") { untested();
-				mode='P';
-			}else{
 
 				/// \todo enable user to load partial schematic, skip unknown components
 				Element*c=NULL;
 				if(mode=='C'){
-					c = getComponentFromName(Line, NULL /*???*/);
+					c = getComponentFromName(Line, s /*connect ports?*/);
+				}else if(mode=='S'){
+//					if(!symbolPaintings().load(&stream))
 				}else if(mode=='W'){
 					// (Node*)4 =  move all ports (later on)
 					Wire* w = new Wire(0,0,0,0, (Node*)4,(Node*)4);
