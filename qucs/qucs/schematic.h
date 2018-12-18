@@ -462,8 +462,12 @@ private:
   DigMap Signals; // collecting node names for VHDL signal declarations
 
 public: // for now
-	Component* loadComponent(const QString& _s, Component* c) const;
-	Command* loadCommand(const QString& _s, Command* c) const;
+	Command* loadCommand(const QString& _s, Command* c) const{
+		return DocModel.loadCommand(_s, c);
+	}
+	Component* loadComponent(const QString& _s, Component* c) const{
+		return DocModel.loadComponent(_s, c);
+	}
   int  prepareNetlist(DocumentStream& a, QStringList& b, QPlainTextEdit* c){
 	  return DocModel.prepareNetlist(a,b,c);
   }

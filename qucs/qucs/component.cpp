@@ -544,7 +544,7 @@ void Component::mirrorX()
   int tmp = y1;
   y1  = -y2; y2 = -tmp;   // mirror boundings
   // use the screen-compatible metric
-  QFontMetrics  metrics(QucsSettings.font, 0);   // get size of text
+  FontMetrics metrics;
   int dy = 0;
   if(showName)
     dy = metrics.lineSpacing();   // for "Name"
@@ -758,7 +758,7 @@ Element* Schematic::loadElement(const QString& _s, Element* e) const
 // -------------------------------------------------------
 // FIXME: must be Component* SchematicParser::loadComponent(Stream&, Component*);
 // BUG: need to move to SchematicModel first.
-Component* Schematic::loadComponent(const QString& _s, Component* c) const
+Component* SchematicModel::loadComponent(const QString& _s, Component* c) const
 {
   qDebug() << "load" << _s;
   bool ok;

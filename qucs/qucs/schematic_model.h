@@ -54,7 +54,7 @@ class SchematicLanguage;
 
 class SchematicModel{
 private:
-  SchematicModel(){}
+  SchematicModel() : _doc(nullptr){}
 public:
   SchematicModel(Schematic* s);
 public: // stuff saved from Schematic
@@ -85,6 +85,7 @@ public: // stuff saved from Schematic
 public:
   void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr);
   int  prepareNetlist(DocumentStream&, QStringList&, QPlainTextEdit*);
+  Component* loadComponent(const QString& _s, Component* c) const;
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);
@@ -120,7 +121,7 @@ public:
 	  return PortTypes[i];
   }
 private: // TODO: remove. store parent in ElementGraphics.
-  Schematic* _doc;
+  Schematic* const _doc;
 private:
   ComponentList Components;
   NodeList Nodes;

@@ -1777,6 +1777,7 @@ int NumPorts, bool creatingLib)
   QString f;
   if(doc()){
     QString f = misc::properFileName(doc()->docName());
+  }else{
   }
   QString Type = misc::properName(f);
 
