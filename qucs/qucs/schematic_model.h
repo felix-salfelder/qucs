@@ -20,6 +20,7 @@
 #include "wire.h"
 #include "node.h"
 #include "schematic_scene.h"
+#include "schematic_symbol.h"
 
 // TODO: refactor here
 class WireList : public Q3PtrList<Wire> {
@@ -96,6 +97,7 @@ private:
   NodeList Nodes;
   DiagramList Diagrams;
   WireList Wires;
+  SchematicSymbol* _symbol;
 public: // for now.
   friend class Schematic;
 };

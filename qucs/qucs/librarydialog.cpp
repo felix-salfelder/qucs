@@ -578,7 +578,7 @@ void LibraryDialog::slotSave()
       Stream << "  <Symbol>\n";
       Doc->createSubcircuitSymbol();
       Painting *pp;
-      for(pp = Doc->SymbolPaints.first(); pp != 0; pp = Doc->SymbolPaints.next())
+      for(pp = Doc->symbolPaintings().first(); pp != 0; pp = Doc->symbolPaintings().next())
         Stream << "    <" << pp->save() << ">\n";
 
       Stream << "  </Symbol>\n"

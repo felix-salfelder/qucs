@@ -228,7 +228,7 @@ int Schematic::saveSymbolCpp (void)
   Painting * pp;
 
   stream << "  // symbol drawing code\n";
-  for (pp = SymbolPaints.first (); pp != 0; pp = SymbolPaints.next ()) {
+  for (pp = symbolPaintings().first (); pp != 0; pp = symbolPaintings().next ()) {
     if (pp->Name == ".ID ") continue;
     if (pp->Name == ".PortSym ") {
       if (((PortSymbol*)pp)->numberStr.toInt() > maxNum)
@@ -251,7 +251,7 @@ int Schematic::saveSymbolCpp (void)
 
   stream << "\n  // terminal definitions\n";
   for (int i = 1; i <= maxNum; i++) {
-    for (pp = SymbolPaints.first (); pp != 0; pp = SymbolPaints.next ()) {
+    for (pp = symbolPaintings().first (); pp != 0; pp = symbolPaintings().next ()) {
       if (pp->Name == ".PortSym ")
 	if (((PortSymbol*)pp)->numberStr.toInt() == i)
 	  stream << "  " << pp->saveCpp () << "\n";
@@ -263,7 +263,7 @@ int Schematic::saveSymbolCpp (void)
 	 << "  x2 = " << xmax << "; " << "  y2 = " << ymax << ";\n";
 
   stream << "\n  // property text position\n";
-  for (pp = SymbolPaints.first (); pp != 0; pp = SymbolPaints.next ())
+  for (pp = symbolPaintings().first (); pp != 0; pp = symbolPaintings().next ())
     if (pp->Name == ".ID ")
       stream << "  " << pp->saveCpp () << "\n";
 
@@ -304,7 +304,7 @@ int Schematic::saveSymbolJSON()
   stream << "\"paintings\" : [\n";
 
   // symbol drawing code"
-  for (pp = SymbolPaints.first (); pp != 0; pp = SymbolPaints.next ()) {
+  for (pp = symbolPaintings().first (); pp != 0; pp = symbolPaintings().next ()) {
     if (pp->Name == ".ID ") continue;
     if (pp->Name == ".PortSym ") {
       if (((PortSymbol*)pp)->numberStr.toInt() > maxNum)
@@ -328,7 +328,7 @@ int Schematic::saveSymbolJSON()
   // terminal definitions
   //stream << "terminal \n";
   for (int i = 1; i <= maxNum; i++) {
-    for (pp = SymbolPaints.first (); pp != 0; pp = SymbolPaints.next ()) {
+    for (pp = symbolPaintings().first (); pp != 0; pp = symbolPaintings().next ()) {
       if (pp->Name == ".PortSym ")
 	if (((PortSymbol*)pp)->numberStr.toInt() == i)
 	  stream << "  " << pp->saveJSON () << "\n";
@@ -343,7 +343,7 @@ int Schematic::saveSymbolJSON()
     << "  \"x2\" : " << xmax << ",\n" << "  \"y2\" : " << ymax << ",\n";
 
   // property text position
-  for (pp = SymbolPaints.first (); pp != 0; pp = SymbolPaints.next ())
+  for (pp = symbolPaintings().first (); pp != 0; pp = symbolPaintings().next ())
     if (pp->Name == ".ID ")
       stream << "  " << pp->saveJSON () << "\n";
 
@@ -405,7 +405,7 @@ int Schematic::saveDocument()
 
   Painting *pp;
   stream << "<Symbol>\n";     // save all paintings for symbol
-  for(pp = SymbolPaints.first(); pp != 0; pp = SymbolPaints.next())
+  for(pp = symbolPaintings().first(); pp != 0; pp = symbolPaintings().next())
     stream << "  <" << pp->save() << ">\n";
   stream << "</Symbol>\n";
 
@@ -1116,7 +1116,7 @@ QString Schematic::createSymbolUndoString(char Op)
   s += "</>\n";  // short end flag for wires
   s += "</>\n";  // short end flag for diagrams
 
-  for(pp = SymbolPaints.first(); pp != 0; pp = SymbolPaints.next())
+  for(pp = symbolPaintings().first(); pp != 0; pp = symbolPaintings().next())
     s += "<"+pp->save()+">\n";
   s += "</>\n";
 
@@ -1165,7 +1165,7 @@ bool Schematic::rebuild(QString *s)
 // Same as "rebuild(QString *s)" but for symbol edit mode.
 bool Schematic::rebuildSymbol(QString *s)
 {
-  SymbolPaints.clear();	// delete whole document
+  symbolPaintings().clear();	// delete whole document
 
   QString Line;
   QTextStream stream(s, QIODevice::ReadOnly);
@@ -1781,7 +1781,7 @@ int NumPorts)
     incomplete();
     // ..... analog subcircuit ...................................
     (*tstream) << "\n.Def:" << Type << " " << SubcircuitPortNames.join(" ");
-    for(pi = SymbolPaints.first(); pi != 0; pi = SymbolPaints.next())
+    for(pi = symbolPaintings().first(); pi != 0; pi = symbolPaintings().next())
       if(pi->Name == ".ID ") {
         ID_Text *pid = (ID_Text*)pi;
         QList<SubParameter *>::const_iterator it;
@@ -1842,7 +1842,7 @@ int NumPorts)
       (*tstream) << "\n";
 
       // subcircuit parameters
-      for(pi = SymbolPaints.first(); pi != 0; pi = SymbolPaints.next())
+      for(pi = symbolPaintings().first(); pi != 0; pi = symbolPaintings().next())
         if(pi->Name == ".ID ") {
           QList<SubParameter *>::const_iterator it;
           ID_Text *pid = (ID_Text*)pi;
@@ -1884,7 +1884,7 @@ int NumPorts)
                 << " port ("
                 << SubcircuitPortNames.join(";\n ") << ");\n";
 
-      for(pi = SymbolPaints.first(); pi != 0; pi = SymbolPaints.next())
+      for(pi = symbolPaintings().first(); pi != 0; pi = symbolPaintings().next())
         if(pi->Name == ".ID ") {
           ID_Text *pid = (ID_Text*)pi;
           QList<SubParameter *>::const_iterator it;

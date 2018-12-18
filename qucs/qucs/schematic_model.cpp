@@ -27,6 +27,7 @@ SchematicModel::SchematicModel(Schematic* s)
   Nodes.setAutoDelete(true);
   Diagrams.setAutoDelete(true);
   Wires.setAutoDelete(true);
+  _symbol=new SchematicSymbol();
 }
 
 void SchematicModel::clear()
@@ -114,11 +115,22 @@ ComponentList& SchematicModel::components()
 	return Components;
 }
 
+SchematicSymbol::SchematicSymbol(){
+	_paint = new PaintingList();
+}
+SchematicSymbol::~SchematicSymbol(){
+	delete _paint;
+}
+
 void SchematicModel::pushBack(Element* what){
 	if(auto c=component(what)){
       simpleInsertComponent(c);
 	}else if(auto w=wire(what)){ untested();
 		simpleInsertWire(w);
+	}else if(auto s=dynamic_cast<SchematicSymbol*>(what)){ untested();
+		qDebug() << "Model replacing symbol";
+		delete _symbol;
+		_symbol = s;
 	}else{
 		incomplete();
 	}
@@ -155,9 +167,15 @@ PaintingList& SchematicModel::paintings()
 
 PaintingList& SchematicModel::symbolPaintings()
 {
-	assert(_doc);
+	assert(_symbol);
 	// temporary. move stuff here....
-	return _doc->symbolPaintings();
+	return _symbol->symbolPaintings();
+}
+
+PaintingList& SchematicSymbol::symbolPaintings()
+{
+	assert(_paint);
+	return *_paint;
 }
 
 DiagramList& SchematicModel::diagrams()
