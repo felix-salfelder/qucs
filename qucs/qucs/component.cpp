@@ -1132,7 +1132,7 @@ int Component::analyseLine(const QString& Row, int numProps)
 
     QFont Font(QucsSettings.font);
     Font.setPointSizeF(float(i3));
-    QFontMetrics  metrics(Font, 0); // use the screen-compatible metric
+    FontMetrics  metrics;
     QSize r = metrics.size(0, s);    // get size of text
     i3 = i1 + int(float(r.width())  * Texts.last()->mCos)
             + int(float(r.height()) * Texts.last()->mSin);
