@@ -287,31 +287,27 @@ QString Subcircuit::getSubcircuitFile() const
   // construct full filename
   QString FileName = Props.getFirst()->Value;
 
-  if (FileName.isEmpty())
-  {
+  if (FileName.isEmpty()) {
+	  incomplete();
       return misc::properAbsFileName(FileName);
   }
 
   QFileInfo FileInfo(FileName);
 
-  if (FileInfo.exists())
-  {
+  if (FileInfo.exists()) {
       // the file must be an absolute path to a schematic file
      return FileInfo.absoluteFilePath();
-  }
-  else
-  {
+  } else {
+	  qDebug() << FileName << "doesnt exist";
     // get the complete base name (everything except the last '.'
     // and whatever follows
     QString baseName = FileInfo.completeBaseName();
 
     // if only a file name is supplied, first check if it is in the
     // same directory as the schematic file it is a part of
-    if (FileInfo.fileName () == FileName)
-    {
+    if (FileInfo.fileName () == FileName) {
         // the file has no path information, just the file name
-        if (containingSchematic)
-        {
+        if (containingSchematic) {
             // check if a file of the same name is in the same directory
             // as the schematic file, if we have a pointer to it, in
             // which case we use this one

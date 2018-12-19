@@ -29,7 +29,6 @@ private:
 		while(!stream.atEnd()) {
 			Line = stream.readLine();
 			Line = Line.trimmed();
-			qDebug() << "LSL::parse" <<  Line;
 			if(Line.at(0) == '<'
 			  && Line.at(1) == '/'){
 				qDebug() << "endtag?" << Line;
@@ -72,7 +71,11 @@ private:
 						delete(w);
 					}else{
 					}
+				}else if(mode=='D'){
+					incomplete();
+				}else if(mode=='Q'){
 				}else{
+					qDebug() << "LSL::parse" <<  Line;
 					incomplete();
 				}
 

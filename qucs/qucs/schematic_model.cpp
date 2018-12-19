@@ -43,7 +43,7 @@ void SchematicModel::clear()
 
 #if 1
   void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
-	  if(!L){ untested();
+	  if(!L){
 		  assert(defaultSchematicLanguage);
 		  L = prechecked_cast<SchematicLanguage const*>(defaultSchematicLanguage);
 		  assert(L);
@@ -147,6 +147,11 @@ void SchematicModel::pushBack(Element* what){
 Schematic* SchematicModel::doc()
 {
 	return _doc;
+}
+
+QFileInfo const& SchematicModel::getFileInfo ()const
+{
+	return FileInfo;
 }
 
 WireList& SchematicModel::wires()

@@ -84,11 +84,9 @@ public: // stuff saved from Schematic
   void createSubNetlistPlain(DocumentStream&, QPlainTextEdit*, int,
 		  bool creatingLib=false // ??
 		  );
-  QFileInfo getFileInfo ()const{
-	  incomplete();
-	  return QFileInfo();
-  }
+  QFileInfo const& getFileInfo ()const;
   void print(QPrinter*, QPainter*, bool, bool);
+  void setFileInfo(QString FileName) { FileInfo = QFileInfo(FileName); }
 
 public:
   void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr);
@@ -137,6 +135,7 @@ private:
   WireList Wires;
   SchematicSymbol* _symbol;
   QStringList PortTypes;
+  QFileInfo FileInfo;
 public: // for now.
   friend class Schematic;
 };

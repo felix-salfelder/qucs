@@ -1075,6 +1075,7 @@ void ComponentDialog::slotApplyInput()
 // -------------------------------------------------------------------------
 void ComponentDialog::slotBrowseFile()
 {
+  incomplete();
   // current file name from the component properties
   QString currFileName = prop->item(prop->currentRow(), 1)->text();
   QFileInfo currFileInfo(currFileName);
@@ -1087,6 +1088,7 @@ void ComponentDialog::slotBrowseFile()
   if (!currFileName.isEmpty()) { // a file name is already defined
     if (currFileInfo.isRelative()) { // but has no absolute path
       if (!schematicFileName.isEmpty()) { // if schematic has a filename
+        incomplete();
 	// build the an absolute file name using the schematic path
 	// currDir = schematicFileInfo.absolutePath() + 
 	//        QDir::separator() +
