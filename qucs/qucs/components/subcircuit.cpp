@@ -290,6 +290,7 @@ QString Subcircuit::getSubcircuitFile() const
   if (FileName.isEmpty()) {
 	  incomplete();
       return misc::properAbsFileName(FileName);
+  }else{ untested();
   }
 
   QFileInfo FileInfo(FileName);
@@ -305,22 +306,23 @@ QString Subcircuit::getSubcircuitFile() const
 
     // if only a file name is supplied, first check if it is in the
     // same directory as the schematic file it is a part of
-    if (FileInfo.fileName () == FileName) {
+    if (FileInfo.fileName () != FileName) { untested();
         // the file has no path information, just the file name
-        if (containingSchematic) {
-            // check if a file of the same name is in the same directory
-            // as the schematic file, if we have a pointer to it, in
-            // which case we use this one
-            QFileInfo schematicFileInfo = containingSchematic->getFileInfo ();
-            QFileInfo localFIleInfo (schematicFileInfo.canonicalPath () + "/" + baseName + ".sch");
-            if (localFIleInfo.exists ())
-            {
-                // return the subcircuit saved in the same directory
-                // as the schematic file
-                return localFIleInfo.absoluteFilePath();
-            }
-        }
-    }
+	 }else if (containingSchematic) {
+		 qDebug() << "trying to inherit path from sch";
+		 // check if a file of the same name is in the same directory
+		 // as the schematic file, if we have a pointer to it, in
+		 // which case we use this one
+		 QFileInfo schematicFileInfo = containingSchematic->getFileInfo ();
+		 QFileInfo localFIleInfo (schematicFileInfo.canonicalPath () + "/" + baseName + ".sch");
+		 qDebug() << "got" << schematicFileInfo.canonicalPath();
+		 if (localFIleInfo.exists ()) { untested();
+			 // return the subcircuit saved in the same directory
+			 // as the schematic file
+			 return localFIleInfo.absoluteFilePath();
+		 }else{ untested();
+		 }
+	 }
 
     // look up the hash table for the schematic file as
     // it does not seem to be an absolute path, this will also

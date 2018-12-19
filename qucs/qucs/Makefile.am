@@ -163,6 +163,7 @@ noinst_HEADERS = \
 	symbol.h \
 	schematic_lang.h \
 	schematic_symbol.h \
+	some_font_stuff.h \
 	trace.h \
 	qt_compat.h \
 	wirelabel.h viewpainter.h mnemo.h mouseactions.h syntax.h module.h misc.h \

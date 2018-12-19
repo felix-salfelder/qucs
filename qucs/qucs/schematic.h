@@ -416,9 +416,9 @@ public: //?
   }
 public: // not here.
   static int testFile(const QString &);
-  bool createSubNetlist(DocumentStream& a, int& b, QStringList& c, QPlainTextEdit* d, int e){
-	  return DocModel.createSubNetlist(a,b,c,d,e);
-  }
+//  bool createSubNetlist(DocumentStream& a, int& b, QStringList& c, QPlainTextEdit* d, int e){
+//	  return DocModel.createSubNetlist(a,b,c,d,e);
+//  }
   bool loadDocument();
   void highlightWireLabels (void);
 
@@ -445,10 +445,10 @@ private:
 	  incomplete();
 	  return DocModel.throughAllNodes(a, b, c);
   }
-  bool giveNodeNames(DocumentStream& a, int&b, QStringList&c, QPlainTextEdit*d, int e){
-	  incomplete();
-	  return DocModel.giveNodeNames(a,b,c,d,e);
-  }
+//   bool giveNodeNames(DocumentStream& a, int&b, QStringList&c, QPlainTextEdit*d, int e){
+// 	  incomplete();
+// 	  return DocModel.giveNodeNames(a,b,c,d,e);
+//   }
   void beginNetlistDigital(QTextStream &);
   void endNetlistDigital(QTextStream &);
 //  bool throughAllComps(QTextStream* a, int& b, QStringList&c, QPlainTextEdit* d, int e){
@@ -464,9 +464,11 @@ public: // for now
 	Component* loadComponent(const QString& _s, Component* c) const{
 		return DocModel.loadComponent(_s, c);
 	}
-  int  prepareNetlist(DocumentStream& a, QStringList& b, QPlainTextEdit* c){
-	  return DocModel.prepareNetlist(a,b,c);
-  }
+   int  prepareNetlist(DocumentStream& a, QStringList& b, QPlainTextEdit* c,
+			bool creatingLib){
+		assert(!creatingLib); // ?!
+ 	  return DocModel.prepareNetlist(a,b,c, creatingLib);
+   }
   bool createLibNetlist(DocumentStream& a, QPlainTextEdit* b, int c){
 		return DocModel.createLibNetlist(a,b,c);
   }

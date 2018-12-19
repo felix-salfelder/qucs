@@ -41,6 +41,16 @@ void SchematicModel::clear()
   //SymbolPaints.clear(); ??
 }
 
+QString const& SchematicModel::devType() const
+{
+	return DevType;
+}
+
+void SchematicModel::setDevType(QString const& s)
+{
+	DevType = s;
+}
+
 #if 1
   void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
 	  if(!L){

@@ -149,6 +149,7 @@ Schematic *openSchematic(QString schematic)
 int doNetlist(QString schematic, QString netlist, NetLang const& nl)
 {
   SchematicModel sch(nullptr);
+  sch.setFileInfo(schematic);
   QFile file(schematic);  // save simulator messages
   file.open(QIODevice::ReadOnly);
   DocumentStream stream (&file);
@@ -179,7 +180,7 @@ int doNetlist(QString schematic, QString netlist, NetLang const& nl)
   }
 
   Stream.setDevice(&NetlistFile);
-  int SimPorts = sch.prepareNetlist(Stream, Collect, ErrText, nl);
+  int SimPorts = sch.prepareNetlist(Stream, Collect, ErrText, false /*??*/, nl);
 
   if(SimPorts < -5) {
     NetlistFile.close();
@@ -221,6 +222,7 @@ int doPrint(QString schematic, QString printFile,
     QString page, int dpi, QString color, QString orientation)
 {
   Schematic sch(nullptr, "..."); // need X?
+  // sch.setFileInfo(schematic);
   QFile file(schematic);  // save simulator messages
   file.open(QIODevice::ReadOnly);
   DocumentStream stream (&file);

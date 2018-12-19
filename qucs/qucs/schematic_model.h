@@ -71,26 +71,32 @@ public: // stuff saved from Schematic
   void simpleInsertCommand(Command* c);
   void simpleInsertWire(Wire*);
   //private??
-  bool giveNodeNames(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int);
+  bool giveNodeNames(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int,
+		  bool creatingLib
+		  );
   bool throughAllComps(DocumentStream&, int&, QStringList&, QPlainTextEdit *, int,
-		  bool creatingLib=false // ?!
+		  bool creatingLib
 		  );
   bool createLibNetlist(DocumentStream&, QPlainTextEdit*, int);
-  bool createSubNetlist(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int);
+  bool createSubNetlist(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int,
+		  bool creatingLib);
   void throughAllNodes(bool, QStringList&, int&);
   void propagateNode(QStringList&, int&, Node*);
   void collectDigitalSignals(void);
   QString createNetlist(DocumentStream&, int);
   void createSubNetlistPlain(DocumentStream&, QPlainTextEdit*, int,
-		  bool creatingLib=false // ??
+		  bool creatingLib
 		  );
   QFileInfo const& getFileInfo ()const;
   void print(QPrinter*, QPainter*, bool, bool);
   void setFileInfo(QString FileName) { FileInfo = QFileInfo(FileName); }
+  void setDevType(QString const& type); // BUG. move to parent.
+  QString const& devType() const;
 
 public:
   void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr);
-  int  prepareNetlist(DocumentStream&, QStringList&, QPlainTextEdit*);
+  int  prepareNetlist(DocumentStream&, QStringList&, QPlainTextEdit*,
+		  bool creatingLib);
   Component* loadComponent(const QString& _s, Component* c) const;
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
@@ -136,6 +142,7 @@ private:
   SchematicSymbol* _symbol;
   QStringList PortTypes;
   QFileInfo FileInfo;
+  QString DevType; // BUG move to parent
 public: // for now.
   friend class Schematic;
 };
