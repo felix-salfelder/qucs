@@ -1528,7 +1528,7 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
 
       SpiceFile *sf = (SpiceFile*)pc; // BUG
       r = sf->createSubNetlist(stream);
-      ErrText->appendPlainText(sf->getErrorText());
+      qDebug() << sf->getErrorText();
       if(!r){
         return false;
       }

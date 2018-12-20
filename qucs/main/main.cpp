@@ -83,7 +83,6 @@ void qucsMessageOutput(QtMsgType type, const char *msg)
     fprintf(stderr, "Warning: %s\n", msg);
     break;
   case QtCriticalMsg:
-    assert(false);
     fprintf(stderr, "Critical: %s\n", msg);
     break;
   case QtFatalMsg:
