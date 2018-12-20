@@ -29,7 +29,8 @@ private:
 		while(!stream.atEnd()) {
 			Line = stream.readLine();
 			Line = Line.trimmed();
-			if(Line.at(0) == '<'
+			if(Line.size()<2){
+			}else if(Line.at(0) == '<'
 			  && Line.at(1) == '/'){
 				qDebug() << "endtag?" << Line;
 				incomplete();
