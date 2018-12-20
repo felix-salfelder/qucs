@@ -992,50 +992,7 @@ bool SchematicModel::loadDocument(QFile& /*BUG*/ file)
     }
   }
 
-  if(1){
-    parse(stream);
-    return true;
-  }else{
-    // use legacy parser
-    incomplete();
-  }
-
-  // read content, legacy *************************
-  while(!stream.atEnd()) {
-    Line = stream.readLine();
-    Line = Line.trimmed();
-    if(Line.isEmpty()) continue;
-
-    if(Line == "<Symbol>") {
-      if(!symbolPaintings().load(&stream)) {
-        file.close();
-        return false;
-      }
-    }
-    else
-    if(Line == "<Properties>") {
-      if(!loadProperties(&stream)) { file.close(); return false; } }
-    else
-    if(Line == "<Components>") {
-      if(!loadComponents(&stream)) { file.close(); return false; } }
-    else
-    if(Line == "<Wires>") {
-      if(!loadWires(&stream)) { file.close(); return false; } }
-    else
-    if(Line == "<Diagrams>") {
-      if(!loadDiagrams(&stream /*, diagrams()??? */ )) { file.close(); return false; } }
-    else
-    if(Line == "<Paintings>") {
-      if(!paintings().load(&stream)) { file.close(); return false; }
-    }else {
-       qDebug() << Line;
-       QMessageBox::critical(0, QObject::tr("Error"),
-		   QObject::tr("File Format Error:\nUnknown field!"));
-      file.close();
-      return false;
-    }
-  }
-
+  parse(stream);
   file.close();
   return true;
 }

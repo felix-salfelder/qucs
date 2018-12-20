@@ -51,71 +51,20 @@ void SchematicModel::setDevType(QString const& s)
 	DevType = s;
 }
 
-#if 1
-  void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
-	  if(!L){
-		  assert(defaultSchematicLanguage);
-		  L = prechecked_cast<SchematicLanguage const*>(defaultSchematicLanguage);
-		  assert(L);
-	  }else{untested();
-	  }
-	  assert(L);
-	  while(!s.atEnd()){ untested();
-		  qDebug() << "entering parse";
-		  L->parse(s, this);
-		  assert(s.atEnd()); // happens with legacy lang
-	  }
-  }
-#else
-// this does not work
-void SchematicModel::parse(DocumentStream& stream, SchematicLanguage const*)
-{
-	QString Line;
-  while(!stream.atEnd()) {
-    Line = stream.readLine();
-	 qDebug() << "old parse" << Line;
-    if(Line == "<Components>") {
-      if(!loadComponents(&stream)){
-			incomplete();
-//			throw exception...
-		}
-    }else if(Line == "<Symbol>") {
-      if(!symbolPaintings().load(&stream)) {
-			incomplete();
-//			throw exception...
-		}
-	 }else if(Line == "<Properties>") {
-      if(!loadProperties(&stream)) {
-			incomplete();
-		}
-    }else if(Line == "<Wires>") {
-      if(!loadWires(&stream)){
-			incomplete();
-//			throw exception... (in loadWires)
-		}
-    }else if(Line == "<Diagrams>") { untested();
-      if(!loadDiagrams(&stream)){
-			incomplete();
-//			throw exception...
-		}
-    }else if(Line == "<Paintings>") { untested();
-      incomplete(); // ignore Paintings fo rnow.
-      PaintingList pl;
-      if(!loadPaintings(&stream, &pl)){ untested();
-			incomplete();
-			return;
-//			throw exception...
-		}
-    }else{ untested();
-		 incomplete();
-//		 throw something.
-      // QMessageBox::critical(0, QObject::tr("Error"),
-		//   QObject::tr("Clipboard Format Error:\nUnknown field!"));
-    }
-  }
-
+void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
+	if(!L){
+		assert(defaultSchematicLanguage);
+		L = prechecked_cast<SchematicLanguage const*>(defaultSchematicLanguage);
+		assert(L);
+	}else{untested();
+	}
+	assert(L);
+	while(!s.atEnd()){ untested();
+		qDebug() << "entering parse";
+		L->parse(s, this);
+		assert(s.atEnd()); // happens with legacy lang
+	}
 }
-#endif
 
 /// ACCESS FUNCTIONS.
 // these are required to move model methods over to SchematicModel
