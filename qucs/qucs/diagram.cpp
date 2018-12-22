@@ -52,6 +52,7 @@
 #include <QDebug>
 #include <QString>
 #include <QMouseEvent>
+#include "some_font_stuff.h"
 
 Diagram::Diagram(int _cx, int _cy)
 {
@@ -184,7 +185,7 @@ void Diagram::createAxisLabels()
   int   x, y, w, wmax = 0;
   QString Str;
   // get size of text using the screen-compatible metric
-  QFontMetrics metrics(QucsSettings.font, 0);
+  FontMetrics metrics;
   int LineSpacing = metrics.lineSpacing();
 
   nfreqa=0;
@@ -1150,7 +1151,7 @@ bool Diagram::sameDependencies(Graph const*g1, Graph const*g2) const
 
 // ------------------------------------------------------------
 int Diagram::checkColumnWidth(const QString& Str,
-		const QFontMetrics& metrics, int colWidth, int x, int y)
+		const FontMetrics& metrics, int colWidth, int x, int y)
 {
   //qDebug("%i", metrics.charWidth(Str,0));
   int w = metrics.boundingRect(Str).width();  // width of text
@@ -1656,7 +1657,7 @@ void Diagram::createPolarDiagram(Axis *Axis, int Mode)
   Arcs.append(new struct Arc(0, y2, x2, y2, tmp, 16*360-phi, QPen(Qt::black,0)));
 
   // get size of text using the screen-compatible metric
-  QFontMetrics metrics(QucsSettings.font, 0);
+  FontMetrics metrics;
   QSize r = metrics.size(0, Texts.last()->s);  // width of text
   len = x2+r.width()-4;   // more space at the right
   if(len > x3)  x3 = len;
@@ -1893,7 +1894,7 @@ bool Diagram::calcYAxis(Axis *Axis, int x0)
 
   QString tmp;
   // get size of text using the screen-compatible metric
-  QFontMetrics metrics(QucsSettings.font, 0);
+  FontMetrics metrics;
   int maxWidth = 0;
 
   bool back = false;

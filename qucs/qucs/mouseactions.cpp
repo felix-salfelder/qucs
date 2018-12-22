@@ -824,7 +824,7 @@ void MouseActions::rightPressMenu(Schematic *Doc, QMouseEvent *Event)
   ComponentMenu->clear();
   { untested();
     if(focusElement) { untested();
-      focusElement->setSelected(true);
+      focusElement.setSelected(true);
       QAction *editProp = new QAction(QObject::tr("Edit Properties"), QucsMain);
       QucsMain->connect(editProp, SIGNAL(triggered()), SLOT(slotEditElement()));
       ComponentMenu->addAction(editProp);
