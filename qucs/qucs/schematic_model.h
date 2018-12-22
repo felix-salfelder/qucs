@@ -102,7 +102,7 @@ public:
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);
   bool loadComponents(QTextStream*);
-  bool loadDiagrams(QTextStream*);
+  // bool loadDiagrams(QTextStream*);
   bool loadWires(QTextStream*);
 
   void clear();

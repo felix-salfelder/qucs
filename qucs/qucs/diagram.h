@@ -44,6 +44,7 @@
   }
 
 class QMouseEvent;
+class DocumentStream; // BUG
 
 struct Axis {
   double  min, max; // least and greatest values of all graph data
@@ -87,7 +88,7 @@ public:
   bool    getSelected(int, int);
   bool    resizeTouched(float, float, float);
   QString save();
-  bool    load(const QString&, QTextStream*);
+  bool    load(const QString&, DocumentStream&);
 
   void getAxisLimits(Graph*);
   void updateGraphData();

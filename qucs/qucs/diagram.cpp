@@ -1248,7 +1248,7 @@ QString Diagram::save()
 }
 
 // ------------------------------------------------------------
-bool Diagram::load(const QString& Line, QTextStream *stream)
+bool Diagram::load(const QString& Line, DocumentStream& stream)
 {
   bool ok;
   QString s = Line;
@@ -1367,8 +1367,8 @@ bool Diagram::load(const QString& Line, QTextStream *stream)
   Graph *pg;
   // .......................................................
   // load graphs of the diagram
-  while(!stream->atEnd()) {
-    s = stream->readLine();
+  while(!stream.atEnd()) {
+    s = stream.readLine();
     s = s.trimmed();
     if(s.isEmpty()) continue;
 

@@ -82,10 +82,13 @@ SchematicSymbol::~SchematicSymbol(){
 	_paint = nullptr;
 }
 
-void SchematicModel::pushBack(Element* what){
+void SchematicModel::pushBack(Element* what)
+{
 	if(auto c=component(what)){
       simpleInsertComponent(c);
-	}else if(auto w=wire(what)){ untested();
+	}else if(auto d=diagram(what)){
+		diagrams().append(d);
+	}else if(auto w=wire(what)){
 		simpleInsertWire(w);
 	}else if(auto s=dynamic_cast<SchematicSymbol*>(what)){ untested();
 		qDebug() << "Model replacing symbol";

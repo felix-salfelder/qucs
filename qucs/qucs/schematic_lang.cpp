@@ -73,7 +73,15 @@ private:
 					}else{
 					}
 				}else if(mode=='D'){
-					incomplete();
+					qDebug() << "diagram parse?" << Line;
+
+					Diagram* d=loadDiagram(Line, stream);
+					if(d){
+						c = d;
+					}else{
+						incomplete();
+					}
+
 				}else if(mode=='Q'){
 				}else{
 					qDebug() << "LSL::parse" <<  Line;
@@ -124,7 +132,7 @@ Diagram* LegacySchematicLanguage::loadDiagram(QString const& line_in,
 			return nullptr;
 		}
 
-		if(!d->load(Line, &stream)) { untested();
+		if(!d->load(Line, stream)) { untested();
 			incomplete();
 			delete d;
 			return nullptr;
