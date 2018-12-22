@@ -504,7 +504,6 @@ void createDocData() {
   // table for quick reference, schematic and netlist entry
 void createListComponentEntry()
 { untested();
-
   QStringList cats = Category::getCategories ();
   QFile data("/dev/stdout");
   data.open (QFile::WriteOnly | QFile::Truncate);
@@ -947,6 +946,7 @@ int main(int argc, char *argv[])
   a.installTranslator( &tor );
   //}
 
+  Module::registerModules (); // BUG
   QucsMain = new QucsApp();
   
   QucsMain->show();
