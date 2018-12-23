@@ -298,7 +298,10 @@ public:
 #ifdef USE_SCROLLVIEW
   QPointF mapToScene(QPoint const& p) const;
 #endif
-  void addToScene(Element*);
+  void addToScene(Element*); // called from SM::pushBack.
+
+private:
+  void erase(ElementGraphics*);
 
 protected slots:
   void slotScrollUp();
@@ -384,7 +387,9 @@ public:
   void       setCompPorts(Component*);
   Component* searchSelSubcircuit();
   Component* selectedComponent(int, int);
+
   void       deleteComp(Component*);
+  void       deleteItem(ElementGraphics*);
 
   void     oneLabel(Node*);
   int      placeNodeLabel(WireLabel*);

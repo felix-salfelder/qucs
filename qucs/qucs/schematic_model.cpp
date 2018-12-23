@@ -23,10 +23,6 @@ SchematicModel::SchematicModel(Schematic* s)
   :_doc(s)
 {
 	// presumably Q3PTRlist without this is just a QList<*> (check)
-  Components.setAutoDelete(true);
-  Nodes.setAutoDelete(true);
-  Diagrams.setAutoDelete(true);
-  Wires.setAutoDelete(true);
   _symbol=new SchematicSymbol();
 }
 
@@ -104,6 +100,21 @@ void SchematicModel::pushBack(Element* what)
 	}else{
 	}
 
+}
+
+// called from schematic::erase only
+void SchematicModel::erase(Element* what)
+{
+	if(auto c=component(what)){
+		components().removeRef(c);
+	}else if(auto d=diagram(what)){
+		diagrams().removeRef(d);
+	}else if(auto w=wire(what)){
+		wires().removeRef(w);
+	}else{
+		unreachable();
+	}
+	delete(what);
 }
 
 Schematic* SchematicModel::doc()

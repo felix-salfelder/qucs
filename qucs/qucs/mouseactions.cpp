@@ -200,7 +200,7 @@ void MouseActions::endElementMoving(Schematic *Doc, EGPList *movElements)
 	// Doc->insertWire((Wire*)pe); wtf?
 	break; // why?
     }else if(diagram(pe)){ untested();
-	Doc->diagrams().append((Diagram*)pe); // BUG. already there?!
+	//already there. d'uh
     }else if(painting(pe)){ untested();
 	Doc->Paintings->append((Painting*)pe);
     }else if(auto c=component(pe)){ untested();

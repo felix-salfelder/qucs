@@ -851,7 +851,6 @@ void Schematic::deleteWire(Wire *w)
         delete w->Label;
         w->Label = 0;
     }
-    wires().removeRef(w);
 }
 
 // ---------------------------------------------------
@@ -2057,6 +2056,7 @@ int Schematic::copyElements(int& x1, int& y1, int& x2, int& y2,
 // ---------------------------------------------------
 // Deletes all selected elements.
 // return what?
+// BUG: deletes selection
 bool Schematic::deleteElements()
 {
 #ifndef USE_SCROLLVIEW
@@ -2065,16 +2065,9 @@ bool Schematic::deleteElements()
     for(auto ge : scene()->selectedItems()){ untested();
 	qDebug() << "select" << ge << ge->isSelected();
 	if(auto e=dynamic_cast<ElementGraphics*>(ge)){
-	    scene()->removeItem(ge);
 
 	    // todo: forward delete to schematicModel (or so) container
-	    if(auto c=component(e)){ untested();
-		deleteComp(c);
-	    }else if(auto w=wire(e)){ untested();
-		deleteWire(w);
-	    }else{
-		incomplete();
-	    }
+	    deleteItem(e);
 	}else{
 	    unreachable();
 	    incomplete();
@@ -3003,7 +2996,26 @@ Component* Schematic::selectedComponent(int x, int y)
 
 // ---------------------------------------------------
 // Deletes the component 'c'.
-void Schematic::deleteComp(Component *c)
+// BUG: pass iterator.
+void Schematic::deleteItem(ElementGraphics *g)
+{
+    Element* e=element(g);
+    delete(g);
+    
+    // BUG no deletion here, just cleanup.
+    if(auto c=component(e)){
+	deleteComp(c);
+    }else if(auto w=wire(e)){
+	deleteWire(w);
+    }else{
+	incomplete();
+	// no cleanup necessary?
+    }
+
+    DocModel.erase(e);
+}
+// BUG: call deleteItem instead
+void Schematic::deleteComp(Component *g)
 { untested();
     // delete all port connections
     foreach(Port *pn, c->Ports)
@@ -3021,9 +3033,7 @@ void Schematic::deleteComp(Component *c)
             pn->Connection->connectionsRemove(c);// remove connection
             break;
         }
-
-    // delete component?
-    components().removeRef(c);
+    }
 }
 
 // ---------------------------------------------------
