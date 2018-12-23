@@ -1789,8 +1789,7 @@ void Schematic::deselectElements()
 	    // BUG: selected state is stored in element.
 	    x->setSelected(false);
 	    i->setSelected(false);
-	}else{ untested();
-	    // ?
+	}else{ unreachable();
 	}
     }
 
@@ -1985,6 +1984,7 @@ QList<ElementGraphics*> Schematic::cropSelectedElements()
 }
 
 // ---------------------------------------------------
+// BUG: collect stuff in Qlist
 bool Schematic::copyComps2WiresPaints(int& x1, int& y1, int& x2, int& y2,
                                       QList<Element *> *ElementCache)
 {
@@ -2065,8 +2065,6 @@ bool Schematic::deleteElements()
     for(auto ge : scene()->selectedItems()){ untested();
 	qDebug() << "select" << ge << ge->isSelected();
 	if(auto e=dynamic_cast<ElementGraphics*>(ge)){
-
-	    // todo: forward delete to schematicModel (or so) container
 	    deleteItem(e);
 	}else{
 	    unreachable();

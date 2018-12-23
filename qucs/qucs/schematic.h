@@ -129,7 +129,7 @@ public:
   bool  rotateElements();
   bool  mirrorXComponents();
   bool  mirrorYComponents();
-  void  setOnGrid(int&, int&);
+  QPoint  setOnGrid(int, int);
   bool  elementsOnGrid();
 
   float zoom(float);

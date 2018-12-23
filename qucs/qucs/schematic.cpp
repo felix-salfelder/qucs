@@ -984,7 +984,8 @@ void Schematic::enlargeView(int x1, int y1, int x2, int y2)
 
 // ---------------------------------------------------
 // Sets an arbitrary coordinate onto the next grid coordinate.
-void Schematic::setOnGrid(int& x, int& y)
+// BUG: fp?
+QPoint Schematic::setOnGrid(int x, int y)
 {
   if(x<0) x -= (GridX >> 1) - 1;
   else x += GridX >> 1;
@@ -993,6 +994,8 @@ void Schematic::setOnGrid(int& x, int& y)
   if(y<0) y -= (GridY >> 1) - 1;
   else y += GridY >> 1;
   y -= y % GridY;
+
+  return QPoint(x, y);
 }
 
 // ---------------------------------------------------
@@ -1153,48 +1156,32 @@ void SchematicModel::sizeOfAll(int& xmin, int& ymin, int& xmax, int& ymax, float
 // Rotates all selected components around their midpoint.
 bool Schematic::rotateElements()
 {
-  int x1=INT_MAX, y1=INT_MAX;
-  int x2=INT_MIN, y2=INT_MIN;
-  QList<Element *> ElementCache;
+  QRectF BB(1., 1., -1. , -1.);
+  QList<ElementGraphics*> ElementCache;
   assert(scene());
 
-  // Label is not an Element?!
- // for(auto elt : scene()->selectedItems()){
- //   if(auto l=label(elt)){
- //     ElementCache.append(l);
- //   }else{
- //   }
- // }
-  for(auto elt : scene()->selectedItems()){
-    if(auto c=component(elt)){
-      ElementCache.append(c);
-    }else{
-    }
-  }
-  for(auto elt : scene()->selectedItems()){
-    if(auto w=wire(elt)){
-      ElementCache.append(w);
-    }else{
-    }
-  }
-  for(auto elt : scene()->selectedItems()){
-    if(auto p=painting(elt)){
-      ElementCache.append(p);
-    }else{
-    }
-  }
-  if(y1 == INT_MAX) return false;   // no element selected
+  scene()->selectedItemsAndBoundingBox(ElementCache, BB);
 
-  x1 = (x1+x2) >> 1;   // center for rotation
-  y1 = (y1+y2) >> 1;
-  //setOnGrid(x1, y1);
+  assert(BB.isEmpty() == ElementCache.isEmpty());
 
+  qreal _x1, _x2, _y1, _y2;
+  BB.getCoords(&_x1, &_y1, &_x2, &_y2);
+  _x1 = (_x1+_x2) * .5;   // center for rotation
+  _y1 = (_y1+_y2) * .5;
+  QPoint gp=setOnGrid(_x1, _y1);
+  int x1=gp.x();
+  int y1=gp.y();
+
+  int x2;
+  int y2;
 
   Painting  *pp;
   Component *pc;
   WireLabel *pl;
   // re-insert elements
-  foreach(Element *pe, ElementCache) {
+  for(auto g: ElementCache) {
+    Element* pe=element(g);
+    assert(pe);
     auto pw=dynamic_cast<Wire*>(pe);
     switch(pe->Type) {
       case isComponent:
@@ -1258,8 +1245,6 @@ bool Schematic::rotateElements()
     }
   }
 
-  ElementCache.clear();
-
   setChanged(true, true);
   return true;
 }
@@ -1268,31 +1253,40 @@ bool Schematic::rotateElements()
 // Mirrors all selected components.
 // First copy them to 'ElementCache', then mirror and insert again.
 bool Schematic::mirrorXComponents()
-{
-  incomplete();
+{ untested();
+  QRectF BB(1., 1., -1. , -1.);
+  QList<ElementGraphics*> ElementCache;
+  assert(scene());
 
-  int x1, y1, x2, y2;
-  QList<Element *> ElementCache;
-  if(!copyComps2WiresPaints(x1, y1, x2, y2, &ElementCache))
-    return false;
+  scene()->selectedItemsAndBoundingBox(ElementCache, BB);
 
-  y1 = (y1+y2) >> 1;   // axis for mirroring
-  setOnGrid(y2, y1);
+  assert(BB.isEmpty() == ElementCache.isEmpty());
+
+  qreal _x1, _x2, _y1, _y2;
+  BB.getCoords(&_x1, &_y1, &_x2, &_y2);
+  _y1 = (_y1+_y2) * .5;
+
+  QPoint gp=setOnGrid(_y2, _y1);
+  int y2=gp.x();
+  int y1=gp.y();
+
   y1 <<= 1;
 
+  int x2;
 
   Wire *pw;
   Painting  *pp;
   Component *pc;
   WireLabel *pl;
   // re-insert elements
-  foreach(Element *pe, ElementCache)
+  for(ElementGraphics *g : ElementCache) { untested();
+    Element* pe=element(g);
+    assert(pe);
     switch(pe->Type) {
       case isComponent:
       case isAnalogComponent:
       case isDigitalComponent:
-	pc = (Component*)pe;
-	pc->mirrorX();   // mirror component !before! mirroring its center
+	pc = (Component*)pe; pc->mirrorX();   // mirror component !before! mirroring its center
 	pc->setCenter(pc->cx_(), y1 - pc->cy_());
 	insertRawComponent(pc);
 	break;
@@ -1328,8 +1322,8 @@ bool Schematic::mirrorXComponents()
 	break;
       default: ;
     }
+  }
 
-  ElementCache.clear();
   setChanged(true, true);
   return true;
 }
@@ -1338,23 +1332,33 @@ bool Schematic::mirrorXComponents()
 // Mirrors all selected components. First copy them to 'ElementCache', then mirror and insert again.
 bool Schematic::mirrorYComponents()
 {
-  incomplete();
 
-  int x1, y1, x2, y2;
-  QList<Element *> ElementCache;
-  if(!copyComps2WiresPaints(x1, y1, x2, y2, &ElementCache))
-    return false;
+  QRectF BB(1., 1., -1. , -1.);
+  QList<ElementGraphics*> ElementCache;
+  assert(scene());
 
-  x1 = (x1+x2) >> 1;   // axis for mirroring
-  setOnGrid(x1, x2);
-  x1 <<= 1;
+  scene()->selectedItemsAndBoundingBox(ElementCache, BB);
+
+  assert(BB.isEmpty() == ElementCache.isEmpty());
+
+  qreal _x1, _x2, _y1, _y2;
+  BB.getCoords(&_x1, &_y1, &_x2, &_y2);
+
+  _x1 = (_x1+_x2) * .5;
+  QPoint gp=setOnGrid(_x1, _x2);
+  int x1=gp.x();
+  int x2=gp.y();
+  int y2;
+  x1 *= 2.;
 
   Wire *pw;
   Painting  *pp;
   Component *pc;
   WireLabel *pl;
   // re-insert elements
-  foreach(Element *pe, ElementCache)
+  for(ElementGraphics *g : ElementCache) { untested();
+    Element* pe=element(g);
+    assert(pe);
     switch(pe->Type) {
       case isComponent:
       case isAnalogComponent:
@@ -1397,8 +1401,8 @@ bool Schematic::mirrorYComponents()
         break;
       default: ;
     }
+  }
 
-  ElementCache.clear();
   setChanged(true, true);
   return true;
 }

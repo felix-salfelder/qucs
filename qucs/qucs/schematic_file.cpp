@@ -708,7 +708,6 @@ bool SchematicModel::loadComponents(QTextStream *stream)
 {
   void* List=nullptr; // incomplete
   QString Line, cstr;
-  Schematic* d=_doc; // for now.
   Component *c;
   while(!stream->atEnd()) {
     Line = stream->readLine();
@@ -1072,12 +1071,11 @@ bool Schematic::rebuild(QString *s)
 
   QString Line;
   qDebug() << "rebuild. opening" << *s;
-  ModelStream stream(s, QIODevice::ReadOnly);
+  DocumentStream stream(s, QIODevice::ReadOnly);
   Line = stream.readLine();  // skip identity byte
 
   // read content *************************
-  incomplete();
-  //parser_temporary_kludge(DocModel, stream);
+  DocModel.parse(stream);;
 
   return true;
 }
