@@ -131,13 +131,14 @@ void Diagram::paintDiagram(ViewPainter *p)
     // write whole text (axis label inclusively)
     QMatrix wm = p->Painter->worldMatrix();
     foreach(Text *pt, Texts) {
-      p->Painter->setWorldMatrix(
-          QMatrix(pt->mCos, -pt->mSin, pt->mSin, pt->mCos,
-                   p->DX + float(cx+pt->x) * p->Scale,
-                   p->DY + float(cy-pt->y) * p->Scale));
-
+//      p->Painter->setWorldMatrix(
+//          QMatrix(pt->mCos, -pt->mSin, pt->mSin, pt->mCos,
+//                   p->DX   + float(cx+pt->x) * p->Scale,
+//                   p->DY   + float(cy+pt->y) * p->Scale));
+//
+      // qDebug() << p->DX << p->DY << cy;
       p->Painter->setPen(pt->Color);
-      p->Painter->drawText(QPoint(0, 0), pt->s);
+      p->Painter->drawText(QPoint(cx+pt->x, cy-pt->y), pt->s);
     }
     p->Painter->setWorldMatrix(wm);
     p->Painter->setWorldMatrixEnabled(false);
