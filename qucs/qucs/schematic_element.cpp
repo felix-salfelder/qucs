@@ -2585,12 +2585,15 @@ void Schematic::setComponentNumber(Component *c)
     int n=1;
     QString s = pp->Value;
     QString cSign = c->obsolete_model_hack();
-    Component *pc;
+    Component *pc=nullptr;
     // First look, if the port number already exists.
+    incomplete();
+#if 0
     for(pc = components().first(); pc!=0; pc = components().next()){
         if(pc->obsolete_model_hack() == cSign)
             if(pc->Props.getFirst()->Value == s) break;
     }
+#endif
     if(!pc) return;   // was port number not yet in use ?
 
     // Find the first free number.

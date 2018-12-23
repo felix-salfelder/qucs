@@ -1929,6 +1929,10 @@ void QucsApp::slotRefreshSchPath()
 // --------------------------------------------------------------
 void QucsApp::updatePortNumber(QucsDoc *currDoc, int No)
 {
+  (void) currDoc;
+  (void) No;
+  incomplete();
+#if 0
   if(No<0) return;
 
   QString pathName = currDoc->docName();
@@ -1970,6 +1974,7 @@ void QucsApp::updatePortNumber(QucsDoc *currDoc, int No)
       pc = Doc->components().prev();
     }
   }
+#endif
 }
 
 

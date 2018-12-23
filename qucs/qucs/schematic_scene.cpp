@@ -174,6 +174,12 @@ Graph* graph(QGraphicsItem* g)
 	if(!e) return nullptr;
 	return graph(e->operator->());
 }
+// Label* label(QGraphicsItem* g)
+// {
+// 	auto e=dynamic_cast<ElementGraphics*>(g);
+// 	if(!e) return nullptr;
+// 	return label(e->operator->());
+// }
 
 #endif
 

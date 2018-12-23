@@ -88,6 +88,7 @@ Painting* painting(Element* e){ return dynamic_cast<Painting*>(e); }
 Marker* marker(Element* e){ return dynamic_cast<Marker*>(e); }
 Graph* graph(Element* e){ return dynamic_cast<Graph*>(e); }
 Node* node(Element* e){ return dynamic_cast<Node*>(e); }
+//Label* label(Element* e){ return dynamic_cast<Label*>(e); }
 
 Component const* component(Element const* e){ return dynamic_cast<Component const*>(e); }
 Wire const* wire(Element const* e){ return dynamic_cast<Wire const*>(e); }

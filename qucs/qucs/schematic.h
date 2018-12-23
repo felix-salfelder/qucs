@@ -186,7 +186,8 @@ public: // model
 // TODO: const access
 // BUG: give access to container, not to insane pointer.
   ComponentList& components(){
-	  return DocModel.components();
+	  incomplete(); // BUG. messing with components
+     return DocModel.components();
   }
   ComponentList const& components() const{
 	  return DocModel.components();
