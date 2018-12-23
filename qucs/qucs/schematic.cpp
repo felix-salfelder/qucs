@@ -987,6 +987,7 @@ void Schematic::enlargeView(int x1, int y1, int x2, int y2)
 // BUG: fp?
 QPoint Schematic::setOnGrid(int x, int y)
 {
+  qDebug() << "setongrid in" << x << y;
   if(x<0) x -= (GridX >> 1) - 1;
   else x += GridX >> 1;
   x -= x % GridX;
@@ -995,6 +996,7 @@ QPoint Schematic::setOnGrid(int x, int y)
   else y += GridY >> 1;
   y -= y % GridY;
 
+  qDebug() << "setongrid out" << x << y;
   return QPoint(x, y);
 }
 
@@ -1259,6 +1261,7 @@ bool Schematic::mirrorXComponents()
   assert(scene());
 
   scene()->selectedItemsAndBoundingBox(ElementCache, BB);
+  qDebug() << "getBB" << BB;
 
   assert(BB.isEmpty() == ElementCache.isEmpty());
 
@@ -1270,7 +1273,7 @@ bool Schematic::mirrorXComponents()
   int y2=gp.x();
   int y1=gp.y();
 
-  y1 <<= 1;
+  y1 *= 2;
 
   int x2;
 
@@ -1281,14 +1284,18 @@ bool Schematic::mirrorXComponents()
   // re-insert elements
   for(ElementGraphics *g : ElementCache) { untested();
     Element* pe=element(g);
+
     assert(pe);
+    if(auto c=component(pe)){
+	c->mirrorX();   // mirror component !before! mirroring its center
+	g->setCenter(c->cx_(), y1 - c->cy_());
+    }else{
+      incomplete();
+    }
     switch(pe->Type) {
       case isComponent:
       case isAnalogComponent:
       case isDigitalComponent:
-	pc = (Component*)pe; pc->mirrorX();   // mirror component !before! mirroring its center
-	pc->setCenter(pc->cx_(), y1 - pc->cy_());
-	insertRawComponent(pc);
 	break;
       case isWire:
 	pw = (Wire*)pe;
@@ -1299,7 +1306,6 @@ bool Schematic::mirrorXComponents()
           pl->cy__() = y1 - pl->cy_();
         }else{
         }
-	insertWire(pw);
 	break;
       case isHWireLabel:
       case isVWireLabel:
@@ -1311,14 +1317,12 @@ bool Schematic::mirrorXComponents()
 	if(pl->pOwner == 0)
 	  pl->y1__() = y1 - pl->y1_();
 	pl->cy__() = y1 - pl->cy_();
-	insertNodeLabel(pl);
 	break;
       case isPainting:
 	pp = (Painting*)pe;
 	pp->getCenter(x2, y2);
 	pp->mirrorX();   // mirror painting !before! mirroring its center
 	pp->setCenter(x2, y1 - y2);
-	Paintings->append(pp);
 	break;
       default: ;
     }
