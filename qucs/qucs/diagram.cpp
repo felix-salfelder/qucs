@@ -52,7 +52,9 @@
 #include <QDebug>
 #include <QString>
 #include <QMouseEvent>
+#include <QRectF>
 #include "some_font_stuff.h"
+
 
 Diagram::Diagram(int _cx, int _cy)
 {
@@ -104,6 +106,8 @@ void Diagram::paint(ViewPainter *p)
 {
     paintDiagram(p);
     paintMarkers(p);
+
+	 Element::paint(p);
 }
 
 void Diagram::paintDiagram(ViewPainter *p)
@@ -592,13 +596,27 @@ for(int zz=0; zz<60; zz+=2)
   // unreachable
 }
 
+
 // -------------------------------------------------------
+// doesn't seem to be the bounding box
 void Diagram::Bounding(int& _x1, int& _y1, int& _x2, int& _y2)
 {
   _x1 = cx - Bounding_x1;
   _y1 = cy - y2 - Bounding_y2;
   _x2 = cx + x2 + Bounding_x2;
   _y2 = cy - Bounding_y1;
+}
+
+// -------------------------------------------------------
+QRectF Diagram::boundingRect() const
+{
+	int x1, y1, x2, y2;
+
+	Diagram* d=const_cast<Diagram*>(this);
+	d->Bounding(x1, y1, x2, y2);
+	QRectF b(x1, y1, x2, y2); // WRONG
+	return QRectF(cx, cy, +x2-x1+30, y1-y2+30);
+	return b;
 }
 
 // -------------------------------------------------------

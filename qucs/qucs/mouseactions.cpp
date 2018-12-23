@@ -197,8 +197,8 @@ void MouseActions::endElementMoving(Schematic *Doc, EGPList *movElements)
 	}else{
 	}
 
-	Doc->insertWire((Wire*)pe);
-	break;
+	// Doc->insertWire((Wire*)pe); wtf?
+	break; // why?
     }else if(diagram(pe)){ untested();
 	Doc->diagrams().append((Diagram*)pe); // BUG. already there?!
     }else if(painting(pe)){ untested();
@@ -1016,7 +1016,6 @@ void MouseActions::MPressSelect(Schematic *Doc, QMouseEvent *Event)
   float fY=pos.y();
 
   bool Ctrl = Event->modifiers().testFlag(Qt::ControlModifier);
-
 
   int No=0;
   MAx1 = int(fX);

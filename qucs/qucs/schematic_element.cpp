@@ -987,7 +987,9 @@ ElementMouseAction MouseActions::selectElement(Schematic* Doc,
 
    ElementGraphics* e=Doc->itemAt(scenepos);
    if(e){ untested();
+       qDebug() << "clicked on something";
    }else{ untested();
+       qDebug() << "doc says there is nothing";
    }
 
    // now add the mouseaction hacks...
@@ -1009,9 +1011,14 @@ ElementMouseAction MouseActions::selectElement(Schematic* Doc,
 	   pe_sel = element(pc);
        }else{
        }
+   }else if(auto pd=diagram(e)){ untested();
+       //check what legacy code does (below)
+       pe_1st = e;
+       return ElementMouseAction(e);
    }else if(wire(e)){ untested();
        return ElementMouseAction(e);
-   }else{ untested();
+   }else{
+       incomplete(); // possibly.
 	   qDebug() << "nothing at" << xy << scenepos;
        return ElementMouseAction(nullptr);
    }
@@ -3335,6 +3342,24 @@ Painting* Schematic::selectedPainting(float fX, float fY)
     return 0;
 }
 
+#ifndef USE_SCROLLVIEW
+void ElementGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
+{
+    assert(_e);
+    assert(painter);
+    ViewPainter v(painter);
+    auto br=boundingRect();
+
+    // debug.
+    if(isSelected()){
+	painter->fillRect(br, QColor("grey"));
+    }else{
+	painter->fillRect(br, QColor("white"));
+    }
+
+    _e->paint(&v);
+}
+#endif
 // ---------------------------------------------------
 void Schematic::copyPaintings(int& x1, int& y1, int& x2, int& y2,
                               QList<Element *> *ElementCache)
