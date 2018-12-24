@@ -38,6 +38,7 @@
 #include "sim/sim.h"
 #include "schematic_scene.h"
 #include "schematic_model.h"
+#include "qt_compat.h"
 
 #ifdef USE_SCROLLVIEW
 #include <Q3ScrollView>
@@ -45,7 +46,6 @@
 #include <QGraphicsView>
 #endif
 
-#include "qt_compat.h"
 #include <QVector>
 #include <QStringList>
 #include <QFileInfo>
@@ -91,6 +91,7 @@ struct SubFile {
 typedef QMap<QString, SubFile> SubMap;
 
 
+// USE_SCROLLVIEW doesn't work with moc. d'uh
 #if QT_MAJOR_VERSION < 5
 typedef Element ElementGraphics;
 #define SchematicBase Q3ScrollView
@@ -369,6 +370,7 @@ public:
   void     selectMarkers();
   void     newMovingWires(QList<Element*>*, Node*, int);
   QList<ElementGraphics*> cropSelectedElements();
+  QList<ElementGraphics*> selectedItems();
   bool     deleteElements();
   bool     aligning(int);
   bool     distributeHorizontal();
