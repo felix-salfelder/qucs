@@ -60,6 +60,16 @@ SubMap FileList;
 // string. This is used to copy the selected elements into the clipboard.
 QString SchematicModel::createClipboardFile()
 {
+  //something like
+  // stringstream s
+  // for (i : selectedItems){
+  //   lang.print(s, i)
+  // }
+  // return s.str();
+
+  return "";
+
+#if 0
   int z=0;  // counts selected elements
 
   QString s("<Qucs Schematic " PACKAGE_VERSION ">\n");
@@ -117,6 +127,7 @@ QString SchematicModel::createClipboardFile()
   if(z == 0) return "";   // return empty if no selection
 
   return s;
+#endif
 }
 
 // -------------------------------------------------------------

@@ -2217,6 +2217,15 @@ void MouseActions::MDoubleClickWire2(Schematic *Doc, QMouseEvent *Event)
   }
 }
 
+void ElementMouseAction::setSelected(bool x)
+{ untested();
+  if(_e){
+    _e->setSelected(x);
+  }else{
+    unreachable();
+  }
+}
+
 bool ElementMouseAction::isSelected() const
 {
   assert(_e);

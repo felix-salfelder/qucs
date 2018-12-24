@@ -43,6 +43,7 @@
 #include "io_trace.h"
 #include "object.h"
 #include "io_trace.h"
+#include "qt_compat.h"
 
 class Node;
 class QPainter;
@@ -204,16 +205,22 @@ public:
   virtual QString const& description() const{return incomplete_description;}
   virtual char const* iconBasename() const{return nullptr;}
 
-public:
+#ifndef USE_SCROLLVIEW
+private: // only called from ElementGraphics
+#endif
   void setSelected(bool b=true){
 	  Selected = b;
   }
   void toggleSelected(){
 	  Selected = !Selected;
   }
+
+#ifndef USE_SCROLLVIEW
+protected:
+#endif
   bool isSelected() const{return Selected;}
 
-private:
+public:
   QString const& name() const{
 	  return Name;
   }
@@ -221,7 +228,7 @@ private:
 protected: // BUG, private
   QString Name;
 
-public: // BUG
+private:
   bool Selected;
 public: // BUG
   int  Type;    // whether it is Component, Wire, ...
@@ -232,7 +239,11 @@ public: // BUG
 
 protected: //BUG
   QString Name; // the label.
-}; // Element
+
+#ifndef USE_SCROLLVIEW
+  friend class ElementGraphics;
+#endif
+};
 
 
 // nodes and wires?

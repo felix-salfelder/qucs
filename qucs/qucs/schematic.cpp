@@ -745,13 +745,18 @@ void Schematic::print(QPrinter*, QPainter *Painter, bool printAll, bool fitToPag
 
 void Schematic::paintSchToViewpainter(ViewPainter *p, bool printAll, bool toImage, int screenDpiX, int printerDpiX)
 {
-    bool selected;
+  (void) toImage;
+  (void) screenDpiX;
+  (void) printerDpiX;
 
     if (printAll) {
         int x2,y2;
         if (sizeOfFrame(x2,y2)) paintFrame(p);
     }
-
+    incomplete();
+#if 0
+    bool selected;
+    // this is a mess
     for(auto pc : components()){
       if(pc->isSelected() || printAll) {
         selected = pc->isSelected();
@@ -859,6 +864,7 @@ void Schematic::paintSchToViewpainter(ViewPainter *p, bool printAll, bool toImag
         p->drawText(pn->name(), x, y);
       }
     }
+#endif
 }
 
 // -----------------------------------------------------------
@@ -959,7 +965,8 @@ void Schematic::showNoZoom()
 // visible area.
 void Schematic::enlargeView(int x1, int y1, int x2, int y2)
 {
-  int dx=0, dy=0;
+  int dx=0; (void) dx;
+  int dy=0; (void) dy;
   if(x1 < UsedX1) UsedX1 = x1;
   if(y1 < UsedY1) UsedY1 = y1;
   if(x2 > UsedX2) UsedX2 = x2;
@@ -987,7 +994,7 @@ void Schematic::enlargeView(int x1, int y1, int x2, int y2)
 // BUG: fp?
 QPoint Schematic::setOnGrid(int x, int y)
 {
-  qDebug() << "setongrid in" << x << y;
+  //qDebug() << "setongrid in" << x << y;
   if(x<0) x -= (GridX >> 1) - 1;
   else x += GridX >> 1;
   x -= x % GridX;
@@ -996,7 +1003,7 @@ QPoint Schematic::setOnGrid(int x, int y)
   else y += GridY >> 1;
   y -= y % GridY;
 
-  qDebug() << "setongrid out" << x << y;
+  //qDebug() << "setongrid out" << x << y;
   return QPoint(x, y);
 }
 
@@ -1070,10 +1077,10 @@ void SchematicModel::sizeOfAll(int& xmin, int& ymin, int& xmax, int& ymax, float
   ymin=INT_MAX;
   xmax=INT_MIN;
   ymax=INT_MIN;
-  Diagram *pd;
-  Wire *pw;
+  Diagram *pd; (void) pd;
+  Wire *pw; (void) pw;
   WireLabel *pl;
-  Painting *pp;
+  Painting *pp; (void) pp;
 
   if(components().isEmpty())
     if(wires().isEmpty())
@@ -1284,7 +1291,7 @@ bool Schematic::mirrorXComponents()
 
   Wire *pw;
   Painting  *pp;
-  Component *pc;
+  Component *pc; (void) pc;
   WireLabel *pl;
   // re-insert elements
   for(ElementGraphics *g : ElementCache) { untested();
@@ -1902,7 +1909,7 @@ bool Schematic::elementsOnGrid()
       pc->snapToGrid(*this); // setOnGrid(pc->cx__(), pc->cy__());
      // insertRawComponent(pc); // TODO
      // components().at(No);   // restore current list position
-      pc->setSelected(false);
+      // pc->setSelected(false);
       count = true;
 
       x -= pc->cx_();
@@ -1916,6 +1923,7 @@ bool Schematic::elementsOnGrid()
     }
   }
 
+#ifdef USE_SCROLLVIEW
   // test all wires and wire labels
   for(Wire *pw = wires().last(); pw != 0; pw = wires().prev()) {
     pl = pw->Label;
@@ -2007,6 +2015,7 @@ bool Schematic::elementsOnGrid()
       count = true;
     }
 
+#endif
   if(count) setChanged(true, true);
   return count;
 }
@@ -2046,6 +2055,7 @@ void Schematic::switchPaintMode()
 // *********************************************************************
 void Schematic::contentsWheelEvent(QWheelEvent *Event)
 {
+  (void) Event;
   App->editText->setHidden(true);  // disable edit of component property
   // use smaller steps; typically the returned delta() is a multiple of 120
 
@@ -2088,6 +2098,7 @@ void Schematic::contentsWheelEvent(QWheelEvent *Event)
 // area accordingly.
 bool Schematic::scrollUp(int step)
 {
+  (void) step;
   TODO("Fix scroll");
   /**
   int diff;

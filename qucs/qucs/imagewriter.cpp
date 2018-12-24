@@ -312,6 +312,7 @@ void ImageWriter::getSchWidthAndHeight(Schematic *sch, int &w, int &h, int &xmin
 
 void ImageWriter::getSelAreaWidthAndHeight(Schematic *sch, int &wsel, int &hsel, int& xmin_sel_, int& ymin_sel_)
 {
+#if 0
     int xmin= INT_MAX,
         ymin= INT_MAX,
         xmax= INT_MIN,
@@ -391,6 +392,7 @@ void ImageWriter::getSelAreaWidthAndHeight(Schematic *sch, int &wsel, int &hsel,
     hsel = abs(ymax - ymin);
     xmin_sel_ = xmin;
     ymin_sel_ = ymin;
+#endif
 }
 
 // Compare object (component, diagram, etc) coordinates and

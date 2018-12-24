@@ -727,8 +727,8 @@ void Schematic::selectWireLine(ElementGraphics *g, Node *pn, bool ctrl)
 	}
 
         if(pe->Type != isWire) break;
-        if(ctrl) pe->toggleSelected();
-        else pe->setSelected();
+        if(ctrl) g->toggleSelected();
+        else g->setSelected(true);
 
         if(((Wire*)pe)->Port1 == pn)  pn = ((Wire*)pe)->Port2;
         else  pn = ((Wire*)pe)->Port1;
@@ -751,7 +751,7 @@ Wire* Schematic::selectedWire(int x, int y)
 Wire* Schematic::splitWire(Wire *pw, Node *pn)
 {
     Wire *newWire = new Wire(pn->cx_(), pn->cy_(), pw->x2_(), pw->y2_(), pn, pw->Port2);
-    newWire->setSelected(pw->isSelected());
+    // newWire->setSelected(pw->isSelected());
 
     pw->x2__() = pn->cx_();
     pw->y2__() = pn->cy_();
@@ -854,9 +854,13 @@ void Schematic::deleteWire(Wire *w)
 }
 
 // ---------------------------------------------------
+// BUG: does not copy
 int Schematic::copyWires(int& x1, int& y1, int& x2, int& y2,
                          QList<Element *> *ElementCache)
 {
+    incomplete();
+    return 0;
+#if 0
     int count=0;
     Node *pn;
     Wire *pw;
@@ -905,6 +909,7 @@ int Schematic::copyWires(int& x1, int& y1, int& x2, int& y2,
         else pw = wires().next();
 
     return count;
+#endif
 }
 
 
@@ -1336,9 +1341,9 @@ void Schematic::highlightWireLabels ()
 
         // get any label associated with the wire
         pltestouter = pwouter->Label;
-        if (pltestouter)
-        {
-            if (pltestouter->isSelected()) {
+        if (pltestouter) {
+            // if (pltestouter->isSelected())
+	    if(0){
                 bool hiLightOuter = false;
                 // Search for matching labels on wires
 		for(auto iit=wires().begin(); iit!=wires().end(); ++iit) {
@@ -1388,9 +1393,9 @@ void Schematic::highlightWireLabels ()
 
         // get any label associated with the node
         pltestouter = pnouter->Label;
-        if (pltestouter)
-        {
-            if (pltestouter->isSelected()) {
+        if (pltestouter) {
+            //if (pltestouter->isSelected())
+	    if(0){
                 bool hiLightOuter = false;
                 // Search for matching labels on wires
 		for(auto iit=wires().begin(); iit!=wires().end(); ++iit) {
@@ -1485,13 +1490,20 @@ void MouseActions::deselectElements(Schematic* Doc, ElementMouseAction e)
 // ---------------------------------------------------
 // flags elements that lie within the rectangle x1/y1, x2/y2.
 // return the number of elements selected.
+// flag?! is is the shift key?
 int Schematic::selectElements(int x1, int y1, int x2, int y2, bool flag)
 {
-#if 0 && QT_VERSION >= 0x050000
-    //do something smarter
-    incomplete();
-    return 0;
-#endif
+#ifndef USE_SCROLLVIEW
+    QRectF bb(x1, y1, x2, y2);
+    auto sel=scene()->items(bb, Qt::ContainsItemBoundingRect);
+    int n=0;
+    
+    for(auto i : sel){
+	i->setSelected(true);
+	++n;
+    }
+    return n;
+#else
     int  z=0;   // counts selected elements
     int  cx1, cy1, cx2, cy2;
 
@@ -1645,17 +1657,21 @@ int Schematic::selectElements(int x1, int y1, int x2, int y2, bool flag)
     }
 
     return z;
+#endif
 }
 
 // ---------------------------------------------------
 // Selects all markers.
 void Schematic::selectMarkers()
 {
+    incomplete();
+#if 0
     for(auto pd : diagrams()){
         foreach(Graph *pg, pd->Graphs)
             foreach(Marker *pm, pg->Markers)
                 pm->setSelected();
     }
+#endif
 }
 
 // ---------------------------------------------------
@@ -2885,9 +2901,8 @@ bool Schematic::activateSelectedComponents()
 {
     int a;
     bool sel = false;
-    for(auto pc : components()) {
-        if(pc->isSelected())
-        {
+    for(auto x : selectedItems()) {
+        if(auto pc=component(x)) {
             a = pc->isActive - 1;
 
             if(pc->Ports.count() > 1)
@@ -2974,10 +2989,11 @@ Component* MouseActions::selectCompText(Schematic* Doc, int x_, int y_, int& w, 
 }
 
 // ---------------------------------------------------
+//  what does this do?!
 Component* Schematic::searchSelSubcircuit()
 {
     Component *sub=0;
-    // test all components
+#if 0
     for(auto pc : components()) {
         if(!pc->isSelected()) continue;
 
@@ -2989,12 +3005,14 @@ Component* Schematic::searchSelSubcircuit()
         if(sub != 0) return 0;    // more than one subcircuit selected
         sub = pc;
     }
+#endif
     return sub;
 }
 
 // ---------------------------------------------------
 Component* Schematic::selectedComponent(int x, int y)
 {
+    incomplete();
     // test all components
     for(auto pc : components()) {
         if(pc->getSelected(x, y))
@@ -3323,11 +3341,14 @@ void Schematic::insertNodeLabel(WireLabel *pl)
 }
 
 // ---------------------------------------------------
+// why?!
 void Schematic::copyLabels(int& x1, int& y1, int& x2, int& y2,
                            QList<Element *> *ElementCache)
 {
     WireLabel *pl;
     // find bounds of all selected wires
+    incomplete();
+#if 0
     for(auto pw : wires()){
         pl = pw->Label;
         if(pl) if(pl->isSelected())
@@ -3354,6 +3375,7 @@ void Schematic::copyLabels(int& x1, int& y1, int& x2, int& y2,
                 pl->pOwner = 0;
             }
     }
+#endif
 }
 
 
@@ -3394,9 +3416,12 @@ void ElementGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem*, 
 }
 #endif
 // ---------------------------------------------------
+// BUG: does not copy
 void Schematic::copyPaintings(int& x1, int& y1, int& x2, int& y2,
                               QList<Element *> *ElementCache)
 {
+    incomplete();
+#if 0
     Painting *pp;
     int bx1, by1, bx2, by2;
     // find boundings of all selected paintings
@@ -3414,6 +3439,7 @@ void Schematic::copyPaintings(int& x1, int& y1, int& x2, int& y2,
             pp = Paintings->current();
         }
         else pp = Paintings->next();
+#endif
 }
 
 // vim:ts=8:sw=4:noet

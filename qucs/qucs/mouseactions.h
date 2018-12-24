@@ -53,10 +53,7 @@ public: // compat with old code
 	operator bool() const{
 		return _e;
 	}
-	void setSelected(bool x=true){ untested();
-		assert(_e);
-		_e->setSelected(x);
-	}
+	void setSelected(bool x=true);
 	bool isSelected() const;
 
 	void toggleSelected() const{
