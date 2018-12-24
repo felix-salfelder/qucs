@@ -184,12 +184,12 @@ public: // model
   PaintingList *Paintings;
 //  ComponentList *Components;
 
-// TODO: const access
-// BUG: give access to container, not to insane pointer.
+#ifdef USE_SCROLLVIEW
+  // selection does not work, hence this hack
   ComponentList& components(){
-	  incomplete(); // BUG. messing with components
      return DocModel.components();
   }
+#endif
   ComponentList const& components() const{
 	  return DocModel.components();
   }

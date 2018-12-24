@@ -836,9 +836,11 @@ void ComponentDialog::slotApplyInput()
 
   QString tmp;
   Component *pc;
-  if(CompNameEdit->text().isEmpty())  CompNameEdit->setText(Comp->name());
-  else
-  if(CompNameEdit->text() != Comp->name()) {
+  if(CompNameEdit->text().isEmpty()){
+    CompNameEdit->setText(Comp->name());
+  }else if(CompNameEdit->text() != Comp->name()) {
+    incomplete();
+#if 0 // wtf?
     // BUG: find.
     for(pc = Doc->components().first(); pc!=0; pc = Doc->components().next())
       if(pc->name() == CompNameEdit->text())
@@ -848,6 +850,7 @@ void ComponentDialog::slotApplyInput()
       Comp->obsolete_name_override_hack(CompNameEdit->text());
       changed = true;
     }
+#endif
   }
 
   /*! Walk the original Comp->Props and compare with the

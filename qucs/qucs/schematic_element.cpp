@@ -2006,6 +2006,8 @@ bool Schematic::copyComps2WiresPaints(int& x1, int& y1, int& x2, int& y2,
 int Schematic::copyElements(int& x1, int& y1, int& x2, int& y2,
                             QList<Element *> *ElementCache)
 {
+    (void) (x1+x2+y1+y2);
+    (void) ElementCache;
     incomplete();
 #if 0
     int bx1, by1, bx2, by2;
@@ -2587,6 +2589,8 @@ void Schematic::setComponentNumber(Component *c)
 #endif
     if(!pc) return;   // was port number not yet in use ?
 
+    incomplete();
+#if 0 // does not work
     // Find the first free number.
     do
     {
@@ -2600,6 +2604,7 @@ void Schematic::setComponentNumber(Component *c)
     }
     while(pc);     // found not used component number
     pp->Value = s; // set new number
+#endif
 }
 
 // ---------------------------------------------------
@@ -2645,6 +2650,8 @@ void Schematic::insertComponentNodes(Component *c, bool noOptimize)
 // Used for example in moving components.
 void Schematic::insertRawComponent(Component *c, bool noOptimize)
 { untested();
+#if 0 // does not work. manipulate objects in scene through scene()
+
     // connect every node of component to corresponding schematic node
     insertComponentNodes(c, noOptimize);
     components().append(c);
@@ -2668,6 +2675,7 @@ void Schematic::insertRawComponent(Component *c, bool noOptimize)
     }else{
 	untested();
     }
+#endif
 }
 
 // ---------------------------------------------------
@@ -2747,8 +2755,10 @@ void Schematic::insertElement(Element *c)
 }
 
 // ---------------------------------------------------
+// BUG. use pushBack
 void Schematic::insertComponent(Component *c)
 {
+    assert(0);
     // connect every node of component to corresponding schematic node
     insertComponentNodes(c, false);
 
@@ -2786,11 +2796,13 @@ void Schematic::insertComponent(Component *c)
 
     setComponentNumber(c); // important for power sources and subcircuit ports
 
+#if 0
     { // somehow different...
 	components().append(c);
 	addToScene(c);
     }
-}
+#endif
+} // insertComponent
 
 // ---------------------------------------------------
 void Schematic::activateCompsWithinRect(int x1, int y1, int x2, int y2)
@@ -3038,6 +3050,12 @@ void Schematic::deleteComp(Component *g)
 int Schematic::copyComponents(int& x1, int& y1, int& x2, int& y2,
                               QList<Element *> *ElementCache)
 {
+    assert(0);
+    return 0;
+#if 0 // this does not work
+      // and there is no need to "copy components".
+      // anyway, this function does not seem to do what the name suggests?!
+
     Component *pc;
     int bx1, by1, bx2, by2, count=0;
     // find bounds of all selected components
@@ -3076,6 +3094,7 @@ int Schematic::copyComponents(int& x1, int& y1, int& x2, int& y2,
         pc = components().next();
     }
     return count;
+#endif
 }
 
 // ---------------------------------------------------
@@ -3083,6 +3102,8 @@ int Schematic::copyComponents(int& x1, int& y1, int& x2, int& y2,
 void Schematic::copyComponents2(int& x1, int& y1, int& x2, int& y2,
                                 QList<Element *> *ElementCache)
 {
+    assert(false);
+#if 0
     Component *pc;
     // find bounds of all selected components
     for(pc = components().first(); pc != 0; ) {
@@ -3112,6 +3133,7 @@ void Schematic::copyComponents2(int& x1, int& y1, int& x2, int& y2,
         }
         pc = components().next();
     }
+#endif
 }
 
 
