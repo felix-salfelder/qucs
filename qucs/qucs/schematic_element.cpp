@@ -1495,9 +1495,17 @@ int Schematic::selectElements(int x1, int y1, int x2, int y2, bool flag)
 {
 #ifndef USE_SCROLLVIEW
     QRectF bb(x1, y1, x2, y2);
+
+    // flag seems to be shift or so
+    if(!flag){
+	for(auto i : scene()->selectedItems()){
+	    i->setSelected(false);
+	}
+    }else{
+    }
+    
     auto sel=scene()->items(bb, Qt::ContainsItemBoundingRect);
     int n=0;
-    
     for(auto i : sel){
 	i->setSelected(true);
 	++n;
@@ -1796,8 +1804,10 @@ void Schematic::newMovingWires(QList<Element*> *p, Node *pn, int pos)
 }
 
 #ifndef USE_SCROLLVIEW
+// SchematicScene?
 void Schematic::deselectElements()
 { untested();
+    qDebug() << "deselectElements";
     assert(scene());
     while(scene()->selectedItems().size()){ untested();
 	auto i=scene()->selectedItems().first();

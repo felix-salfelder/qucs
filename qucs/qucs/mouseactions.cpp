@@ -1697,7 +1697,11 @@ void MouseActions::MReleaseSelect(Schematic *Doc, QMouseEvent *Event)
 // Is called after the rectangle for selection is released.
 void MouseActions::MReleaseSelect2(Schematic *Doc, QMouseEvent *Event)
 { untested();
-  if(Event->button() != Qt::LeftButton) return;
+  if(Event->button() != Qt::LeftButton){
+    unreachable(); // yikes.
+    return;
+  }else{
+  }
 
   bool Ctrl = Event->modifiers().testFlag(Qt::ControlModifier);
 
