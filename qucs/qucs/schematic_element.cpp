@@ -2806,6 +2806,7 @@ void Schematic::insertComponent(Component *c)
     int  max=1, len = c->name().length(), z;
     if(c->name().isEmpty()) { // BUG
         // a ground symbol erases an existing label on the wire line
+#if 0 // moved to Ground::insertComponentNodes
         if(c->obsolete_model_hack() == "GND") { // BUG
             c->gnd_obsolete_model_override_hack("x");
             Element *pe = getWireLabel(c->Ports.first()->Connection);
@@ -2816,6 +2817,7 @@ void Schematic::insertComponent(Component *c)
                 }
             c->gnd_obsolete_model_override_hack("GND");
         }
+#endif
     }
     else
     {
