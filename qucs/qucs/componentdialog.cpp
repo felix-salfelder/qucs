@@ -1065,7 +1065,7 @@ void ComponentDialog::slotApplyInput()
       ty_Dist = dy;
     }
 
-    Doc->recreateComponent(Comp);
+    Comp->recreate(Doc);
     Doc->viewport()->repaint();
     if ( (int) Comp->Props.count() != prop->rowCount()) { // If props count was changed after recreation
       Q_ASSERT(prop->rowCount() >= 0);

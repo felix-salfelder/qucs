@@ -1495,20 +1495,23 @@ int Schematic::selectElements(int x1, int y1, int x2, int y2, bool flag)
 {
 #ifndef USE_SCROLLVIEW
     QRectF bb(x1, y1, x2, y2);
+    int n=0;
 
     // flag seems to be shift or so
-    if(!flag){
-	for(auto i : scene()->selectedItems()){
+    for(auto i : scene()->selectedItems()){
+	if(!flag){
 	    i->setSelected(false);
+	}else{
+	    ++n;
 	}
-    }else{
     }
     
     auto sel=scene()->items(bb, Qt::ContainsItemBoundingRect);
-    int n=0;
     for(auto i : sel){
-	i->setSelected(true);
-	++n;
+	if(!i->isSelected()){
+	    i->setSelected(true);
+	    ++n;
+	}
     }
     return n;
 #else
@@ -2707,6 +2710,11 @@ void Schematic::insertRawComponent(Component *c, bool noOptimize)
 // ---------------------------------------------------
 void Schematic::recreateComponent(Component *Comp)
 {
+    Comp->recreate(this);
+    return;
+
+
+    // :TODO: what is this?!
 
     WireLabel **plMem=0, **pl;
     int PortCount = Comp->Ports.count();
