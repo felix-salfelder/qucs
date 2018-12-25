@@ -404,7 +404,6 @@ public:
 
 
 private:
-  void insertComponentNodes(Component*, bool);
   int  copyWires(int&, int&, int&, int&, QList<Element *> *);
   int  copyComponents(int&, int&, int&, int&, QList<Element *> *);
   void copyComponents2(int&, int&, int&, int&, QList<Element *> *);
