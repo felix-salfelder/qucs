@@ -16,6 +16,8 @@
 # Boston, MA 02110-1301, USA.
 #
 
+AM_CXXFLAGS = -fPIC
+
 examplesdir=$(srcdir)/../examples
 
 AM_DEFAULT_SOURCE_EXT = .cpp
@@ -23,9 +25,11 @@ check_LTLIBRARIES = helloworld.la
 helloworld_la_LDFLAGS = -shared -no-undefined -module -avoid-version -rpath /dev/null
 AM_TESTS_ENVIRONMENT = \
     export PATH='../qucs:$(PATH)' \
+	 REDIRECT='exec 2>&9'\
     export QUCS='qucs' \
     srcdir='$(srcdir)' \
     examplesdir='$(examplesdir)';
+AM_TESTS_FD_REDIRECT = 9>&2
 
 if COND_WIN32
 helloworld.dll: %.dll: %.la
@@ -45,7 +49,8 @@ AM_TESTS_FD_REDIRECT = 9>&2
 TESTS = \
 	helloworld.sh \
 	doesnotexist.sh \
-	netlist.sh
+	netlist.sh \
+	run.sh
 
 if COND_WIN32
 # it does not work on windoze
