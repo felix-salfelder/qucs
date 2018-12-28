@@ -864,6 +864,7 @@ bool Schematic::loadPaintings(QTextStream *stream, Q3PtrList<Painting> *List)
     Line = Line.mid(1, Line.length()-2);  // cut off start and end character
 
     cstr = Line.section(' ',0,0);    // painting type
+    qDebug() << cstr;
     if(Painting const* pp=painting_dispatcher[cstr.toStdString()]){
       p=prechecked_cast<Painting*>(pp->clone());
       assert(p);
