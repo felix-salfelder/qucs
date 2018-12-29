@@ -107,6 +107,7 @@ libqucs_la_SOURCES = \
 	graph.cpp \
 	command.cpp \
 	component.cpp \
+	language.cpp \
 	marker.cpp \
 	${DIALOG_SRC}
 
