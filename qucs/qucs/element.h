@@ -204,9 +204,6 @@ public:
   virtual QString const& description() const{return incomplete_description;}
   virtual char const* iconBasename() const{return nullptr;}
 
-private:
-  bool Selected;
-
 public:
   void setSelected(bool b=true){
 	  Selected = b;
@@ -216,6 +213,8 @@ public:
   }
   bool isSelected() const{return Selected;}
 
+private:
+  bool Selected;
 public: // BUG
   int  Type;    // whether it is Component, Wire, ...
   int  cx, cy, x1, y1;

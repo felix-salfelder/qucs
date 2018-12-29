@@ -42,6 +42,7 @@ INTERFACE void guiRegisterElement (std::string const& category, Element const*);
 // each module is part of a Category. see below.
 class Module
 {
+	explicit Module();
  public:
   Module (Element const* e) : myElement(e) { }
 
@@ -91,6 +92,8 @@ class Module
   };
 };
 
+class Categories;
+
 // a category. something like "lumped" or "simulations"
 // will show up in the dropdown thing.
 class Category
@@ -118,6 +121,7 @@ class Category
 	  Content.append(x);
   }
  private: // internal
+ public:// HACK
   QString Name;
   QList<Module *> Content;
 };

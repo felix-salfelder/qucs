@@ -47,7 +47,7 @@ INTERFACE void guiRegisterElement (std::string const& cat, Element const* e)
 }
 
 // Constructor creates instance of module object.
-Module::Module () : info(0), category("#special") {
+Module::Module() : category("#special") {
 }
 
 // Destructor removes instance of module object from memory.
@@ -171,25 +171,21 @@ incomplete();
 // If there is no such category yet, then the category gets created.
 void Module::intoCategory(std::string const& cat, Module * m)
 {
-  QString category=QString::fromStdString(cat);
-
+  // BUG: use find.
   // look through existing categories
-  // // BUG linear search
-  QList<Category *>::const_iterator it;
-  for (it = Category::Categories.constBegin();
-       it != Category::Categories.constEnd(); it++) {
-    if ((*it)->name() == category) {
-      (*it)->push_back(m);
+  Category* c=NULL;
+  for (auto it : Category::categories){
+    if (it->name() == m->category) {
+      c=it;
       break;
     }else{
-	 }
+    }
   }
 
   // if there is no such category, then create it
-  if (it == Category::Categories.constEnd()) {
-    Category *cat = new Category (category);
-    Category::Categories.append (cat);
-    cat->push_back(m);
+  if (!c){
+    c = new Category (m->category);
+    Category::categories.append (c);
   }
 
   c->Content.append (m);

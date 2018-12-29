@@ -1433,7 +1433,7 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
 
       // load subcircuit schematic
       s = pc->Props.first()->Value;
-      SchematicModel *d = new SchematicModel();
+      SchematicModel *d = new SchematicModel(nullptr);
 
       // todo: error handling.
       QFile file(pc->getSubcircuitFile());

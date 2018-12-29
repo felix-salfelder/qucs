@@ -54,13 +54,21 @@ class SchematicLanguage;
 
 class SchematicModel{
 private:
-  SchematicModel() : _doc(nullptr){}
+  SchematicModel() = delete;
+#if 0
+  SchematicModel() : _doc(nullptr),
+	  _symbol(new SchematicSymbol());
+	{
+		incomplete();
+	}
+#endif
 public:
   SchematicModel(Schematic* s);
 public: // stuff saved from Schematic
   QString createClipboardFile();
   void sizeOfAll(int&, int&, int&, int&, float) const;
   void simpleInsertComponent(Component* c);
+  void simpleInsertCommand(Command* c);
   void simpleInsertWire(Wire*);
   //private??
   bool giveNodeNames(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int);

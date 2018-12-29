@@ -426,7 +426,7 @@ public: // not here.
 
 private: // legacy, don't use
   void simpleInsertComponent(Component* c) { return DocModel.simpleInsertComponent(c); }
-  void simpleInsertCommand(Command*) { return DocModel.simpleInsertCommand(c); }
+  void simpleInsertCommand(Command* c) { return DocModel.simpleInsertCommand(c); }
   void simpleInsertWire(Wire* w) { return DocModel.simpleInsertWire(w); }
 private:
   void simpleInsertElement(Element*);
@@ -434,8 +434,6 @@ private:
   int  saveDocument();
 
   bool loadWires(QTextStream*, EGPList *List=0);
-  void simpleInsertComponent(Component* c) { return DocModel.simpleInsertComponent(c); }
-  void simpleInsertWire(Wire* w) { return DocModel.simpleInsertWire(w); }
   bool loadIntoNothing(DocumentStream*);
 
   bool    pasteFromClipboard(DocumentStream *, EGPList*);

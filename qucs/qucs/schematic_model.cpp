@@ -120,6 +120,7 @@ SchematicSymbol::SchematicSymbol(){
 }
 SchematicSymbol::~SchematicSymbol(){
 	delete _paint;
+	_paint = nullptr;
 }
 
 void SchematicModel::pushBack(Element* what){

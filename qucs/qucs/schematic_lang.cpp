@@ -54,23 +54,6 @@ private:
 				if(mode=='C'){
 					c = getComponentFromName(Line, s /*connect ports?*/);
 				}else if(mode=='S'){
-					incomplete();
-#if 0
-					SchematicSymbol* s=new SchematicSymbol();
-					try{
-						qDebug() << "symbol Paintings";
-						s->symbolPaintings().load(&stream);
-						c = s;
-					}catch(...){
-						incomplete();
-					}
-#endif
-
-				/// \todo enable user to load partial schematic, skip unknown components
-				Element*c=NULL;
-				if(mode=='C'){
-					c = getComponentFromName(Line, s /*connect ports?*/);
-				}else if(mode=='S'){
 //					// fix later.
 					SchematicSymbol* s=new SchematicSymbol();
 					try{
