@@ -2077,7 +2077,8 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
   float fX=pos.x();
   float fY=pos.y();
 
-  element(focusElement)->editElement();
+  // //not yet
+  // focusElement->editElement();
 
   // BUG. move to respective classes. 1 at a time...
   if(auto c=component(focusElement)){ untested();

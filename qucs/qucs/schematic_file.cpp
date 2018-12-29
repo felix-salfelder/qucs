@@ -903,7 +903,7 @@ bool PaintingList::load(QTextStream *stream)
       assert(p);
     }else{
       QMessageBox::critical(0, QObject::tr("Error"),
-		QObject::tr("Format Error:\nUnknown painting " + cstr));
+		QObject::tr("Format Error:\nUnknown painting ") + cstr);
       return false;
     }
 
