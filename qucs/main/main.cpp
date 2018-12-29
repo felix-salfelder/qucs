@@ -114,8 +114,8 @@ static std::string plugpath()
 
 // BUG: not here.
 // possibly use SchematicModel(QString Filename, Lang...)
-Schematic *openSchematic(QString schematic)
 #if 0
+Schematic *openSchematic(QString schematic)
 {
   qDebug() << "*** try to load schematic :" << schematic;
 

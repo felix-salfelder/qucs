@@ -456,8 +456,8 @@ private:
 // 	  incomplete();
 // 	  return DocModel.giveNodeNames(a,b,c,d,e);
 //   }
-  void beginNetlistDigital(QTextStream &);
-  void endNetlistDigital(QTextStream &);
+  void beginNetlistDigital(QTextStream &, NetLang const&);
+  void endNetlistDigital(QTextStream &, NetLang const&);
 //  bool throughAllComps(QTextStream* a, int& b, QStringList&c, QPlainTextEdit* d, int e){
 //	  incomplete();
 //	  return DocModel.throughAllComps(a,b,c,d,e);

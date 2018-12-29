@@ -3068,10 +3068,10 @@ void Schematic::deleteItem(ElementGraphics *g)
     DocModel.erase(e);
 }
 // BUG: call deleteItem instead
-void Schematic::deleteComp(Component *g)
+void Schematic::deleteComp(Component *c)
 { untested();
     // delete all port connections
-    foreach(Port *pn, c->Ports)
+    foreach(Port *pn, c->Ports){
         switch(pn->Connection->connectionsCount()) {
         case 1  :
             if(pn->Connection->Label) delete pn->Connection->Label;

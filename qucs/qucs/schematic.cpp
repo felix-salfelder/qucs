@@ -194,41 +194,41 @@ bool Schematic::createSubcircuitSymbol()
   Painting* txt=painting_dispatcher.clone("ID_Text");
   assert(txt);
   txt->setArgs2Int(-20, h+4); // fix later.
-  SymbolPaints.prepend(txt);
+  symbolPaintings().prepend(txt);
 
   Painting* pp;
 
   pp = painting_dispatcher.clone("GraphicsLine");
   assert(pp);
   pp->setSomeStuff(-20, -h, 40,  0, QPen(Qt::darkBlue,2));
-  SymbolPaints.append(pp);
+  symbolPaintings().append(pp);
 
   pp = painting_dispatcher.clone("GraphicsLine");
   pp->setSomeStuff( 20, -h,  0,2*h, QPen(Qt::darkBlue,2));
-  SymbolPaints.append(pp);
+  symbolPaintings().append(pp);
 
   pp = painting_dispatcher.clone("GraphicsLine");
   pp->setSomeStuff(-20,  h, 40,  0, QPen(Qt::darkBlue,2));
-  SymbolPaints.append(pp);
+  symbolPaintings().append(pp);
 
   pp = painting_dispatcher.clone("GraphicsLine");
   pp->setSomeStuff(-20, -h,  0,2*h, QPen(Qt::darkBlue,2));
-  SymbolPaints.append(pp);
+  symbolPaintings().append(pp);
 
   unsigned int i=0, y = 10-h;
   while(i<countPort) {
     i++;
     pp = painting_dispatcher.clone("GraphicsLine");
     pp->setSomeStuff(-30, y, 10, 0, QPen(Qt::darkBlue,2));
-    SymbolPaints.append(pp);
-    SymbolPaints.at(i)->setCenter(-30,  y);
+    symbolPaintings().append(pp);
+    symbolPaintings().at(i)->setCenter(-30,  y);
 
     if(i == countPort)  break;
     i++;
     pp = painting_dispatcher.clone("GraphicsLine");
     pp->setSomeStuff( 20, y, 10, 0, QPen(Qt::darkBlue,2));
-    SymbolPaints.append(pp);
-    SymbolPaints.at(i)->setCenter(30,  y);
+    symbolPaintings().append(pp);
+    symbolPaintings().at(i)->setCenter(30,  y);
     y += 60;
   }
   return true;
@@ -485,7 +485,8 @@ void Schematic::drawContents(QPainter *p, int, int, int, int)
     paintFrame(&Painter);
 
   for(auto pc : components()){
-    pc->paint(&Painter);
+    Element* e=pc;
+    e->paint(&Painter);
   }
 
   for(auto pw : wires()){
@@ -495,7 +496,7 @@ void Schematic::drawContents(QPainter *p, int, int, int, int)
   }
 
   Node *pn;
-  for(auto pn : nodes()){
+  for(auto i : nodes()){
     pn=i;
     Element* e=pn;
     e->paint(&Painter);
@@ -514,7 +515,7 @@ void Schematic::drawContents(QPainter *p, int, int, int, int)
 
   if(showBias > 0) {  // show DC bias points in schematic ?
     int x, y, z;
-    for(auto i: * Nodes){
+    for(auto i: nodes()){
       pn=i;
       if(pn->name().isEmpty()) continue;
       x = pn->cx_();
@@ -1763,7 +1764,7 @@ int Schematic::adjustPortNumbers()
              } else {
 	         Painting* ps=painting_dispatcher.clone("PortSymbol");
                  ps->setSomeArgsHack(x1, y2, Str, pc->name());
-                 SymbolPaints.append(ps);
+                 symbolPaintings().append(ps);
                  y2 += 40;
              }
           }

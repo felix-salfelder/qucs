@@ -872,7 +872,7 @@ void QucsApp::slotSelectComponent(QListWidgetItem *item)
   iconCompInfoStruct iconCompInfo = v.value<iconCompInfoStruct>();
   qDebug() << "slotSelectComponent()" << iconCompInfo.catIdx << iconCompInfo.compIdx;
 
-  Category* cat = Category::Categories.at(iconCompInfo.catIdx);
+  Category const* cat = Category::categories.at(iconCompInfo.catIdx);
   assert(cat);
   Module *mod = (*cat)[iconCompInfo.compIdx];
   assert(mod);

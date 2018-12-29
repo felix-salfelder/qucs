@@ -66,6 +66,19 @@ public:
   bool    isHorizontal() const { return (y1 == y2);}
   QRectF boundingRect() const;
 
+  Node const* portByIndex(unsigned i){
+	  if(i==0){
+		  return Port1;
+	  }else if(i==1){
+		  return Port2;
+	  }
+  }
+
+//private:
+  Node      *Port1, *Port2;
+
+
+
 public: // FIXME, these are still around.
 	//int & cx__() { return cx; }
 	//int & cy__() { return cy; }

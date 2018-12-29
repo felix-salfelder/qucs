@@ -166,6 +166,8 @@ class Marker;
 class Node;
 class ViewPainter;
 
+class SchematicModel;
+
 class Element : public Object {
 public:
   Element();
@@ -195,7 +197,7 @@ public: // other stuff
 
   virtual void editElement(){}
   virtual void MPressElement(){}
-  virtual void tAC(QTextStream&, Schematic*, QStringList&, int&, int,
+  virtual void tAC(QTextStream&, SchematicModel const*, QStringList&, int&, int,
 		  NetLang const&){untested();}
 public:
   virtual Element* clone()const = 0;

@@ -2057,7 +2057,7 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
 //    qDebug() << "+double click, editElement";
 //
 // BUG: focusElement is a parameter
-  if(focusElement == 0){
+  if(focusElement == nullptr){
    unreachable();
    return;
   }else{
@@ -2077,8 +2077,7 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
   float fX=pos.x();
   float fY=pos.y();
 
-  incomplete();
-  //focusElement->editElement();
+  element(focusElement)->editElement();
 
   // BUG. move to respective classes. 1 at a time...
   if(auto c=component(focusElement)){ untested();
@@ -2102,12 +2101,10 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
 	     done=true;   // dialog is WDestructiveClose
 	   }else{ untested();
 	     incomplete();
-#if 0
 	     Doc->Components->findRef(c);
 	     Doc->Components->take();
 	     Doc->setComponentNumber(c); // for ports/power sources
 	     Doc->Components->append(c);
-#endif
 	   }
 #endif
          }
@@ -2182,6 +2179,7 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
         // mdia = new MarkerDialog(m, Doc);
         // if(mdia->exec() > 1)
         //   Doc->setChanged(true, true);
+  }else{
   }
 
   // Very strange: Now an open VHDL editor gets all the keyboard input !?!

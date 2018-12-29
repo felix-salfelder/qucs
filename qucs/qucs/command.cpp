@@ -915,14 +915,15 @@ void Command::dialgButtStuff(ComponentDialog& d)const
 // BUG, tmp.
 void SchematicModel::simpleInsertCommand(Command *c)
 {
+  unreachable();
   Node *pn;
   int x, y;
   // connect every node of component
 
-  DocComps.append(c);
+  //DocComps.append(c);
 }
 
-Command* Schematic::loadCommand(const QString& _s, Command* c) const
+Command* SchematicModel::loadCommand(const QString& _s, Command* c) const
 {
   bool ok;
   int  ttx, tty, tmp;
@@ -969,10 +970,8 @@ Command* Schematic::loadCommand(const QString& _s, Command* c) const
   if(!ok) return NULL;
 
   assert(c);
-  if(!c->obsolete_model_hack().size()){
     // avoid segfault in obsolete code...
-  }else if(c->obsolete_model_hack().at(0) != '.') {  // is simulation component (dc, ac, ...) ?
-
+  {
     n  = s.section(' ',7,7);    // mirroredX
     if(n.toInt(&ok) == 1){
       c->mirrorX();
@@ -992,7 +991,7 @@ Command* Schematic::loadCommand(const QString& _s, Command* c) const
   c->tx = ttx;
   c->ty = tty; // restore text position (was changed by rotate/mirror)
 
-  QString Model = c->obsolete_model_hack(); // BUG: don't use names
+  //QString Model = c->obsolete_model_hack(); // BUG: don't use names
 
   unsigned int z=0, counts = s.count('"');
   // FIXME. use c->paramCount()

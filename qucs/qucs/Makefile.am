@@ -125,16 +125,14 @@ libqucs_la_SOURCES += \
   attach.cpp \
   node.cpp element.cpp qucsdoc.cpp wire.cpp mouseactions.cpp   \
   qucs.cpp wirelabel.cpp qucs_init.cpp qucs_actions.cpp            \
-  viewpainter.cpp mnemo.cpp schematic.cpp schematic_element.cpp textdoc.cpp \
+  mnemo.cpp schematic.cpp schematic_element.cpp textdoc.cpp \
   schematic_action.cpp \
   schematic_model.cpp \
   schematic_scene.cpp \
   schematic_file.cpp syntax.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
   schematic_component.cpp \
-  schematic_lang.cpp \
   projectView.cpp \
-  ${DIALG_SRC} \
  $(MOCFILES)
 
 libqucs_la_SOURCES += qucs_.qrc

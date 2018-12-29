@@ -72,14 +72,12 @@ public: // stuff saved from Schematic
   void simpleInsertWire(Wire*);
   //private??
   bool giveNodeNames(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int,
-		  bool creatingLib
-		  );
+		  bool creatingLib, NetLang const&);
   bool throughAllComps(DocumentStream&, int&, QStringList&, QPlainTextEdit *, int,
-		  bool creatingLib
-		  );
+		  bool creatingLib, NetLang const&);
   bool createLibNetlist(DocumentStream&, QPlainTextEdit*, int, NetLang const&);
   bool createSubNetlist(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int,
-		  bool creatingLib);
+		  bool creatingLib, NetLang const&);
   void throughAllNodes(bool, QStringList&, int&);
   void propagateNode(QStringList&, int&, Node*);
   void collectDigitalSignals(void);
@@ -98,6 +96,7 @@ public:
   int  prepareNetlist(DocumentStream&, QStringList&, QPlainTextEdit*,
 		  bool creatingLib, NetLang const&);
   Component* loadComponent(const QString& _s, Component* c) const;
+  Command* loadCommand(const QString& _s, Command* c) const;
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);
   bool loadProperties(QTextStream*);
@@ -114,7 +113,7 @@ public:
 public: // scene interaction
   void toScene(QGraphicsScene& s, QList<ElementGraphics*>* l=nullptr) const;
 public: // obsolete.
-  static void saveComponent(QTextStream& s, Component /* FIXME const */* c);
+  static void saveComponent(QTextStream& s, Component const* c);
 private: // TODO: actually store here.
   WireList& wires();
   NodeList& nodes();

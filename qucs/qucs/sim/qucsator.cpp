@@ -50,10 +50,8 @@ void QucsLang::printCommand(Command const* c, QTextStream& s) const
 {
   s << ".";
 
-  if(c->isOpen()) {
+  if( 0 ){ /// c->isOpen())
     // nothing.
-  }else if(c->isShort()){
-    unreachable();
   }else{
     { // todo: introduce proper exceptions
       // normal netlisting

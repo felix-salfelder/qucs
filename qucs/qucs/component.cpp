@@ -672,6 +672,7 @@ QString Component::netlist() const
 // -------------------------------------------------------
 QString Component::getNetlist() const
 {
+  unreachable();
   switch(isActive) {
     case COMP_IS_ACTIVE:
       return netlist();
@@ -1676,9 +1677,9 @@ Element* getComponentFromName(QString& Line, SchematicModel* sp)
 
   // BUG: don't use schematic.
   if(Command* cmd=command(e)){
-    p->loadCommand(Line, cmd);
+    sp->loadCommand(Line, cmd);
   }else if(Component* c=component(e)){
-    if(!p->loadComponent(Line, c)) {
+    if(!sp->loadComponent(Line, c)) {
       QMessageBox::critical(0, QObject::tr("Error"),
 	  QObject::tr("Format Error:\nWrong 'component' line format!"));
       delete e;

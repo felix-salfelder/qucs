@@ -10,12 +10,11 @@
 #include "schematic.h"
 #include "qucs.h"
 #include "misc.h"
+#include "globals.h"
 #include "mouseactions.h"
 #include "globals.h"
 
 #include "components/equation.h" // BUG
-#include "components/ground.h" // BUG
-
 #include "changedialog.h"
 
 QRegExp Expr_CompProp;

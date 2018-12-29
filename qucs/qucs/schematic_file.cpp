@@ -739,11 +739,11 @@ bool SchematicModel::loadComponents(QTextStream *stream)
     }else if(Component* c=component(e)){
 	
       if(List) {  // "paste" ?
-	int z;
-	for(z=c->name().length()-1; z>=0; z--) // cut off number of component name
-	  if(!c->name().at(z).isDigit()) break;
-	c->obsolete_name_override_hack(c->name().left(z+1));
-	List->append(c);
+//	int z;
+//	for(z=c->name().length()-1; z>=0; z--) // cut off number of component name
+//	  if(!c->name().at(z).isDigit()) break;
+//	c->obsolete_name_override_hack(c->name().left(z+1));
+//	List->append(c);
       }else{
 	simpleInsertComponent(c);
       }
@@ -1305,7 +1305,7 @@ void SchematicModel::propagateNode(QStringList& Collect,
 // to be called from qucsator language only..
 bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
                    QStringList& Collect, QPlainTextEdit *ErrText, int NumPorts,
-		   bool creatingLib)
+		   bool creatingLib, NetLang const& nl)
 {
   bool r;
   QString s;
@@ -1330,7 +1330,10 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       }
     }
 
-    pc->tAC(*stream, this, Collect, countInit, NumPorts, nl); //?!!
+    auto nl=netlang_dispatcher["qucsator"];
+    assert(nl);
+
+    pc->tAC(stream, this, Collect, countInit, NumPorts, *nl); //?!!
     // handle ground symbol
     if(pc->obsolete_model_hack() == "GND") { // BUG.
       pc->Ports.first()->Connection->setName("gnd");
@@ -1352,7 +1355,8 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
           foreach(Port *pp, pc->Ports)
           {
             pp->Type = it.value().PortTypes[i];
-            pp->Connection->DType = pp->Type;
+	    incomplete();
+            // pp->Connection->DType = pp->Type;
             i++;
           }
         }
@@ -1383,7 +1387,7 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       // d->isVerilog = isVerilog;
       // d->isAnalog = isAnalog;
       // d->creatingLib = creatingLib; wtf?
-      r = d->createSubNetlist(stream, countInit, Collect, ErrText, NumPorts, creatingLib);
+      r = d->createSubNetlist(stream, countInit, Collect, ErrText, NumPorts, creatingLib, *nl);
       if (r)
       {
         i = 0;
@@ -1392,7 +1396,8 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
         {
             //if(i>=d->PortTypes.count())break;
             pp->Type = d->portType(i);
-            pp->Connection->DType = pp->Type;
+	    incomplete();
+            // pp->Connection->DType = pp->Type;
             i++;
         }
         sub.PortTypes = d->PortTypes;
@@ -1404,7 +1409,6 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       }
       continue; // BUG
     }else{
-#endif
     }
 
 #if 0 // does not work
@@ -1942,6 +1946,7 @@ bool SchematicModel::createSubNetlist(DocumentStream& stream, int& countInit,
 
 // ---------------------------------------------------
 // Determines the node names and writes subcircuits into netlist file.
+// BUG. move to netlister.
 int SchematicModel::prepareNetlist(DocumentStream& stream, QStringList& Collect,
                               QPlainTextEdit *ErrText, bool creatingLib, NetLang const& nl)
 {
@@ -2014,7 +2019,7 @@ int SchematicModel::prepareNetlist(DocumentStream& stream, QStringList& Collect,
     stream << "--";
   }
 
-  stream << " Qucs " << PACKAGE_VERSION << "  " << docName() << "\n";
+  stream << " Qucsator " << PACKAGE_VERSION << "\n"; //   " << docName() << "\n";
 
   // set timescale property for verilog schematics
   if (isVerilog) {
