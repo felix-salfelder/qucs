@@ -469,11 +469,7 @@ void LibraryDialog::slotSave()
 
     ErrText->insertPlainText("\n");
     ErrText->insertPlainText(tr("Creating Qucs netlist.\n"));
-<<<<<<< HEAD:qucs/qucs/librarydialog.cpp
-    ret = Doc->createLibNetlist(&ts, ErrText, -1, nl);
-=======
-    ret = Doc->createLibNetlist(ts, ErrText, -1);
->>>>>>> 183ac7341... untangle:qucs/qucs/dialogs/librarydialog.cpp
+    ret = Doc->createLibNetlist(ts, ErrText, -1, nl);
     if(ret) {
       intoStream(Stream, tmp, "Model");
       int error = 0;
@@ -511,11 +507,7 @@ void LibraryDialog::slotSave()
 
     ErrText->insertPlainText("\n");
     ErrText->insertPlainText(tr("Creating Verilog netlist.\n"));
-<<<<<<< HEAD:qucs/qucs/librarydialog.cpp
-    ret = Doc->createLibNetlist(&ts, ErrText, 0, nl);
-=======
-    ret = Doc->createLibNetlist(ts, ErrText, 0);
->>>>>>> 183ac7341... untangle:qucs/qucs/dialogs/librarydialog.cpp
+    ret = Doc->createLibNetlist(ts, ErrText, 0, nl);
     if(ret) {
       intoStream(Stream, tmp, "VerilogModel");
       int error = 0;
@@ -552,11 +544,7 @@ void LibraryDialog::slotSave()
     Doc->isAnalog = false;
 
     ErrText->insertPlainText(tr("Creating VHDL netlist.\n"));
-<<<<<<< HEAD:qucs/qucs/librarydialog.cpp
-    ret = Doc->createLibNetlist(&ts, ErrText, 0, nl);
-=======
-    ret = Doc->createLibNetlist(ts, ErrText, 0);
->>>>>>> 183ac7341... untangle:qucs/qucs/dialogs/librarydialog.cpp
+    ret = Doc->createLibNetlist(ts, ErrText, 0, nl);
     if(ret) {
       intoStream(Stream, tmp, "VHDLModel");
       int error = 0;

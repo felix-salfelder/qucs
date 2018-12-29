@@ -77,13 +77,13 @@ public: // stuff saved from Schematic
   bool throughAllComps(DocumentStream&, int&, QStringList&, QPlainTextEdit *, int,
 		  bool creatingLib
 		  );
-  bool createLibNetlist(DocumentStream&, QPlainTextEdit*, int);
+  bool createLibNetlist(DocumentStream&, QPlainTextEdit*, int, NetLang const&);
   bool createSubNetlist(DocumentStream&, int&, QStringList&, QPlainTextEdit*, int,
 		  bool creatingLib);
   void throughAllNodes(bool, QStringList&, int&);
   void propagateNode(QStringList&, int&, Node*);
   void collectDigitalSignals(void);
-  QString createNetlist(DocumentStream&, int);
+  QString createNetlist(DocumentStream&, int, NetLang const&);
   void createSubNetlistPlain(DocumentStream&, QPlainTextEdit*, int,
 		  bool creatingLib
 		  );
@@ -96,7 +96,7 @@ public: // stuff saved from Schematic
 public:
   void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr);
   int  prepareNetlist(DocumentStream&, QStringList&, QPlainTextEdit*,
-		  bool creatingLib);
+		  bool creatingLib, NetLang const&);
   Component* loadComponent(const QString& _s, Component* c) const;
   bool loadDocument(QFile& /*BUG*/ file);
   bool loadPaintings(QTextStream*, PaintingList* p=NULL);

@@ -26,7 +26,7 @@
 // need a baseclass for commands.
 // formerly, they were components, but that does not make sense.
 // (a command does not have ports etc.)
-class Command : public Component /*BUG*/ {
+class Command : public Element {
 public:
   Command();
   virtual ~Command() {};
@@ -37,10 +37,7 @@ public:
   QString get_VHDL_Code(int);
   QString get_Verilog_Code(int);
 private:
-  Component* newOne(){ unreachable();
-	  return nullptr;
-  }
-  void    paint(ViewPainter*);
+  void paint(ViewPainter*) const;
 public:
   void    paintScheme(Schematic*) const;
   void    print(ViewPainter*, float);

@@ -39,10 +39,8 @@
  *        this one is a copy of the legacy Component class, the former
  *        baseclass for Commands. As such, it contains unneeded stuff.
  */
-Command::Command()
+Command::Command() : Element()
 {
-  Type = isAnalogComponent;
-
   mirroredX = false;
   rotated = 0;
   isActive = COMP_IS_ACTIVE;
@@ -173,12 +171,12 @@ bool Command::getSelected(int x_, int y_)
 }
 
 // -------------------------------------------------------
-void Command::paint(ViewPainter *p)
+void Command::paint(ViewPainter *p) const
 {
   int x, y, a, b, xb, yb;
   QFont f = p->Painter->font();   // save current font
   QFont newFont = f;
-  if(Model.at(0) == '.') {   // is simulation component (dc, ac, ...)
+  {   // is simulation component (dc, ac, ...)
     newFont.setPointSizeF(p->Scale * Texts.first()->Size);
     newFont.setWeight(QFont::DemiBold);
     p->Painter->setFont(newFont);
@@ -207,66 +205,6 @@ void Command::paint(ViewPainter *p)
     p->Painter->drawLine(x+xb-1, y+yb, a+xb,   b+yb);
     p->Painter->drawLine(x+xb-1, y+yb, x+xb-1, y);
     p->Painter->drawLine(x+xb-1, y,    a+xb,   b);
-  }
-  else {    // normal components go here
-
-    // paint all lines
-    foreach(Line *p1, Lines) {
-      p->Painter->setPen(p1->style);
-      p->drawLine(cx+p1->x1, cy+p1->y1, cx+p1->x2, cy+p1->y2);
-    }
-
-    // paint all arcs
-    foreach(Arc *p3, Arcs) {
-      p->Painter->setPen(p3->style);
-      p->drawArc(cx+p3->x, cy+p3->y, p3->w, p3->h, p3->angle, p3->arclen);
-    }
-
-    // paint all rectangles
-    foreach(Area *pa, Rects) {
-      p->Painter->setPen(pa->Pen);
-      p->Painter->setBrush(pa->Brush);
-      p->drawRect(cx+pa->x, cy+pa->y, pa->w, pa->h);
-    }
-
-    // paint all ellipses
-    foreach(Area *pa, Ellips) {
-      p->Painter->setPen(pa->Pen);
-      p->Painter->setBrush(pa->Brush);
-      p->drawEllipse(cx+pa->x, cy+pa->y, pa->w, pa->h);
-    }
-    p->Painter->setBrush(Qt::NoBrush);
-
-    newFont.setWeight(QFont::Light);
-
-    // keep track of painter state
-    p->Painter->save();
-
-    QMatrix wm = p->Painter->worldMatrix();
-    // write all text
-    foreach(Text *pt, Texts) {
-      p->Painter->setWorldMatrix(
-          QMatrix(pt->mCos, -pt->mSin, pt->mSin, pt->mCos,
-                   p->DX + float(cx+pt->x) * p->Scale,
-                   p->DY + float(cy+pt->y) * p->Scale));
-      newFont.setPointSizeF(p->Scale * pt->Size);
-      newFont.setOverline(pt->over);
-      newFont.setUnderline(pt->under);
-      p->Painter->setFont(newFont);
-      p->Painter->setPen(pt->Color);
-      if (0) {
-	p->Painter->drawText(0, 0, 0, 0, Qt::AlignLeft|Qt::TextDontClip, pt->s);
-      } else {
-	int w, h;
-	w = p->drawTextMapped (pt->s, 0, 0, &h);
-    Q_UNUSED(w);
-      }
-    }
-    p->Painter->setWorldMatrix(wm);
-    p->Painter->setWorldMatrixEnabled(false);
-
-    // restore painter state
-    p->Painter->restore();
   }
 
   // restore old font
@@ -307,7 +245,7 @@ void Command::paint(ViewPainter *p)
 void Command::paintScheme(Schematic *p) const
 {
   // qDebug() << "paintScheme" << Model;
-  if(Model.at(0) == '.') {   // is simulation component (dc, ac, ...)
+  {   // is simulation component (dc, ac, ...)
     int a, b, xb, yb;
     QFont newFont = p->font();
 
@@ -382,9 +320,6 @@ void Command::print(ViewPainter *p, float FontScale)
 // Rotates the component 90 counter-clockwise around its center
 void Command::rotate()
 {
-  // Port count only available after recreate, createSymbol
-  if ((Model != "Sub") && (Model !="VHDL") && (Model != "Verilog")) // skip port count
-    if(Ports.count() < 1) return;  // do not rotate components without ports
   int tmp, dx, dy;
 
   // rotate all lines
@@ -482,10 +417,6 @@ void Command::rotate()
 // Mirrors the component about the x-axis.
 void Command::mirrorX()
 {
-  // Port count only available after recreate, createSymbol
-  if ((Model != "Sub") && (Model !="VHDL") && (Model != "Verilog")) // skip port count
-    if(Ports.count() < 1) return;  // do not rotate components without ports
-
   // mirror all lines
   foreach(Line *p1, Lines) {
     p1->y1 = -p1->y1;
@@ -544,10 +475,6 @@ void Command::mirrorX()
 // Mirrors the component about the y-axis.
 void Command::mirrorY()
 {
-  // Port count only available after recreate, createSymbol
-  if ((Model != "Sub") && (Model !="VHDL") && (Model != "Verilog")) // skip port count
-    if(Ports.count() < 1) return;  // do not rotate components without ports
-
   // mirror all lines
   foreach(Line *p1, Lines) {
     p1->x1 = -p1->x1;
@@ -609,15 +536,7 @@ void Command::mirrorY()
 // -------------------------------------------------------
 QString Command::netlist()
 {
-  unreachable(); // obsolete.
-  QString s = Model+":"+Name;
-
-  // output all properties
-  for(Property *p2 = Props.first(); p2 != 0; p2 = Props.next())
-    if(p2->Name != "Symbol")
-      s += " "+p2->Name+"=\""+p2->Value+"\"";
-
-  return s + '\n';
+  return "obsolete";
 }
 
 // -------------------------------------------------------
@@ -994,7 +913,7 @@ void Command::dialgButtStuff(ComponentDialog& d)const
 }
 //
 // BUG, tmp.
-void Schematic::simpleInsertCommand(Command *c)
+void SchematicModel::simpleInsertCommand(Command *c)
 {
   Node *pn;
   int x, y;
@@ -1107,7 +1026,10 @@ Command* Schematic::loadCommand(const QString& _s, Command* c) const
     p1->display = (n.at(1) == '1');
   }
 
+  incomplete(); // pushBack?
   return c;
+
+  // DocComps.append(c);
 }
 
 // vim:ts=8:sw=2:noet

@@ -744,7 +744,8 @@ QString Component::get_VHDL_Code(int NumPorts)
 
 // -------------------------------------------------------
 // TODO: move to parser (it's not there yet.)
-Element* Schematic::loadElement(const QString& _s, Element* e) const
+#if 0
+Element* SchematicModel::loadElement(const QString& _s, Element* e) const
 {
   if(Component* c=dynamic_cast<Component*>(e)){
     // legacy components
@@ -755,6 +756,7 @@ Element* Schematic::loadElement(const QString& _s, Element* e) const
     return e;
   }
 }
+#endif
 // -------------------------------------------------------
 // FIXME: must be Component* SchematicParser::loadComponent(Stream&, Component*);
 // BUG: need to move to SchematicModel first.

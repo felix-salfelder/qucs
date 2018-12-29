@@ -199,7 +199,6 @@ public: // other stuff
 		  NetLang const&){untested();}
 public:
   virtual Element* clone()const = 0;
-//  { unreachable(); return 0 /*NULL, actually*/;}
   virtual QString const& name() const{return Name;}
   void setName(QString const& n){ Name = n; }
   virtual QString const& description() const{return incomplete_description;}
@@ -220,11 +219,6 @@ protected:
 #endif
   bool isSelected() const{return Selected;}
 
-public:
-  QString const& name() const{
-	  return Name;
-  }
-
 protected: // BUG, private
   QString Name;
 
@@ -236,9 +230,6 @@ public: // BUG
   
   // BUG; abused in Command
   mutable int x2, y2;  // center and relative boundings
-
-protected: //BUG
-  QString Name; // the label.
 
 #ifndef USE_SCROLLVIEW
   friend class ElementGraphics;

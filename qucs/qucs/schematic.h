@@ -472,22 +472,18 @@ public: // for now
 		return DocModel.loadComponent(_s, c);
 	}
    int  prepareNetlist(DocumentStream& a, QStringList& b, QPlainTextEdit* c,
-			bool creatingLib){
+			bool creatingLib, NetLang const& nl){
 		assert(!creatingLib); // ?!
- 	  return DocModel.prepareNetlist(a,b,c, creatingLib);
+ 	  return DocModel.prepareNetlist(a,b,c, creatingLib, nl);
    }
-  bool createLibNetlist(DocumentStream& a, QPlainTextEdit* b, int c){
-		return DocModel.createLibNetlist(a,b,c);
+  bool createLibNetlist(DocumentStream& a, QPlainTextEdit* b, int c, NetLang const& nl){
+		return DocModel.createLibNetlist(a,b,c, nl);
   }
   // used in main?
-  QString createNetlist(DocumentStream& a, int b){
-	  return DocModel.createNetlist(a, b);
+  QString createNetlist(DocumentStream& a, int b, NetLang const& nl){
+	  return DocModel.createNetlist(a, b, nl);
   }
 
-public: // schematicModel
-	QString const& portType(int i) const{
-		return PortTypes[i];
-	}
 public:
   bool isAnalog;
   bool isVerilog;
