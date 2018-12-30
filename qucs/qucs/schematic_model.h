@@ -20,6 +20,7 @@
 #include "object.h"
 #include "wire.h"
 #include "node.h"
+#include "io.h"
 #include "schematic_scene.h"
 #include "schematic_symbol.h"
 #include "components/subcircuit.h" // BUG
