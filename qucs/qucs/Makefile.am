@@ -105,7 +105,6 @@ libqucs_la_SOURCES = \
 	command.cpp \
 	component.cpp \
 	diagram.cpp \
-	globals.cpp \
 	graph.cpp \
 	io_error.cpp \
 	language.cpp \

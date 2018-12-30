@@ -1330,8 +1330,10 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       }
     }
 
-    auto nl=netlang_dispatcher["qucsator"];
-    assert(nl);
+    auto dl=doclang_dispatcher["qucsator"];
+    assert(dl);
+    auto nl=dynamic_cast<NetLang const*>(dl);
+    assert(dl);
 
     pc->tAC(stream, this, Collect, countInit, NumPorts, *nl); //?!!
     // handle ground symbol
@@ -1339,74 +1341,7 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       pc->Ports.first()->Connection->setName("gnd");
       continue;
     }else if(pc->obsolete_model_hack() == "Sub") { untested();
-      int i;
-      // tell the subcircuit it belongs to this schematic
-      Subcircuit* sckt=prechecked_cast<Subcircuit*>(pc);
-      assert(sckt);
-      sckt->setSchematicModel (this);
-      QString f = pc->getSubcircuitFile();
-      qDebug() << "sckt" << f;
-      SubMap::Iterator it = FileList.find(f);
-      if(it != FileList.end()) { untested();
-        if (!it.value().PortTypes.isEmpty())
-        {
-          i = 0;
-          // apply in/out signal types of subcircuit
-          foreach(Port *pp, pc->Ports)
-          {
-            pp->Type = it.value().PortTypes[i];
-	    incomplete();
-            // pp->Connection->DType = pp->Type;
-            i++;
-          }
-        }
-        continue;   // insert each subcircuit just one time
-      }
-
-      // The subcircuit has not previously been added
-      SubFile sub = SubFile("SCH", f);
-      FileList.insert(f, sub);
-
-
-      // load subcircuit schematic
-      s = pc->Props.first()->Value;
-      SchematicModel sm(nullptr);
-      SchematicModel* d=&sm;
-
-      // todo: error handling.
-      QString scktfilename(pc->getSubcircuitFile());
-      QFile file(scktfilename);
-      qDebug() << "getting sckt definition from" << scktfilename;
-      file.open(QIODevice::ReadOnly);
-      DocumentStream pstream(&file);
-      d->setFileInfo(scktfilename);
-      d->parse(pstream);
-      d->setDevType(s);
-
-      // d->setDocName(s);
-      // d->isVerilog = isVerilog;
-      // d->isAnalog = isAnalog;
-      // d->creatingLib = creatingLib; wtf?
-      r = d->createSubNetlist(stream, countInit, Collect, ErrText, NumPorts, creatingLib, *nl);
-      if (r)
-      {
-        i = 0;
-        // save in/out signal types of subcircuit
-        foreach(Port *pp, pc->Ports)
-        {
-            //if(i>=d->PortTypes.count())break;
-            pp->Type = d->portType(i);
-	    incomplete();
-            // pp->Connection->DType = pp->Type;
-            i++;
-        }
-        sub.PortTypes = d->PortTypes;
-        FileList.insert(f, sub);
-      }
-      if(!r)
-      {
-        return false;
-      }
+      // moved to tAC
       continue; // BUG
     }else{
     }
@@ -1458,7 +1393,8 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       FileList.insert(f, SubFile("CIR", f));
 
       SpiceFile *sf = (SpiceFile*)pc; // BUG
-      r = sf->createSubNetlist(stream);
+      incomplete(); // move to spicefile->tAC, then clean up
+      // r = sf->createSubNetlist(stream);
       qDebug() << sf->getErrorText();
       if(!r){
         return false;

@@ -366,17 +366,19 @@ QString Subcircuit::getSubcircuitFile() const
 static SubMap FileList;
 
 // moved from schematic_file.cpp
-void Subcircuit::tAC(QTextStream& stream, Schematic* schem, QStringList&
-		Collect, int& countInit, int NumPorts, NetLang const& nl){
+void Subcircuit::tAC(QTextStream& stream, SchematicModel* schem, QStringList&
+		Collect, int& countInit, int NumPorts, NetLang const& nl)
+{
 	Component* pc=this;
-	assert(pc->obsolete_model_hack()=="Sub"); // really?
 	int i;
 	// tell the subcircuit it belongs to this schematic
-	pc->setSchematic(schem);
+	Subcircuit* sckt=prechecked_cast<Subcircuit*>(pc);
+	assert(sckt);
+	sckt->setSchematicModel (schem);
 	QString f = pc->getSubcircuitFile();
+	qDebug() << "sckt" << f;
 	SubMap::Iterator it = FileList.find(f);
-	if(it != FileList.end())
-	{
+	if(it != FileList.end()) { untested();
 		if (!it.value().PortTypes.isEmpty())
 		{
 			i = 0;
@@ -384,11 +386,11 @@ void Subcircuit::tAC(QTextStream& stream, Schematic* schem, QStringList&
 			foreach(Port *pp, pc->Ports)
 			{
 				pp->Type = it.value().PortTypes[i];
-				// pp->Connection->DType = pp->Type;
+				incomplete();
+				//pp->Connection->DType = pp->Type;
 				i++;
 			}
 		}
-//		continue;   // wtf?
 	}
 
 	// The subcircuit has not previously been added
@@ -398,41 +400,41 @@ void Subcircuit::tAC(QTextStream& stream, Schematic* schem, QStringList&
 
 	// load subcircuit schematic
 	QString s=pc->Props.first()->Value;
+	SchematicModel sm(nullptr);
+	SchematicModel* d=&sm;
 
-	//      qDebug() << "reading subckt schematic" << pc->getSubcircuitFile();
-	Schematic *d = new Schematic(0, pc->getSubcircuitFile());
-	if(!d->loadDocument()) { // BUG. "try".
-		delete d;
-		/// \todo implement error/warning message dispatcher for GUI and CLI modes.
-		QString message = QObject::tr("ERROR: Cannot load subcircuit \"%1\".").arg(s);
-		if (QucsMain) // GUI is running
-			qDebug() << "ErrText->appendPlainText(message)";
-		else // command line
-			qCritical() << "Schematic::throughAllComps" << message;
-		throw "something wrong in sckt"; // TODO
-	}else{
-	}
-	d->DocName = s;
-	d->isVerilog = false; // isVerilog;
-	d->isAnalog = true; // isAnalog;
-	d->creatingLib = false; // creatingLib; //!?
-	auto r = d->createSubNetlist(&stream, countInit, Collect, nullptr, NumPorts, nl);
-	if (r) {
+	// todo: error handling.
+	QString scktfilename(pc->getSubcircuitFile());
+	QFile file(scktfilename);
+	qDebug() << "getting sckt definition from" << scktfilename;
+	file.open(QIODevice::ReadOnly);
+	DocumentStream pstream(&file);
+	d->setFileInfo(scktfilename);
+	d->parse(pstream);
+	d->setDevType(s);
+
+	// d->setDocName(s);
+	// d->isVerilog = isVerilog;
+	// d->isAnalog = isAnalog;
+	// d->creatingLib = creatingLib; wtf?
+	bool creatingLib=false;
+	auto r = d->createSubNetlist(pstream, countInit, Collect, nullptr, NumPorts, creatingLib, nl);
+	if (r)
+	{
 		i = 0;
 		// save in/out signal types of subcircuit
 		foreach(Port *pp, pc->Ports)
 		{
 			//if(i>=d->PortTypes.count())break;
 			pp->Type = d->portType(i);
+			incomplete();
 			//pp->Connection->DType = pp->Type;
 			i++;
 		}
-		sub.PortTypes = d->PortTypes;
+		incomplete();
+		//sub.PortTypes = d->PortTypes;
 		FileList.insert(f, sub);
-	}
-	delete d; // BUG
-	if(!r) {
-		// throw?
+	}else{
 	}
 }
 

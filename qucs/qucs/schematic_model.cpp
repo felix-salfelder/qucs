@@ -47,13 +47,8 @@ void SchematicModel::setDevType(QString const& s)
 	DevType = s;
 }
 
-void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L){
-	if(!L){
-		assert(defaultSchematicLanguage);
-		L = prechecked_cast<SchematicLanguage const*>(defaultSchematicLanguage);
-		assert(L);
-	}else{untested();
-	}
+void SchematicModel::parse(DocumentStream& s, SchematicLanguage const* L)
+{
 	assert(L);
 	while(!s.atEnd()){ untested();
 		qDebug() << "entering parse";

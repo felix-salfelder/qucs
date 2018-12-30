@@ -29,7 +29,7 @@ public:
   }
   static Element* info(QString&, char* &, bool getNewOne=false);
 }D;
-Dispatcher<Symbol>::INSTALL p(&symbol_dispatcher, ".DC", &D);
+Dispatcher<Command>::INSTALL p(&command_dispatcher, ".DC", &D);
 Module::INSTALL pp("simulations", &D);
 
 

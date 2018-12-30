@@ -19,7 +19,6 @@
 #include "globals.h"
 #include "module.h"
 
-#include "symtrafo.h"
 #include "some_font_stuff.h"
 
 #include "component.h"

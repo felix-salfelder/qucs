@@ -14,7 +14,7 @@ Element* getComponentFromName(QString& Line, Schematic* p);
 class LegacySchematicLanguage : public SchematicLanguage {
 public:
 	LegacySchematicLanguage() : SchematicLanguage(){ untested();
-		defaultSchematicLanguage = this;
+		//defaultSchematicLanguage = this;
 	}
 private: // stuff saved from schematic_file.cpp
 	Diagram* loadDiagram(QString const& Line, DocumentStream& /*, DiagramList *List */) const;

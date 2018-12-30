@@ -56,7 +56,7 @@ void QucsLang::printCommand(Command const* c, QTextStream& s) const
     { // todo: introduce proper exceptions
       // normal netlisting
 
-      s << c->type() << ":" << c->label();
+      s << c->name() << ":" << c->label();
 
       //for(auto p2 : c->params())
       for(auto p2 : c->Props){ // BUG

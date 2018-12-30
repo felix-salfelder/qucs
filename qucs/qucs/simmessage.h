@@ -25,6 +25,7 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 #include "qucsdoc.h" // stream
+#include "io.h"
 
 class QPlainTextEdit;
 class QTextStream;

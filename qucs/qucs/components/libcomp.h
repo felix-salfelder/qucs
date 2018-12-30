@@ -22,6 +22,7 @@
 #include "qucsdoc.h" // BUG
 
 class QTextStream;
+class DocumentStream;
 class QString;
 
 

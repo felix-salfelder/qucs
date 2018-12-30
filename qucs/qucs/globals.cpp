@@ -12,6 +12,3 @@ Dispatcher<Simulator> simulator_dispatcher;
 Dispatcher<DocumentLanguage> doclang_dispatcher;
 Dispatcher<Command> command_dispatcher;
 Dispatcher<Painting> painting_dispatcher;
-
-// for now. where are options?
-DocumentLanguage const* defaultSchematicLanguage;
