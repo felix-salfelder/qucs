@@ -49,6 +49,7 @@ AM_TESTS_FD_REDIRECT = 9>&2
 TESTS = \
 	helloworld.sh \
 	doesnotexist.sh \
+	lce.sh \
 	netlist.sh \
 	run.sh
 
@@ -58,6 +59,11 @@ doesnotexist.log: SH_LOG_FLAGS=-c 'exit 77'
 endif
 
 EXTRA_DIST = \
+	entries.ref \
+	resonance.sch.ref \
 	$(TESTS)
 
 CLEANFILES = *.out *core
+
+.PHONY: .P
+${TESTS:%.sh=%.log}: .P
